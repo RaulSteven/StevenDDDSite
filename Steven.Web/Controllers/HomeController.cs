@@ -16,6 +16,11 @@ namespace Steven.Web.Controllers
         // GET: Main
         public ActionResult Index()
         {
+            Log.Debug("debug");
+            Log.Info("info");
+            Log.Warn("warn");
+            Log.Error("eror");
+            Log.Fatal("fatal");
             var list = SysPartnerRepository.GetAll();
             return View(list);
         }

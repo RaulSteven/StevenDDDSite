@@ -10,7 +10,6 @@
     <ul>
         <li><a href="/" target="_blank">首页</a></li>
         <li><a href="/Admin/Home/Index" target="_blank">管理员后台</a></li>
-        <li><a href="/Shop/Home/Index" target="_blank">商户后台</a></li>
         <li></li>
     </ul>
 </body>
