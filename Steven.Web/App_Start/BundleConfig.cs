@@ -28,34 +28,6 @@ namespace Steven.Web
                 .Include("~/Res/admin/css/plugins/iCheck/skins/beilin/blue.css"));
             #endregion
 
-            #region 店铺
-            bundles.Add(new StyleBundle("~/Res/shop/css/shop-layout-css")
-                .Include("~/Res/shop/css/style.css",
-                "~/Res/global/style/global.css",
-                "~/Res/shop/css/admin.css",
-                "~/Res/admin/css/plugins/sweetalert/sweetalert.css"));
-
-            bundles.Add(new ScriptBundle("~/bundles/shop-layout-js")
-                .Include("~/Res/admin/js/plugins/metisMenu/jquery.metisMenu.js",
-                "~/Res/admin/js/plugins/slimscroll/jquery.slimscroll.min.js",
-                "~/Res/admin/js/inspinia.js",
-                "~/Res/admin/js/plugins/pace/pace.min.js",
-                "~/Res/admin/js/plugins/sweetalert/sweetalert.min.js"));
-
-            bundles.Add(new ScriptBundle("~/shop/pagination")
-                .Include("~/Res/shop/js/pagination.js"));
-
-            bundles.Add(new ScriptBundle("~/shop/chart")
-                .Include("~/Res/admin/js/plugins/chartJs/Chart.bundle.js"));
-
-            //<link rel="stylesheet" type="text/css" href="/Res/admin/font-awesome/css/font-awesome.css">
-            bundles.Add(new StyleBundle("~/Res/admin/font-awesome/css/font-bundle")
-                .Include("~/Res/admin/font-awesome/css/font-awesome.css"));
-
-            bundles.Add(new ScriptBundle("~/shop/clipboard")
-                .Include("~/Res/shop/js/clipboard.min.js"));
-            #endregion
-
             #region ladda
             bundles.Add(new StyleBundle("~/bundles/ladda-css")
                 .Include("~/Res/admin/css/plugins/ladda/ladda-themeless.min.css"));
@@ -89,8 +61,6 @@ namespace Steven.Web
             bundles.Add(new ScriptBundle("~/bundles/common")
                 .Include("~/Res/global/js/jquery.common.js"));
             #endregion
-
-
 
             #region datepicker
             //        @*<script src="/Res/admin/js/plugins/datapicker/bootstrap-datepicker.js"></script>

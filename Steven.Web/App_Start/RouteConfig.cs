@@ -51,16 +51,6 @@ namespace Steven.Web
 
 
             routes.MapRoute(
-              name: "WxPay",
-              url: "WxPayBack/{appId}",
-              defaults: new
-              {
-                  controller = "Payment",
-                  action = "WxPayCallBack"
-              },
-              namespaces: namespaces);
-
-            routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
                 namespaces:namespaces,

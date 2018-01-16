@@ -20,15 +20,12 @@ namespace Steven.Web.Areas.Admin.Controllers
     public class HomeController : AdminController
     {
         public ISysConfigRepository SysConfigRepository { get; set; }
-        public IShopOrderRepository ShopOrderRepository { get; set; }
         public IUsersRepository UsersRepository { get; set; }
         public ICacheManager Cache { get; set; }
         // GET: Admin/Home
         public ActionResult Index()
         {
             var model = new HomeDataModel();
-            model.TotalOrderCount = ShopOrderRepository.GetCount(null);
-            model.TotalNewOrderCount = ShopOrderRepository.GetCount(OrderStatus.Waiting);
             model.TotalNewOrderPercent = PercentConvert(model.TotalNewOrderCount, model.TotalOrderCount);
 
             model.TotalUserCount = UsersRepository.GetCount();
@@ -40,40 +37,6 @@ namespace Steven.Web.Areas.Admin.Controllers
         public ActionResult _HomeData(AdminHomeDataType t = AdminHomeDataType.Today)
         {
             var model = new HomeStatisticsDataModel();
-            var today = DateTime.Now;
-            DateTime startTime = DateTime.Now;
-            DateTime endTime = DateTime.Now;
-            switch (t)
-            {
-                case AdminHomeDataType.Today:
-                    startTime = DateTime.Parse(today.ToString("yyyy-MM-dd 00:00:00"));
-                    endTime = DateTime.Parse(today.ToString("yyyy-MM-dd 23:59:59"));
-                    break;
-                case AdminHomeDataType.Month:
-                    string lastday = DateTime.DaysInMonth(today.Year, today.Month).ToString();
-                    startTime = DateTime.Parse(today.ToString("yyyy-MM") + "-01");
-                    endTime = DateTime.Parse(today.ToString("yyyy-MM") + "-" + lastday);
-                    break;
-                case AdminHomeDataType.Year:
-                    string toyear = today.ToString("yyyy");
-                    startTime = DateTime.Parse(toyear + "-01-01");
-                    endTime = DateTime.Parse(toyear + "-12-31");
-                    break;
-            }
-            var list = ShopOrderRepository.GetAdminOrderByTime(startTime, endTime);
-            var orderCount = ShopOrderRepository.GetCount(null);
-            model.TotalOrderCount = list.Count;
-            model.TotalOrderPercent = PercentInt(model.TotalOrderCount, orderCount);
-
-            var lastMonthBegin = DateTime.Now.AddMonths(-1).AddDays(1 - DateTime.Now.Day);
-            var lastMonthEnd = DateTime.Now.AddDays(-DateTime.Now.Day);
-            list = ShopOrderRepository.GetAdminOrderByTime(lastMonthBegin, lastMonthEnd);
-
-            model.TotalLastMonthOrderCount = list.Count;
-            model.TotalLastMonthOrderPercent = PercentInt(model.TotalLastMonthOrderCount, orderCount);
-
-            model.TotalOrderIncome = (int)list.Sum(m => m.TotalPrice);
-            model.TotalOrderIncomePercent = PercentInt(model.TotalOrderIncome, (int)ShopOrderRepository.GetIncome());
             return View(model);
         }
 

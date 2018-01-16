@@ -104,20 +104,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AgentSvc.cs" />
     <Compile Include="ArticleSvc.cs" />
     <Compile Include="AttachmentSvc.cs" />
     <Compile Include="BaseSvc.cs" />
     <Compile Include="FormsAuthenticationSvc.cs" />
-    <Compile Include="ProductSvc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ShopOrderSvc.cs" />
-    <Compile Include="ShoppingCartSvc.cs" />
-    <Compile Include="ShopSvc.cs" />
     <Compile Include="SysApartmenSvc.cs" />
     <Compile Include="SysMenuSvc.cs" />
     <Compile Include="UserRoleSvc.cs" />
-    <Compile Include="WeixinPaySvc.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

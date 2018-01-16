@@ -16,12 +16,5 @@ namespace Steven.Domain.Services
         void LogOut(IPrincipal user);
 
         string GetUserNameCookieKey();
-        #region web Api
-
-        void CreateApiAuthMemberTiket(Users user);
-        void FromApiAuthenticationTicket(string ticket);
-
-        void ApiLogOut(string id);
-        #endregion
     }
 }

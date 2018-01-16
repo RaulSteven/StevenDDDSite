@@ -8,7 +8,6 @@
         Title="MainWindow" Height="350" Width="525">
     <Grid>
         <Button x:Name="BtnStartTask" Content="启动任务" HorizontalAlignment="Left" Margin="75,46,0,0" VerticalAlignment="Top" Width="75" Click="BtnStartTask_Click"/>
-        <Button x:Name="BtnWeixinNotify" Content="微信通知" HorizontalAlignment="Left" Margin="75,90,0,0" VerticalAlignment="Top" Width="75" Click="BtnWeixinNotify_Click"/>
 
     </Grid>
 </Window>

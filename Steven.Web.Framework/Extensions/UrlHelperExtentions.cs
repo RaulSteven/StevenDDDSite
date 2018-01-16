@@ -155,25 +155,5 @@ namespace Steven.Web.Framework.Extensions
 
         #endregion
 
-        #region 商户后台
-        public static string ShopHome(this UrlHelper urlHelper)
-        {
-            return urlHelper.GenerateUrl(ShopDefault, "Index", "Home", null);
-        }
-
-
-        public static string ShopLogin(this UrlHelper urlHelper, string returnUrl = "")
-        {
-            if (String.IsNullOrEmpty(returnUrl)) return urlHelper.GenerateUrl(ShopDefault, "Login", "Account", null);
-            return urlHelper.GenerateUrl(ShopDefault, "Login", "Account", new { returnUrl });
-        }
-
-        public static string ShopLogout(this UrlHelper urlHelper, string returnUrl = "")
-        {
-            if (String.IsNullOrEmpty(returnUrl)) return urlHelper.GenerateUrl(ShopDefault, "Logout", "Account", null);
-            return urlHelper.GenerateUrl(ShopDefault, "Logout", "Account", new { returnUrl });
-        }
-        #endregion
-
     }
 }

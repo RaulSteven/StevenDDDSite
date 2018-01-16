@@ -20,8 +20,6 @@ namespace Steven.Domain.Repositories
 
         LoginResult AdminLogin(string loginName, string pwd);
 
-        LoginResult ShopLogin(string loginName, string pwd);
-
         /// <summary>
         /// 返回所有列表，可以查询
         /// </summary>

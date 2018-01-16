@@ -55,47 +55,14 @@ namespace Steven.Web.Areas.Admin.Controllers
 
         }
 
-        public ActionResult ProductStatusFormatter()
-        {
-            return GenScript("ProductStatus", ProductStatus.OnSale.GetDescriptDict());
-        }
-
         public ActionResult ArticleFlagsFormatter()
         {
             return GenScript("ArticleFlags", ArticleFlags.Nothing.GetDescriptDict());
         }
-        public ActionResult OrderStatusFormatter()
-        {
-            return GenScript("OrderStatus", OrderStatus.Completed.GetDescriptDict());
-        }
-
+   
         public ActionResult JobTaskStatusFormatter()
         {
             return GenScript("JobTaskStatus", JobTaskStatus.Deleted.GetDescriptDict());
-        }
-        public ActionResult BuyTypeFormatter()
-        {
-            return GenScript("BuyType", BuyType.Arrival.GetDescriptDict());
-        }
-        public ActionResult OrderStatusScript()
-        {
-            var script = new StringBuilder();
-            script.AppendFormat("function OrderStatusFormatter(value, row)").Append("{");
-            var orderStatusArr = JsonConvert.SerializeObject(OrderStatus.Completed.GetDescriptDict());
-            script.AppendFormat("var orderStatusEnumArra={0};", orderStatusArr);
-            script.AppendFormat("var orderStatus=orderStatusEnumArra[value];");
-
-            script.AppendFormat("var paymentStatus=row.PaymentStatus;var paymentStatus=row.PaymentStatus;if(paymentStatus=={0})", (int)PaymentStatus.Payed)
-                .Append("{");
-            var payTypeArr = JsonConvert.SerializeObject(PayType.Gathering.GetDescriptDict());
-            script.AppendFormat("var payTypeEnumArra={0};", payTypeArr);
-            script.AppendFormat("var payType=payTypeEnumArra[row.PayType];");
-            script.AppendFormat("orderStatus=orderStatus+'('+payType+')';")
-                .Append("};");
-            script.AppendFormat("return orderStatus;")
-           .Append("};");
-
-            return JavaScript(script.ToString());
         }
         #endregion
 

@@ -104,11 +104,6 @@ namespace Steven.Domain.Repositories
             return model;
         }
 
-        public LoginResult ShopLogin(string loginName, string pwd)
-        {
-            return Login(loginName, pwd, UserGroup.Shop);
-        }
-
         /// <summary>
         /// 返回所有列表，可以查询
         /// </summary>

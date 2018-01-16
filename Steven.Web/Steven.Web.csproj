@@ -24,6 +24,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -1954,86 +1955,6 @@
     <Content Include="Res\miniapp\js\wow\animate.css" />
     <Content Include="Res\miniapp\js\wow\wow.min.js" />
     <Content Include="Res\miniapp\style\style.css" />
-    <Content Include="Res\shop\css\admin.css" />
-    <Content Include="Res\shop\css\bootstrap.min.css" />
-    <Content Include="Res\shop\css\style.css" />
-    <Content Include="Res\shop\fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="Res\shop\img\100x100-2.png" />
-    <Content Include="Res\shop\img\100x100-3.png" />
-    <Content Include="Res\shop\img\100x100-4.png" />
-    <Content Include="Res\shop\img\100x100-5.png" />
-    <Content Include="Res\shop\img\60x60-1.jpg" />
-    <Content Include="Res\shop\img\60x60-2.jpg" />
-    <Content Include="Res\shop\img\a4.jpg" />
-    <Content Include="Res\shop\img\banner-bg.png" />
-    <Content Include="Res\shop\img\banner750-200.jpg" />
-    <Content Include="Res\shop\img\bg-404.png" />
-    <Content Include="Res\shop\img\bg-500.png" />
-    <Content Include="Res\shop\img\bg-shop.jpg" />
-    <Content Include="Res\shop\img\bg-shop.png" />
-    <Content Include="Res\shop\img\blue.png" />
-    <Content Include="Res\shop\img\btn-green.png" />
-    <Content Include="Res\shop\img\btn-grey.png" />
-    <Content Include="Res\shop\img\com-bg.jpg" />
-    <Content Include="Res\shop\img\detail.jpg" />
-    <Content Include="Res\shop\img\ewm296x296.jpg" />
-    <Content Include="Res\shop\img\icon-1-1.png" />
-    <Content Include="Res\shop\img\icon-1.jpg" />
-    <Content Include="Res\shop\img\icon-1.png" />
-    <Content Include="Res\shop\img\icon-2.jpg" />
-    <Content Include="Res\shop\img\icon-2.png" />
-    <Content Include="Res\shop\img\icon-3.jpg" />
-    <Content Include="Res\shop\img\icon-3.png" />
-    <Content Include="Res\shop\img\icon-add.png" />
-    <Content Include="Res\shop\img\icon-address.png" />
-    <Content Include="Res\shop\img\icon-close-g.png" />
-    <Content Include="Res\shop\img\icon-close-l.png" />
-    <Content Include="Res\shop\img\icon-close.png" />
-    <Content Include="Res\shop\img\icon-close0.png" />
-    <Content Include="Res\shop\img\icon-dian.png" />
-    <Content Include="Res\shop\img\icon-down.png" />
-    <Content Include="Res\shop\img\icon-ewm.png" />
-    <Content Include="Res\shop\img\icon-nosel.png" />
-    <Content Include="Res\shop\img\icon-off.png" />
-    <Content Include="Res\shop\img\icon-on.png" />
-    <Content Include="Res\shop\img\icon-sel-d.png" />
-    <Content Include="Res\shop\img\icon-sel-s.png" />
-    <Content Include="Res\shop\img\icon-sel.png" />
-    <Content Include="Res\shop\img\icon-sj.jpg" />
-    <Content Include="Res\shop\img\icon-sj.png" />
-    <Content Include="Res\shop\img\icon-tel.png" />
-    <Content Include="Res\shop\img\icon-up.png" />
-    <Content Include="Res\shop\img\icon-wechat.png" />
-    <Content Include="Res\shop\img\icon100x100-1.png" />
-    <Content Include="Res\shop\img\icon100x100-2.png" />
-    <Content Include="Res\shop\img\icon100x100-3.png" />
-    <Content Include="Res\shop\img\icon100x100-4.png" />
-    <Content Include="Res\shop\img\img_670x350.png" />
-    <Content Include="Res\shop\img\img_750x750.png" />
-    <Content Include="Res\shop\img\img_icon.png" />
-    <Content Include="Res\shop\img\list-1-1.jpg" />
-    <Content Include="Res\shop\img\list-1.jpg" />
-    <Content Include="Res\shop\img\list-2.jpg" />
-    <Content Include="Res\shop\img\list-3.jpg" />
-    <Content Include="Res\shop\img\list-4.jpg" />
-    <Content Include="Res\shop\img\loading.gif" />
-    <Content Include="Res\shop\img\logo.jpg" />
-    <Content Include="Res\shop\img\pic-ewm.jpg" />
-    <Content Include="Res\shop\img\pic-map.jpg" />
-    <Content Include="Res\shop\img\pic-up.jpg" />
-    <Content Include="Res\shop\img\pic120x120.jpg" />
-    <Content Include="Res\shop\img\pic395x395.jpg" />
-    <Content Include="Res\shop\img\pic750.jpg" />
-    <Content Include="Res\shop\img\pic750x350.jpg" />
-    <Content Include="Res\shop\img\qushi.jpg" />
-    <Content Include="Res\shop\img\service.png" />
-    <Content Include="Res\shop\img\tab-tel.jpg" />
-    <Content Include="Res\shop\img\tab-tel0.jpg" />
-    <Content Include="Res\shop\img\tel-bg.png" />
-    <Content Include="Res\shop\img\test\100x100-1.jpg" />
-    <Content Include="Res\shop\img\top-title.jpg" />
-    <Content Include="Res\shop\js\clipboard.min.js" />
-    <Content Include="Res\shop\js\pagination.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -2047,15 +1968,11 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AccountController.cs" />
-    <Compile Include="Areas\Admin\Controllers\AgentController.cs" />
     <Compile Include="Areas\Admin\Controllers\ArticleClassifyController.cs" />
     <Compile Include="Areas\Admin\Controllers\ArticleController.cs" />
     <Compile Include="Areas\Admin\Controllers\AttachmentController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
     <Compile Include="Areas\Admin\Controllers\LogController.cs" />
-    <Compile Include="Areas\Admin\Controllers\OrderController.cs" />
-    <Compile Include="Areas\Admin\Controllers\ProductController.cs" />
-    <Compile Include="Areas\Admin\Controllers\ShopController.cs" />
     <Compile Include="Areas\Admin\Controllers\SysApartController.cs" />
     <Compile Include="Areas\Admin\Controllers\SysPartnerController.cs" />
     <Compile Include="Areas\Admin\Controllers\SysCaseController.cs" />
@@ -2067,34 +1984,15 @@
     <Compile Include="Areas\Admin\Models\ArticleClassifyModel.cs" />
     <Compile Include="Areas\Admin\Models\ArticleModel.cs" />
     <Compile Include="Areas\Admin\Models\BaseViewModel.cs" />
-    <Compile Include="Areas\Admin\Models\EditTemplateModel.cs" />
     <Compile Include="Areas\Admin\Models\HomeDataModel.cs" />
     <Compile Include="Areas\Admin\Models\LoginModel.cs" />
     <Compile Include="Areas\Admin\Models\LogModel.cs" />
-    <Compile Include="Areas\Admin\Models\ProductClassifyModel.cs" />
     <Compile Include="Areas\Admin\Models\SetRoleModel.cs" />
-    <Compile Include="Areas\Admin\Models\ShopAppInfoModel.cs" />
     <Compile Include="Areas\Admin\Models\SysCaseModel.cs" />
     <Compile Include="Areas\Admin\Models\SysConfigModel.cs" />
     <Compile Include="Areas\Admin\Models\SysPartnerModel.cs" />
-    <Compile Include="Areas\Admin\Models\SysExpressModel.cs" />
-    <Compile Include="Areas\Admin\Models\SysSpecsModel.cs" />
     <Compile Include="Areas\Admin\Models\UserIndexModel.cs" />
-    <Compile Include="Areas\Shop\Controllers\AccountController.cs" />
-    <Compile Include="Areas\Shop\Controllers\CommonController.cs" />
-    <Compile Include="Areas\Shop\Controllers\HomeController.cs" />
-    <Compile Include="Areas\Shop\Controllers\ShopFittingController.cs" />
-    <Compile Include="Areas\Shop\Controllers\OrderController.cs" />
-    <Compile Include="Areas\Shop\Controllers\ProductController.cs" />
-    <Compile Include="Areas\Shop\Controllers\UtilityController.cs" />
-    <Compile Include="Areas\Shop\Models\OrderIndexModel.cs" />
-    <Compile Include="Areas\Shop\Models\ProductIndexModel.cs" />
-    <Compile Include="Areas\Shop\Models\HomeIndexModel.cs" />
-    <Compile Include="Areas\Shop\Models\SettingModel.cs" />
-    <Compile Include="Areas\Shop\Models\ShopFittingModel.cs" />
-    <Compile Include="Areas\Shop\ShopAreaRegistration.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\PaymentController.cs" />
     <Compile Include="Controllers\UtilityController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -2240,55 +2138,18 @@
     <Content Include="Areas\Admin\Views\Log\LogList.cshtml" />
     <Content Include="Areas\Admin\Views\Account\NoPermission.cshtml" />
     <Content Include="Areas\Admin\Views\ArticleClassify\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\Agent\Edit.cshtml" />
-    <Content Include="Areas\Admin\Views\Agent\Index.cshtml" />
     <Content Include="App_Code\UploadHelper.cshtml" />
-    <Content Include="Areas\Admin\Views\Shop\Edit.cshtml" />
-    <Content Include="Areas\Admin\Views\Shop\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\Shop\AppInfoEdit.cshtml" />
-    <Content Include="Areas\Admin\Views\Product\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\Product\Edit.cshtml" />
-    <Content Include="Areas\Admin\Views\Shop\ProductClassifyList.cshtml" />
-    <Content Include="Areas\Admin\Views\Product\SpecsList.cshtml" />
     <Content Include="Areas\Admin\Views\Article\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Article\Edit.cshtml" />
-    <Content Include="Areas\Shop\Views\web.config" />
-    <Content Include="Areas\Shop\Views\Account\Login.cshtml" />
-    <Content Include="Areas\Shop\Views\_ViewStart.cshtml" />
-    <Content Include="Areas\Shop\Views\Home\Index.cshtml" />
-    <Content Include="Areas\Shop\Views\Home\ArticleDetail.cshtml" />
-    <Content Include="Areas\Shop\Views\Shared\_Link.cshtml" />
-    <Content Include="Areas\Shop\Views\Home\ArticleList.cshtml" />
-    <Content Include="Areas\Shop\Views\Home\_ArticleList.cshtml" />
-    <Content Include="Areas\Shop\Views\Product\ClassifyList.cshtml" />
-    <Content Include="Areas\Shop\Views\Product\Index.cshtml" />
-    <Content Include="Areas\Shop\Views\Product\_ProductManageMenu.cshtml" />
-    <Content Include="Areas\Shop\Views\Product\_ClassifyList.cshtml" />
-    <Content Include="Areas\Shop\Views\Product\_ProductList.cshtml" />
-    <Content Include="Areas\Shop\Views\Order\Index.cshtml" />
-    <Content Include="Areas\Shop\Views\Order\_OrderList.cshtml" />
     <Content Include="Res\global\js\jquery.common.js" />
-    <Content Include="Areas\Shop\Views\Product\Edit.cshtml" />
-    <Content Include="Areas\Shop\Views\ShopFitting\Index.cshtml" />
-    <Content Include="Areas\Shop\Views\Home\Setting.cshtml" />
-    <Content Include="Areas\Admin\Views\Order\Index.cshtml" />
     <Content Include="Areas\Admin\Views\SysCase\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\SysCase\Index.cshtml" />
     <Content Include="Areas\Admin\Views\SysPartner\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\SysPartner\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\Order\Detail.cshtml" />
-    <Content Include="Areas\Admin\Views\Shop\Template.cshtml" />
-    <Content Include="Areas\Admin\Views\Product\UnitList.cshtml" />
     <Content Include="Areas\Admin\Views\Home\_HomeData.cshtml" />
-    <Content Include="Areas\Shop\Views\Shared\_Layout.cshtml" />
-    <Content Include="Areas\Shop\Views\Common\Index.cshtml" />
-    <Content Include="Areas\Shop\Views\Common\BindWx.cshtml" />
     <Content Include="Areas\Admin\Views\Log\JobTask.cshtml" />
     <Content Include="Areas\Admin\Views\Log\JobTaskEdit.cshtml" />
-    <Content Include="Areas\Shop\Views\Common\BindingWx.cshtml" />
     <Content Include="Areas\Admin\Views\Home\UserProfile.cshtml" />
-    <Content Include="Areas\Shop\Views\Order\_ValidOrder.cshtml" />
-    <Content Include="Areas\Admin\Views\Order\ExpressList.cshtml" />
     <None Include="Properties\PublishProfiles\BeilinSoft.pubxml" />
     <None Include="Properties\PublishProfiles\BeiLinSoftWeb.pubxml" />
     <Content Include="Views\_ViewStart.cshtml" />
@@ -2298,10 +2159,6 @@
     <Content Include="Views\Home\ShowCase.cshtml" />
     <None Include="Properties\PublishProfiles\BinLinSoftWeb.pubxml" />
     <Content Include="Views\Home\MiniApp.cshtml" />
-    <Content Include="Res\shop\fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="Res\shop\fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="Res\shop\fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="Res\shop\fonts\glyphicons-halflings-regular.woff2" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2312,10 +2169,8 @@
   <ItemGroup>
     <Folder Include="Areas\Admin\Views\Attachment\" />
     <Folder Include="Areas\Admin\Views\Utility\" />
-    <Folder Include="Areas\Shop\Views\Utility\" />
     <Folder Include="Infrastructure\" />
     <Folder Include="Models\" />
-    <Folder Include="Views\Payment\" />
     <Folder Include="Views\Utility\" />
   </ItemGroup>
   <ItemGroup>

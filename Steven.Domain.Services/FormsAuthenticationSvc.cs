@@ -12,7 +12,6 @@ using System.Web.Security;
 using Steven.Core.Utilities;
 using Steven.Domain.Infrastructure;
 using System.Threading;
-using Steven.Domain.APIModels;
 using log4net;
 using Steven.Domain.Infrastructure.SysUser;
 using Steven.Domain.Enums;
@@ -29,7 +28,6 @@ namespace Steven.Domain.Services
         public ISysMenuSvc SysMenuSvc { get; set; }
         public IUser2ApartmentRepository User2ApartRepository { get; set; }
         public IUserRole2FilterRepository UserRole2FilterRepository { get; set; }
-        public IShopRepository ShopRepository { get; set; }
         public IAttachmentSvc AttachmentSvc { get; set; }
 
         private const string CurrentShopEncryptKey = "BeiLin$Shop$key";
@@ -58,19 +56,9 @@ namespace Steven.Domain.Services
                     return GetAdminUserModel(user);
                 case UserGroup.Member:
                     return GetMemberUserModel(user);
-                case UserGroup.Agent:
-                    return null;
-                case UserGroup.Shop:
-                    return GetShopUserModel(user);
                 default:
                     return null;
             }
-        }
-
-        public ShopUserModel GetShopUserModel(Users user)
-        {
-            var shop = ShopRepository.GetByUserId(user.Id);
-            return new ShopUserModel(user, shop);
         }
 
         private MemberUserModel GetMemberUserModel(Users user)
@@ -107,11 +95,6 @@ namespace Steven.Domain.Services
                     break;
                 case UserGroup.Member:
                     sysUser = new MemberUser((MemberUserModel)model);
-                    break;
-                case UserGroup.Agent:
-                    break;
-                case UserGroup.Shop:
-                    sysUser = new ShopUser((ShopUserModel)model);
                     break;
                 default:
                     break;
@@ -203,100 +186,5 @@ namespace Steven.Domain.Services
             FormsAuthentication.SignOut();
         }
 
-        #region Web Api
-
-        private const string CurrentUserHeadKey = "ck";
-        private const string CurrentUserEncryptKey = "BeiLin$User$key";
-
-        public static string GetHeadKey()
-        {
-            var key = CurrentUserHeadKey;
-            var path = HttpContext.Current.Request.Url.AbsolutePath;
-            if (path.StartsWith("/api/Service/", true, null))
-            {
-                key += "_s";
-            }
-            else
-            {
-                key += "_m";
-            }
-            return key;
-
-        }
-
-        public static string GetWebAppCookieName()
-        {
-            return CurrentUserHeadKey + "_m";
-        }
-        public void CreateApiAuthMemberTiket(Users user)
-        {
-            var userModel = GetModel(user);
-            UserRep.AddUserCache(userModel);
-
-            string userData = $"{user.GId}|{user.UserGroup}";
-
-            var ticket = EncryptUtils.Encrypt(userData, CurrentUserEncryptKey);
-            var baseTicket = StringUtility.XBase64Encode(ticket);
-
-            HeadUtility.AddHead(GetHeadKey(), baseTicket);
-
-            setPrinciple(userModel, user.UserGroup);
-        }
-
-        public void FromApiAuthenticationTicket(string ticket)
-        {
-            try
-            {
-                ticket = StringUtility.XBase64Decode(ticket);
-                var userData = EncryptUtils.Decrypt(ticket, CurrentUserEncryptKey);
-                if (string.IsNullOrEmpty(userData))
-                {
-                    return;
-                }
-                var userDataArr = userData.Split('|');
-                if (userDataArr.Length != 2)
-                {
-                    return;
-                }
-                var key = GetHeadKey();
-                if (key.Contains("_m") || key.Contains("_s"))
-                {
-                    //会员
-                    var userGroup = (UserGroup)Enum.Parse(typeof(UserGroup), userDataArr[1]);
-                    RestoreUser(userDataArr[0], userGroup);
-                }
-            }
-            catch (Exception ex)
-            {
-                var log = LogManager.GetLogger(this.GetType().FullName);
-                log.Error("恢复用户信息失败！错误原因：" + ex, ex);
-            }
-        }
-
-        private void RestoreUser(string gid, UserGroup userGroup)
-        {
-            var userModel = UserRep.GetByCache(gid);
-            if (userModel == null)
-            {
-                var user = UserRep.GetByGid(gid);
-                if (user == null)
-                {
-                    UserRep.RemoveUserCache(gid);
-                    FormsAuthentication.SignOut();
-                    return;
-                }
-                userModel = GetModel(user);
-                UserRep.AddUserCache(userModel);
-
-            }
-            setPrinciple(userModel, userGroup);
-        }
-
-        public void ApiLogOut(string gid)
-        {
-            HeadUtility.AddHead(GetHeadKey(), "");
-            UserRep.RemoveUserCache(gid);
-        }
-        #endregion
     }
 }

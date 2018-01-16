@@ -32,11 +32,5 @@ namespace Steven.WinTools
             log4net.Config.XmlConfigurator.Configure();
             TaskManager.Start();
         }
-        private void BtnWeixinNotify_Click(object sender, RoutedEventArgs e)
-        {
-            DependencyConfig.Register();
-            var job = new WeixinNotifyJob();
-            job.ExcuteTask();
-        }
     }
 }

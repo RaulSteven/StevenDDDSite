@@ -73,7 +73,6 @@ namespace Steven.Domain.Infrastructure.SysUser
         }
         #endregion
 
-
         public void FindCurrentMenu(string targetUrl)
         {
             if (string.IsNullOrEmpty(targetUrl))

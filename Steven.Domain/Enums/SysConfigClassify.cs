@@ -16,8 +16,6 @@ namespace Steven.Domain.Enums
         [Description("上传配置")]
         Upload = 3,
         [Description("首页配置")]
-        Home = 4,
-        [Description("商户")]
-        Shop = 5
+        Home = 4
     }
 }

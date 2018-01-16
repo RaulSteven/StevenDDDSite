@@ -25,11 +25,7 @@ namespace Steven.Domain.Enums
         [Description("管理员")]
         Admin = 0,
         [Description("会员")]
-        Member = 1,
-        [Description("代理")]
-        Agent = 2,
-        [Description("商户")]
-        Shop = 3
+        Member = 1
     }
 
     public enum UserPaltForm
