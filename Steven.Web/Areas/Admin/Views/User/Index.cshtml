@@ -1,0 +1,321 @@
+﻿@model UserIndexModel
+@{
+    ViewBag.Title = "管理员列表";
+}
+@section headCss{
+    <link href="~/Res/admin/js/plugins/boostrap-table/bootstrap-table.css" rel="stylesheet" />
+    <!-- Ladda style -->
+    <link href="/Res/admin/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
+    <!-- 选择美化 -->
+    <link href="/Res/admin/css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="/Res/admin/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <!-- 树形菜单样式 -->
+    <link href="/Res/admin/css/plugins/jsTree/style.min.css" rel="stylesheet">
+
+}
+@section footJs{
+    <!-- jsTree -->
+    <script src="/Res/admin/js/plugins/jsTree/jstree.min.js"></script>
+    <!-- iCheck -->
+    <script src="/Res/admin/js/plugins/iCheck/icheck.min.js"></script>
+    <!-- Ladda -->
+    <script src="/Res/admin/js/plugins/ladda/spin.min.js"></script>
+    <script src="/Res/admin/js/plugins/ladda/ladda.min.js"></script>
+    <script src="/Res/admin/js/plugins/ladda/ladda.jquery.min.js"></script>
+    <script src="~/Res/admin/js/plugins/boostrap-table/bootstrap-table.js"></script>
+    <script src="~/Res/admin/js/plugins/boostrap-table/locale/bootstrap-table-zh-CN.js"></script>
+    <script src="~/Res/admin/js/datefommater.js"></script>
+    @BoostrapTableHelper.InitTable("datatable", Url.Action("GetList", new { group = UserGroup.Admin }))
+    @BatchDeleteHelper.InitBatchDele(this, TableSource.Users, "datatable")
+    <script src="@Url.Action("CommonStatusFormatter","Utility")"></script>
+    <script src="@Url.Action("GenderFormatter","Utility")"></script>
+
+    @*列表，编辑*@
+    <script>
+        var searchQuery = function (params) {
+            var q = $('#txtKeyword').val();
+            if (q) {
+                params.keyword = q;
+            }
+            return params;
+        };
+
+        $('#btnSearch').click(function () {
+            $('#datatable').bootstrapTable('refreshOptions', {
+                pageNumber: 1
+            });
+        });
+
+        var editUrl = '@Url.Action("Edit")';
+        var doEdit = function (id) {
+            window.location = editUrl + '?id=' + id + '&reUrl=' + encodeURIComponent(window.location);
+        };
+
+        $('#btnAdd').click(function () {
+            doEdit(0);
+        });
+
+        function editFormatter(value, row) {
+            return '<button class="btn-white btn  btn-xs" onClick="doEdit(' + value + ')"><i class="fa fa-edit"></i> 编辑</button>';
+        };
+
+    </script>
+
+    @*设置角色*@
+    <script>
+
+        $('#btnSetRole').click(function () {
+            var ids = getSelectUserId();
+            if (ids == '') {
+                showErrorMsg('请选择管理员！');
+                return;
+            }
+            $('#setRole').modal('show');
+        });
+
+        $('#btnRoleCbkAll').on('ifChanged', function (event) {
+            if (this.checked) {
+                $("input[name='RoleIds']:checkbox").each(function () { $(this).iCheck('check') });
+            } else {
+                $("input[name='RoleIds']:checkbox").each(function () { $(this).iCheck('uncheck') });
+            }
+        });
+
+        var btnSaveRole = $('#btnSaveRole').ladda();
+
+        btnSaveRole.click(function (e) {
+            // Start loading
+            var ids = getSelectUserId();
+            if (ids == '') {
+                showErrorMsg('请选择管理员！');
+                return;
+            }
+            
+            $('#btnUserIds').val(ids);
+            btnSaveRole.ladda('start');
+            $.ajax({
+                url: '@Url.Action("SetRole")',
+                type: "Post",
+                data: $('#roleForm').serialize(),
+                success: function (result) {
+                    btnSaveRole.ladda('stop');
+                    if (result.code != 1) {
+                        //错误
+                        showErrorMsg(result.msg);
+                        return;
+                    }
+                    showSuccMsg(result.msg);
+                    $('#datatable').bootstrapTable('refresh');
+                    $('#setRole').modal('hide');
+                },
+            });
+            e.preventDefault();
+        });
+
+        var getSelectUserId = function () {
+            var selectArr = $('#datatable').bootstrapTable('getSelections');
+            if (selectArr.length == 0) {
+                
+                return '';
+            }
+            var idArr = [];
+            for (var i = 0; i < selectArr.length; i++) {
+                idArr.push(selectArr[i].Id);
+            }
+            var ids = idArr.join(',');
+            delete idArr; idArr = null;
+            return ids;
+        };
+
+    </script>
+
+    @*设置部门*@
+    <script>
+        $('#btnSetApart').click(function () {
+            var ids = getSelectUserId();
+            if (ids == '') {
+                showErrorMsg('请选择管理员！');
+                return;
+            }
+            $('#setApart').modal('show');
+        });
+
+        $(document).ready(function () {
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+
+            $('#apartJsTree').jstree({
+                'core': {
+                    'data': {
+                        'url': function (node) {
+                            return "@Url.Action("GetJsonList","SysApart")";
+                        }
+                    }
+                },
+                "checkbox": {
+                    "keep_selected_style": true
+                },
+                plugins: ["checkbox"]
+            }).bind("loaded.jstree", function (e, data) {
+                data.instance.open_all(); // -1 opens all nodes in the container
+            });
+        });
+
+
+        var btnSaveApart = $('#btnSaveApart').ladda();
+
+        btnSaveApart.click(function (e) {
+            // Start loading
+            var ids = getSelectUserId();
+            if (ids == '') {
+                showErrorMsg('请选择管理员！');
+                return;
+            }
+
+            $('#btnApartUserIds').val(ids);
+            $('#hdApartIds').val(getChecked());
+            btnSaveApart.ladda('start');
+            $.ajax({
+                url: '@Url.Action("SetApart")',
+                type: "Post",
+                data: $('#apartForm').serialize(),
+                success: function (result) {
+                    btnSaveApart.ladda('stop');
+                    if (result.code != 1) {
+                        //错误
+                        showErrorMsg(result.msg);
+                        return;
+                    }
+                    showSuccMsg(result.msg);
+                    $('#datatable').bootstrapTable('refresh');
+                    $('#setApart').modal('hide');
+                },
+            });
+            e.preventDefault();
+        });
+
+        var getChecked = function () {
+            var selected = $('#apartJsTree').jstree('get_selected');
+            return selected.join(',');
+        }
+    </script>
+}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>@ViewBag.Title</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div class="row" id="toolBar">
+                    <div class="col-lg-2">
+                        <label for="" class="">关键字</label>
+                        <input type="text" class="form-control" placeholder="请输入标题" id="txtKeyword" name="keyword">
+                    </div>
+                    <div class="col-lg-1">
+                        <button class="btn btn-primary mt20" id="btnSearch"><i class="fa fa-search"></i> 搜索</button>
+                    </div>
+
+                </div>
+                <hr class="hr-line-dashed">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button type="button" class="btn btn-w-m btn-primary" id="btnAdd">新建</button>
+                        <button type="button" onclick="doBathDele()" class="btn btn-w-m btn-danger">批量删除</button>
+                        <button type="button" class="btn btn-w-m btn-success" id="btnSetRole">设置角色</button>
+                        <button type="button" class="btn btn-w-m btn-dropbox" id="btnSetApart">设置部门</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="jqGrid_wrapper">
+                        <table id="datatable">
+                            <thead>
+                                <tr>
+                                    <th data-checkbox="true"></th>
+                                    <th data-field="LoginName" data-sortable="true">用户名</th>
+                                    <th data-field="RealName" data-sortable="true">真实姓名</th>
+                                    <th data-field="CommonStatus" data-sortable="true" data-formatter="CommonStatusFormatter">状态</th>
+                                    <th data-field="Gender" data-sortable="true" data-formatter="GenderFormatter">性别</th>
+                                    <th data-field="UpdateTime" data-sortable="true" data-formatter="dateTimeFormatter">更新时间</th>
+                                    <th data-field="LoginCount" data-sortable="true">登录次数</th>
+                                    <th data-field="Id" data-formatter="editFormatter">操作</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal inmodal" id="setRole" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content animated bounceInRight">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">请为选中的用户设置角色</h4>
+                <small class="font-bold"></small>
+            </div>
+            <div class="modal-body">
+                <form method="post" class="form-horizontal" id="roleForm">
+                    <input type="hidden" id="btnUserIds" name="UserIds" />
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th><label><input type="checkbox" class="i-checks" id="btnRoleCbkAll">全选</label></th>
+                                <th>名称</th>
+                                <th>备注</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.UserRoleList)
+            {
+                            <tr>
+                                <td><input type="checkbox" class="i-checks" name="RoleIds" value="@item.Id" /></td>
+                                <td>@item.Name</td>
+                                <td>@item.Remark</td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="btnSaveRole">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal inmodal" id="setApart" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content animated bounceInRight">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">请为选中的用户设置部门</h4>
+                <small class="font-bold"></small>
+            </div>
+            <div class="modal-body">
+                <form method="post" class="form-horizontal" id="apartForm">
+                    <input type="hidden" id="btnApartUserIds" name="UserIds" />
+                    <input type="hidden" id="hdApartIds" name="ApartIds" />
+                    <div id="apartJsTree"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="btnSaveApart">保存</button>
+            </div>
+        </div>
+    </div>
+</div>

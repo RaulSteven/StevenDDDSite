@@ -1,0 +1,201 @@
+﻿
+@{
+    ViewBag.Title = "订单管理";
+}
+@section headCss{
+    <link href="~/Res/admin/js/plugins/boostrap-table/bootstrap-table.css" rel="stylesheet" />
+    <!-- Ladda style -->
+    <link href="/Res/admin/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
+    <!-- 选择美化 -->
+    <link href="/Res/admin/css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="/Res/admin/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+}
+@section footJs{
+    <!-- 自动完成组件 Typehead -->
+    <script src="/Res/admin/js/plugins/typehead/bootstrap3-typeahead.min.js"></script>
+    <!-- iCheck -->
+    <script src="/Res/admin/js/plugins/iCheck/icheck.min.js"></script>
+    <!-- Ladda -->
+    <script src="/Res/admin/js/plugins/ladda/spin.min.js"></script>
+    <script src="/Res/admin/js/plugins/ladda/ladda.min.js"></script>
+    <script src="/Res/admin/js/plugins/ladda/ladda.jquery.min.js"></script>
+    <script src="~/Res/admin/js/plugins/boostrap-table/bootstrap-table.js"></script>
+    <script src="~/Res/admin/js/plugins/boostrap-table/locale/bootstrap-table-zh-CN.js"></script>
+    <script src="~/Res/admin/js/datefommater.js"></script>
+    @BoostrapTableHelper.InitTable("datatable", Url.Action("GetList"), "CreateTime")
+    <script src="@Url.Action("OrderStatusScript", "Utility")"></script>
+    <script src="@Url.Action("BuyTypeFormatter","Utility")"></script>
+    <script src="~/Res/admin/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    @*列表，编辑*@
+    <script>
+        var searchQuery = function (params) {
+            var q = $('#txtKeyword').val();
+            if (q) {
+                params.keyword = q;
+            }
+            var shopId = $("#hdShopId").val();
+            if (shopId) {
+                params.shopId = shopId;
+            }
+            var status = $('#Status').val();
+            if (status) {
+                params.status = status;
+            }
+            var startTime = $('#startTime').val();
+            if (startTime) {
+                params.startTime = startTime;
+            }
+            var endTime = $('#endTime').val();
+            if (endTime) {
+                params.endTime = endTime;
+            }
+            var buyType = $('#BuyType').val();
+            if (buyType) {
+                params.buyType = buyType;
+            }
+            return params;
+        };
+        $('#dateTime .input-daterange').datepicker({
+            keyboardNavigation: false,
+            forceParse: false,
+            autoclose: true,
+            format: "yyyy-mm-dd"
+        });
+        $('#btnSearch').click(function () {
+            $('#datatable').bootstrapTable('refreshOptions', {
+                pageNumber: 1
+            });
+        });
+        $('#btnReset').click(function () {
+            $('#txtKeyword').val('');
+            $("#hdShopId").val('');
+            $("#txtShopName").val('');
+            $('#Status').val('');
+            $('#BuyType').val('');
+            $('#startTime').val('');
+            $('#endTime').val('');
+            $('#btnSearch').click();
+        });
+
+        var $shopName = $("#txtShopName");
+        $.get("@Url.Action("GetShopList")", function (data) {
+            $shopName.typeahead({
+                source: data,
+                autoSelect: true,
+                showHintOnFocus: true
+            });
+        }, 'json');
+
+        $shopName.change(function () {
+            var current = $shopName.typeahead("getActive");
+            if (current) {
+                if (current.name == $shopName.val()) {
+                    $('#hdShopId').val(current.id);
+                } else {
+                    $('#hdShopId').val('');
+                }
+            } else {
+                $('#hdShopId').val('');
+            }
+        });
+        function detailFormatter(value, row) {
+            var html = '<button class="btn-white btn  btn-xs" onClick="doDetail(' + value + ')"><i class="fa fa-view"></i> 详情</button>';
+            return html;
+        };
+        var detailUrl = '@Url.Action("Detail")';
+        var doDetail = function (id) {
+            window.location = detailUrl + '?id=' + id + '&reUrl=' + encodeURIComponent(window.location);
+        };
+        @*$('#BuyType').change(function () {
+            buyTypeChange();
+        });
+        var buyTypeChange = function() {
+            $.get("@Url.Action("GetStatus")", { buyType: $('#BuyType').val() }, function(data) {
+                $("#Status").empty();
+                $('#Status').append(data);
+            }, 'json');
+        };*@
+       // buyTypeChange();
+    </script>
+
+}
+<div class="wrapper wrapper-content animated fadeInRight ecommerce">
+
+    <div class="ibox-content m-b-sm border-bottom">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label class="control-label" for="keyword">收货人姓名，电话，验证码或订单号</label>
+                    <input type="text" class="form-control" placeholder="收货人姓名，电话，验证码或订单号" id="txtKeyword" name="keyword">
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label class="control-label" for="buytype">订单类型</label>
+                    @Html.DropDownList("BuyType", BuyType.Delivery.GetSList(), "全部", new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label class="control-label" for="status">订单状态</label>
+                   @Html.DropDownList("Status", OrderStatus.Completed.GetSList(), "全部", new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group" id="dateTime">
+                    <label class="font-normal">下单时间</label>
+                    <div class="input-daterange input-group">
+                        <input type="text" class="input-sm form-control" name="startTime" id="startTime" />
+                        <span class="input-group-addon">to</span>
+                        <input type="text" class="input-sm form-control" name="endTime" id="endTime"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label class="control-label" for="status">商户</label>
+                    <input type="hidden" id="hdShopId"/>
+                    <input type="text" class="form-control" autocomplete="off" placeholder="请输入商户名称" id="txtShopName">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <button class="btn btn-primary" id="btnSearch"><i class="fa fa-search"></i> 搜索</button>
+                <button class="btn btn-danger" id="btnReset"><i class="fa fa-reset"></i> 重置</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <table class="footable table table-stripped toggle-arrow-tiny" id="datatable">
+                        <thead>
+                            <tr>
+                                <th data-field="Code" data-sortable="true">订单号</th>
+                                <th data-field="ShopName" data-sortable="true">商户</th>
+                                <th data-field="UserName" data-sortable="true">用户</th>
+                                <th data-field="Receiver" data-sortable="true">收货人</th>
+                                <th data-field="Phone" data-sortable="true">手机号</th>
+                                <th data-field="TotalPrice" data-sortable="true">总价</th>
+                                <th data-field="CreateTime" data-sortable="true" data-formatter="dateTimeFormatter">下单时间</th>
+                                <th data-field="PayTime" data-sortable="true" data-formatter="dateTimeFormatter">支付时间</th>
+                                <th data-field="BuyType" data-sortable="true" data-formatter="BuyTypeFormatter">订单类型</th>
+                                <th data-field="OrderStatus" data-sortable="true" data-formatter="OrderStatusFormatter">订单状态</th>
+                                <th data-field="ValidCode">验证码</th>
+                                <th data-field="PaymentStatus" data-visible="false">付款状态</th>
+                                <th data-field="PayType" data-visible="false">支付类型</th>
+                                <th  data-field="Id" data-formatter="detailFormatter">操作</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+

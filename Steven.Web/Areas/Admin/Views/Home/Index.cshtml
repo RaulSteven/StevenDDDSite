@@ -1,0 +1,124 @@
+﻿@model HomeDataModel
+@{
+    ViewBag.Title = "首页";
+}
+@section footJs{
+    <!-- 统计图 -->
+<!-- Flot -->
+<script src="/Res/admin/js/plugins/flot/jquery.flot.js"></script>
+<script src="/Res/admin/js/plugins/flot/jquery.flot.tooltip.min.js"></script>
+<script src="/Res/admin/js/plugins/flot/jquery.flot.spline.js"></script>
+<script src="/Res/admin/js/plugins/flot/jquery.flot.resize.js"></script>
+<script src="/Res/admin/js/plugins/flot/jquery.flot.pie.js"></script>
+    <script>
+        $(document).ready(function () {
+            toastr.options = {
+                closeButton: true,
+                progressBar: true,
+                showMethod: 'slideDown',
+                timeOut: 5000,
+                positionClass: "toast-bottom-right",
+            };
+            setTimeout(function () {
+
+                toastr.success('欢迎 admin(超级管理员)', '登录成功！');
+            }, 1300);
+        });
+        var baseUrl = '@Url.Action("_HomeData")';
+        var loadData = function (url) {
+            $("#ibox-content").load(url, function () {
+                //判断当前数据
+            });
+        };
+        loadData(baseUrl);
+        var homeData = function (t) {
+            var lstUrl = baseUrl;
+            var btn = $(t);
+            var type = btn.attr('data-type');
+            lstUrl = lstUrl + "?t=" + type;
+            loadData(lstUrl);
+            $(".btn-group input[name=input]").each(function (i) {
+                $(this).attr("class", "btn btn-xs btn-white");
+            });
+            btn.attr("class", "btn btn-xs btn-white active");
+        };
+</script>
+}
+<!-- 网站状态 -->
+<div class="row">
+    @*<div class="col-lg-3">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <span class="label label-success pull-right">全部</span>
+                <h5>阅读量</h5>
+            </div>
+            <div class="ibox-content">
+                <h1 class="no-margins">40 886,200</h1>
+                <div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i></div>
+                <small>最新</small>
+            </div>
+        </div>
+    </div>*@
+    <div class="col-lg-3">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <span class="label label-info pull-right">全部</span>
+                <h5>订单</h5>
+            </div>
+            <div class="ibox-content">
+                <h1 class="no-margins">@Model.TotalOrderCount</h1>
+                <div class="stat-percent font-bold text-info">@Model.TotalNewOrderPercent @*<i class="fa fa-level-up"></i>*@</div>
+                <small>新订单</small>
+            </div>
+        </div>
+    </div>
+    @*<div class="col-lg-3">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <span class="label label-primary pull-right">今天</span>
+                <h5>访问量</h5>
+            </div>
+            <div class="ibox-content">
+                <h1 class="no-margins">106,120</h1>
+                <div class="stat-percent font-bold text-navy">44% <i class="fa fa-level-up"></i></div>
+                <small>新访问</small>
+            </div>
+        </div>
+    </div>*@
+    <div class="col-lg-3">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <span class="label label-danger pull-right">用户活动</span>
+                <h5>用户</h5>
+            </div>
+            <div class="ibox-content">
+                <h1 class="no-margins">@Model.TotalUserCount</h1>
+                <div class="stat-percent font-bold text-danger">@Model.TotalMonthUserPercent </div>
+                <small>最近一个月</small>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 网站状态 -->
+<!-- -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>订单</h5>
+                <div class="pull-right">
+                    <div class="btn-group">
+                        <input type="button" name="input" data-type="@AdminHomeDataType.Today" class="btn btn-xs btn-white active" onclick="homeData(this)" value="今天"/>
+                        <input type="button" name="input" data-type="@AdminHomeDataType.Month" class="btn btn-xs btn-white" onclick="homeData(this)" value="这个月"/>
+                        <input type="button" name="input" data-type="@AdminHomeDataType.Year" class="btn btn-xs btn-white" onclick="homeData(this)" value="全年"/>
+                    </div>
+                </div>
+            </div>
+            <div class="ibox-content" id="ibox-content">
+                
+            </div>
+
+        </div>
+    </div>
+</div>
+<!--  -->

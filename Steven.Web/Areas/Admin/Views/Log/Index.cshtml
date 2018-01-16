@@ -1,0 +1,135 @@
+﻿
+@{
+    ViewBag.Title = "操作日志";
+}
+@section headCss{
+    <link href="~/Res/admin/js/plugins/boostrap-table/bootstrap-table.css" rel="stylesheet" />
+
+}
+@section footJs{
+    <script src="~/Res/admin/js/plugins/boostrap-table/bootstrap-table.js"></script>
+    <script src="~/Res/admin/js/plugins/boostrap-table/locale/bootstrap-table-zh-CN.js"></script>
+    <script src="~/Res/admin/js/datefommater.js"></script>
+    @BoostrapTableHelper.InitTable("datatable", Url.Action("GetLog"))
+    <script>
+        var searchQuery = function (params) {
+            var q = $('#txtTitle').val();
+            if (q) {
+                params.q = q;
+            }
+            var uname = $('#txtUser').val();
+            if (uname) {
+                params.uname = uname;
+            }
+            var source = $('#txtSource').val();
+            if (source) {
+                params.source = source;
+            }
+            var sourceId = $('#txtSrcId').val();
+            if (sourceId) {
+                params.sourceId = sourceId;
+            }
+
+            return params;
+        };
+
+        $('#btnSearch').click(function () {
+            $('#datatable').bootstrapTable('refreshOptions', {
+                pageNumber: 1
+            });
+        });
+
+        var doEdit = function (id) {
+            alert(id);
+        };
+
+        function editFormatter(value, row) {
+            return '<a class="btn-white btn  btn-xs" onClick="doEdit(' + value + ')"><i class="fa fa-edit"></i> 编辑</a>';
+        };
+
+        var doBathDele = function () {
+            var selectArr = $('#datatable').bootstrapTable('getSelections');
+            if (selectArr.length == 0) {
+                showMsg('请选择数据');
+                return;
+            }
+            var idArr = [];
+            for (var i = 0; i < selectArr.length; i++) {
+                idArr.push(selectArr[i].Id);
+            }
+
+            showDeleConfirm(function () {
+                alert('getSelections: ' + idArr.join(','));
+            });
+        };
+
+    </script>
+}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>@ViewBag.Title</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div class="row" id="toolBar">
+                    <div class="col-lg-2">
+                        <label for="" class="">关键字</label>
+                        <input type="text" class="form-control" placeholder="请输入标题" id="txtTitle" name="q">
+                    </div>
+                    <div class="col-lg-2">
+                        <label for="" class="">管理员</label>
+                        <input type="text" class="form-control" placeholder="请输入管理员" id="txtUser" name="uname">
+                    </div>
+                    <div class="col-lg-2">
+                        <label for="" class="">数据源</label>
+                        <input type="text" class="form-control" placeholder="请输入数据源" id="txtSource" name="source">
+                    </div>
+                    <div class="col-lg-2">
+                        <label for="" class="">主键值</label>
+                        <input type="text" class="form-control" placeholder="请输入主键值" id="txtSrcId" name="sourceId">
+                    </div>
+                    <div class="col-lg-1">
+                        <button class="btn btn-primary mt20" id="btnSearch"><i class="fa fa-search"></i> 搜索</button>
+                    </div>
+
+                </div>
+                <hr class="hr-line-dashed">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button type="button" class="btn btn-w-m btn-primary">新建</button>
+                        <button type="button" onclick="doBathDele()" class="btn btn-w-m btn-danger">批量删除</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="jqGrid_wrapper">
+                        <table id="datatable">
+                            <thead>
+                                <tr>
+                                    <th data-checkbox="true"></th>
+                                    <th data-field="LogTitle" data-sortable="true">标题</th>
+                                    <th data-field="CreateUserName" data-sortable="true">操作人</th>
+                                    <th data-field="LogCat" data-sortable="true">分类</th>
+                                    <th data-field="LogType" data-sortable="true">类型</th>
+                                    <th data-field="DataSource" data-sortable="true">数据源</th>
+                                    <th data-field="DataSouceId" data-sortable="true">主键值</th>
+                                    <th data-field="UpdateTime" data-sortable="true" data-formatter="dateTimeFormatter">操作时间</th>
+                                    <th data-field="CreateIP" data-sortable="true">IP</th>
+                                    <th data-field="Id" data-formatter="editFormatter">操作</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

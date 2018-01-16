@@ -1,0 +1,26 @@
+﻿@model IEnumerable<ProductClassify>
+@{
+}
+
+<ul class="groups-list">
+
+    <li class="title clearfix">
+        <div class="one">分组</div>
+        <div class="two">商品数量</div>
+        <div class="four">排序</div>
+        <div class="three">操作</div>
+    </li>
+
+        @foreach (var clz in Model)
+        {
+            <li class="clearfix">
+                <div class="one table-name"><img src="@Url.ThumbUrl(clz.IconAttaId,100,100,"/Res/shop/img/100x100-3.png")" alt=""><span>@clz.Name</span></div>
+                <div class="two table-ope">@clz.ProductNumber</div>
+                <div class="four table-ope">@clz.Sort</div>
+                <div class="three table-oper">
+                    <button class="function white" onclick="doEdit(@clz.Id)">编辑</button>
+                    <button class="function white tel-btn" onclick="doDele('@clz.Name',@clz.Id)">删除</button>
+                </div>
+            </li>
+        }
+</ul>

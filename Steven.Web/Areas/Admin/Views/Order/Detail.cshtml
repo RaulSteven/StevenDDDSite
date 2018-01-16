@@ -1,0 +1,95 @@
+﻿@model ShopOrder
+@{
+    ViewBag.Title = "订单详情";
+    var pay = string.Empty;
+    if (Model.PaymentStatus == PaymentStatus.Payed)
+    {
+        pay = "(" + Model.PayType.GetDescriotion() + ")";
+    }
+}
+@section headCss{
+    <link href="~/Res/admin/js/plugins/boostrap-table/bootstrap-table.css" rel="stylesheet" />
+    <!-- Ladda style -->
+    <link href="/Res/admin/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
+    <!-- 选择美化 -->
+    <link href="/Res/admin/css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="/Res/admin/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+}
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="ibox-content p-xl">
+        <div class="row">
+            <div class="col-sm-6">
+                <h4>订单号</h4>
+                <h4 class="text-navy">@Model.Code</h4>
+                <p>
+                    <span><strong>收货人:</strong> @Model.Receiver</span><br />
+                    <span><strong>联系电话:</strong> @Model.Phone</span><br />
+                    <span><strong>配送地址:</strong> @Model.ShippingAddress</span><br />
+                    <span><strong>下单时间:</strong> @Model.CreateTime.ToDisplayDateTime()</span><br />
+                    <span><strong>支付时间:</strong> @Model.PayTime.ToDisplayDateTime()</span><br />
+                    <span><strong>订单类型:</strong> @Model.BuyType.GetDescriotion()</span><br />
+                    <span><strong>订单状态:</strong> @(Model.OrderStatus.GetDescriotion() + pay)</span><br />
+                    @if (Model.BuyType == BuyType.Delivery)
+                    {
+                        <span><strong>配送方式:</strong> @Model.DeliveryType.GetDescriotion()</span><br/>
+                        if (Model.DeliveryType == DeliveryType.Express)
+                        {
+                            <span><strong>快递公司:</strong> @Model.ExpressName</span><br />
+                            <span><strong>快递单号:</strong> @Model.ExpressCode</span><br />
+                        }
+
+                    }
+
+                    <span><strong>验证码:</strong> @Model.ValidCode</span><br />
+                    <span><strong>备注:</strong> @Model.LeaveMsg</span>
+                </p>
+            </div>
+        </div>
+        <div class="table-responsive m-t">
+            <table class="table invoice-table">
+                <thead>
+                    <tr>
+                        <th>商品</th>
+                        <th>单位</th>
+                        <th>数量</th>
+                        <th>单价</th>
+                        <th>总价</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Products)
+                    {
+                        <tr>
+                            <td>
+                                <div>
+                                    <strong>@item.ProductName</strong>
+                                </div>
+                            </td>
+                            <td>@item.ProductUnit</td>
+                            <td>@item.Number</td>
+                            <td>$@item.Price</td>
+                            <td>$@(item.Number * item.Price)</td>
+                        </tr>
+                    }
+
+
+                </tbody>
+            </table>
+        </div><!-- /table-responsive -->
+        <table class="table invoice-total">
+            <tbody>
+                <tr>
+                    <td><strong>总数 :</strong></td>
+                    <td>@Model.TotalProNum</td>
+                </tr>
+                <tr>
+                    <td><strong>合计 :</strong></td>
+                    <td>$@Model.TotalPrice</td>
+                </tr>
+            </tbody>
+        </table>
+        @*<div class="text-right">
+                <button class="btn btn-primary"><i class="fa fa-dollar"></i> Make A Payment</button>
+            </div>*@
+    </div>
+</div>

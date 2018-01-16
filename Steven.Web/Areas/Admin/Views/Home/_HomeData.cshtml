@@ -1,0 +1,88 @@
+﻿@model HomeStatisticsDataModel
+@{
+    Layout = null;
+}
+
+<div class="row">
+    <div class="col-lg-9">
+        <div class="flot-chart">
+            <div class="flot-chart-content" id="flot-dashboard-chart"></div>
+        </div>
+
+    </div>
+    <div class="col-lg-3">
+        <ul class="stat-list">
+            <li>
+                <h2 class="no-margins">@Model.TotalOrderCount</h2>
+                <small>期间总订单</small>
+                <div class="stat-percent">@(Model.TotalOrderPercent)% @*<i class="fa fa-level-up text-navy"></i>*@</div>
+                <div class="progress progress-mini">
+                    <div style="width: @(Model.TotalOrderPercent)%;" class="progress-bar"></div>
+                </div>
+            </li>
+            <li>
+                <h2 class="no-margins ">@Model.TotalLastMonthOrderCount</h2>
+                <small>上月订单</small>
+                <div class="stat-percent">@(Model.TotalLastMonthOrderPercent)% @*<i class="fa fa-level-down text-navy"></i>*@</div>
+                <div class="progress progress-mini">
+                    <div style="width: @(Model.TotalLastMonthOrderPercent)%;" class="progress-bar"></div>
+                </div>
+            </li>
+            <li>
+                <h2 class="no-margins ">@Model.TotalOrderIncome</h2>
+                <small>订单月收入</small>
+                <div class="stat-percent">@(Model.TotalOrderIncomePercent)% @*<i class="fa fa-bolt text-navy"></i>*@</div>
+                <div class="progress progress-mini">
+                    <div style="width: @(Model.TotalOrderIncomePercent)%;" class="progress-bar"></div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+<script>
+    var data = @(Model.StatisticsData);
+    var data2 = [
+                [10,1],
+    ];
+    alert(data + "<br/>" + data2);
+            $("#flot-dashboard-chart").length && $.plot($("#flot-dashboard-chart"), [
+                data2
+            ],
+                    {
+                        series: {
+                            lines: {
+                                show: false,
+                                fill: true
+                            },
+                            splines: {
+                                show: true,
+                                tension: 0.4,
+                                lineWidth: 1,
+                                fill: 0.4
+                            },
+                            points: {
+                                radius: 0,
+                                show: true
+                            },
+                            shadowSize: 2
+                        },
+                        grid: {
+                            hoverable: true,
+                            clickable: true,
+                            tickColor: "#d5d5d5",
+                            borderWidth: 1,
+                            color: '#d5d5d5'
+                        },
+                        colors: ["#1ab394", "#1C84C6"],
+                        xaxis:{
+                        },
+                        yaxis: {
+                            ticks: 4
+                        },
+                        tooltip: false
+                    }
+            );
+
+
+
+</script>

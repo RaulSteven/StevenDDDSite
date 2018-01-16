@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Tasks>
+  <!--
+  字段	 	允许值	 	允许的特殊字符
+  秒	 	  0-59	 	  , - * /
+  分	 	  0-59	 	  , - * /
+  小时	 	0-23	 	  , - * /
+  日期	 	1-31	 	  , - * ? / L W C
+  月份	 	1-12 或者 JAN-DEC	 	, - * /
+  星期	 	1-7 或者 SUN-SAT	 	, - * ? / L C #
+  年（可选）	 	留空, 1970-2099	 	, - * /
+  
+  举例：
+  "0 0 12 * * ?" 每天中午12点触发 
+  "0 15 10 ? * *" 每天上午10:15触发 
+  "0 15 10 15 * ?" 每月15日上午10:15触发 
+  "0 0/5 14 * * ?" 在每天下午2点到下午2:55期间的每5分钟触发 
+  "0/30 * * * * ?" 每隔30秒触发
+  "* * * * 0/1 ?" 每隔一个月触发
+  "0 0 13 1 * ?"每月1号13点触发
+  -->
+  <!--<Task name="MLS.Service.Tasks.Jobs.UpdateSitemapJob" cronExpression="0 0/1 * * * ?" />
+  <Task name="MLS.Service.Tasks.Jobs.ClearInvalideData" cronExpression="1 1 1 * * ?" />
+  <Task name="MLS.Service.Tasks.Jobs.HouseIntelligentMatchUserJob" cronExpression="0 0 0/1 * * ?" />
+  <Task name="MLS.Service.Tasks.Jobs.EvaluationUsedCar" cronExpression="0/59 * * * * ?" />
+  <Task name="MLS.Service.Tasks.Jobs.SendEmailJob" cronExpression="0/30 * * * * ?" />
+  <Task name="MLS.Service.Tasks.Jobs.AddInternalLetterEmailJob" cronExpression="0/30 * * * * ?" />
+  <Task name="MLS.Service.Tasks.Jobs.UpdateIPListJob" cronExpression="* 0/1 * * * ?" />
+  <Task name="MLS.Service.Tasks.Jobs.UpdateUsefulLifeJob" cronExpression="0 0 13 1 * ?"/>
+  <Task name="MLS.Service.Tasks.Jobs.EvaluationUsedCar" cronExpression="0 0 15 * * ?" />
+  <Task name="MLS.Service.Tasks.Jobs.DownloadCarInfoJob" cronExpression="0 0 18 * * ?" />
+  <Task name="MLS.Service.Tasks.Jobs.DayStatisticsJob" cronExpression="0 0/10 * * * ?" />
+  <Task name="MLS.Service.Tasks.Jobs.WeixinNotifyJob" cronExpression="0/30 * * * * ?" />-->
+  <Task name="Steven.Service.Tasks.Jobs.TaskManagerJob" cronExpression="0/5 * * * * ?" />
+</Tasks>
+
+

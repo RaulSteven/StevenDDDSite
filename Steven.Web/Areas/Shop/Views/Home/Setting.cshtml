@@ -1,0 +1,306 @@
+﻿@model SettingModel
+@{
+    ViewBag.Title = "设置";
+    ViewBag.MenuIndex = 4;
+}
+@section headCss{
+    <style>
+        .left-title {
+            margin-left: 5px;
+        }
+    </style>
+    @*上传*@
+    @Styles.Render("~/bundles/jQuery-File-Upload-css", "~/bundles/ladda-css", "~/Res/admin/css/plugins/summernote/summernote-css")
+}
+@section footJs{
+    <script charset="utf-8" src="http://map.qq.com/api/js?v=2.exp&libraries=place"></script>
+    @Scripts.Render("~/bundles/jQuery-File-Upload", "~/bundles/ladda-js", "~/bundles/summernote-js", "~/Res/admin/js/plugins/validate/validate-bundle", "~/bundles/submit-js")
+    <script>
+        var rules = {
+            Name: {
+                required: true,
+                rangelength: [2, 50]
+            },
+            KefuPhone: {
+                required: true,
+                rangelength: [1, 20]
+            }
+        };
+        var calBack = function (result) {
+            if (result.code != 1) {
+                showErrorMsg(result.msg);
+                return;
+            }
+            $('#imgComBg').attr('src', $('#imgThumBgAttaId').attr('src'));
+            $('#imgLogo').attr('src', $('#imgThumLogoAttaId').attr('src'));
+            showSuccMsg(result.msg);
+            getShopName();
+        };
+        callBackSubmit('@Url.Action("Setting")', 'saveForm', 'btnSave', rules, calBack);
+        var change=function (t,type) {
+            $.ajax({
+                url: '@Url.Action("ChangeBuyType")',
+                type: "Post",
+                data: { type: type },
+                success: function (result) {
+                    if (result.code != 1) {
+                        showErrorMsg(result.msg);
+                        return;
+                    }
+                    $(t).removeClass();
+                    if (result.data == true) {
+                        $(t).addClass("btn-sel b-green");
+                    } else {
+                        $(t).addClass("btn-sel b-grey");
+                    }
+                }
+            });
+        };
+    </script>
+    @*富文本*@
+    <script>
+        $(document).ready(function () {
+            var $ArticleContent = $('#Descript');
+            $ArticleContent.summernote({
+                height: 200, //set editable area's height
+                lang: "zh-CN",
+                callbacks: {
+                    onImageUpload: function (image) {
+                        sendFile(image[0]);
+                    }
+                },
+                toolbar: [
+                    // [groupName, [list of button]]
+                    ['style', ['bold', 'italic', 'underline', 'clear']],
+                    ['font', ['strikethrough', 'superscript', 'subscript']],
+                    ['fontsize', ['fontsize']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['height', ['height']],
+                    ['Insert', ['picture']]
+                ]
+            });
+
+            function sendFile(file) {
+                data = new FormData();
+                data.append("Filedata", file);
+                $.ajax({
+                    data: data,
+                    type: "POST",
+                    url: "@Url.Action("BatchUpload", "Utility", new {src = TableSource.Article})",
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (result) {
+                        var image = $('<img>').attr('src', result.imgPathOriginal);
+                        $ArticleContent.summernote("insertNode", image[0]);
+                        var picTitle = $('<p>').text(file.name);
+                        $ArticleContent.summernote("insertNode", picTitle[0]);
+                    }
+                });
+            };
+
+            mapinit();
+        });
+        var citylocation,geocoder = null;
+        var searchService = [];
+        //初始化地图函数  自定义函数名init
+        function mapinit() {
+            var lat = @(Model.Lat);
+            var lng = @(Model.Lng);
+            var center = new qq.maps.LatLng(lat, lng);
+            //定义map变量 调用 qq.maps.Map() 构造函数   获取地图显示容器
+            var map = new qq.maps.Map(document.getElementById("container"), {
+                center: new qq.maps.LatLng(lat, lng),      // 地图的中心地理坐标。
+                zoom: 13,                                                 // 地图的中心地理坐标。
+                //地图的默认鼠标指针样式
+                draggableCursor: "crosshair",
+                //拖动地图时的鼠标指针样式
+                draggingCursor: "pointer",
+            });
+            //地址和经纬度之间进行转换服务
+            geocoder = new qq.maps.Geocoder();
+            if (lat <= 0 && lng <= 0) {
+                //获取城市列表接口设置中心点
+                citylocation = new qq.maps.CityService({
+                    complete: function(result) {
+                        map.setCenter(result.detail.latLng);
+                    }
+                });
+                //调用searchLocalCity();方法    根据用户IP查询城市信息。
+                citylocation.searchLocalCity();
+            } else {
+                var marker = new qq.maps.Marker({
+                    position: center,
+                    map: map
+                });
+            }
+
+
+            //添加监听事件   获取鼠标单击事件
+            qq.maps.event.addListener(map, 'click', function (event) {
+                $('#Lat').val(event.latLng.getLat());
+                $('#Lng').val(event.latLng.getLng());
+                var latLng = new qq.maps.LatLng(event.latLng.getLat(), event.latLng.getLng());
+                geocoder.getAddress(latLng);
+                //设置服务请求成功的回调函数
+                geocoder.setComplete(function(result) {
+                    $('#place').val(result.detail.address+result.detail.addressComponents.street);
+                });
+                var marker = new qq.maps.Marker({
+                    position: event.latLng,
+                    map: map
+                });
+                qq.maps.event.addListener(map, 'click', function (event) {
+                    marker.setMap(null);
+                });
+            });
+            //实例化自动完成
+            var ap = new qq.maps.place.Autocomplete(document.getElementById('place'));
+            //调用Poi检索类。用于进行本地检索、周边检索等服务。
+            searchService = new qq.maps.SearchService({
+                map : map
+            });
+            //添加监听事件
+            qq.maps.event.addListener(ap, "confirm", function(res){
+                searchService.search(res.value);
+            });
+        };
+        //function codeLatLng() {
+        //     lat = parseFloat(lat);
+        //     lng = parseFloat(lng);
+        //     if (lat > 0 && lng > 0) {
+        //         var latLng = new qq.maps.LatLng(lat, lng);
+        //         //调用信息窗口
+        //         var info = new qq.maps.InfoWindow({map: map});
+        //         //调用获取位置方法
+        //         geocoder.getAddress(latLng);
+        //     }
+
+        //}
+        var mapsearch = function() {
+            var keyword = document.getElementById("place").value;
+            searchService.search(keyword);
+        };
+    </script>
+
+    <script>
+
+
+
+
+    </script>
+}
+<div class="wrapper wrapper-content animated fadeInLeft content">
+    <div class="box-set box-b">
+        <!--头部菜单-->
+        <div class="row">
+            <div class="col-lg-12 ibox">
+                <div class="left-title">店铺基本设置</div>
+            </div>
+        </div>
+        <!--头部菜单 end-->
+        <!--发布商品-->
+        <form id="saveForm" method="post">
+            @Html.AntiForgeryToken()
+            <div class="row-a clearfix">
+                <div class="title">店铺名称</div>
+                <div class="public-info clearfix">
+                    <div class="info">
+                        <input type="text" name="Name" value="@Model.Name" class="form-control" placeholder="请输入店铺名称">
+                    </div>
+                </div>
+            </div>
+            <div class="row-a">
+                <div class="title">店铺logo</div>
+                <!-- 上传图片列表 -->
+                <div class="pic-upload-wrap">
+                    <span class="field-validation-error" id="LogoAttaIdMsg" style="display: none" data-valmsg-for="LogoAttaId" data-valmsg-replace="true">
+                        <span for="LogoAttaId" generated="true" class="">请上传图片</span>
+                    </span>
+                    @UploadHelper.ShopSingleUpload(this, TableSource.Shop, "btnUploadLogoAttaId", "imgThumLogoAttaId", "LogoAttaId", Model.LogoAttaId)
+                    <div class="pic-tip">建议使用正方形图片(最佳尺寸：>100PXx100PX)</div>
+                </div>
+                <!-- 上传图片列表 end -->
+            </div>
+            <div class="row-a">
+                <div class="title">店铺照片</div>
+                <!-- 上传图片列表 -->
+                <div class="pic-upload-wrap">
+                    <span class="field-validation-error" id="BgAttaIdMsg" style="display: none" data-valmsg-for="BgAttaId" data-valmsg-replace="true">
+                        <span for="BgAttaId" generated="true" class="">请上传图片</span>
+                    </span>
+                    @UploadHelper.ShopSingleUpload(this, TableSource.Shop, "btnUploadBgAttaId", "imgThumBgAttaId", "BgAttaId", Model.BgAttaId, 200, 80)
+                    <div class="pic-tip">仅支持gif,jpg,png三种格式,大小不超过3M(最佳尺寸：>750PXx350PX)</div>
+                </div>
+                <!-- 上传图片列表 end -->
+            </div>
+            <div class="row-a">
+                <div class="title">客服电话</div>
+                <div class="public-info clearfix">
+                    <div class="info">
+                        <input type="text" name="KefuPhone" value="@Model.KefuPhone" class="form-control" placeholder="请输入客服电话">
+                    </div>
+                </div>
+            </div>
+            <div class="row-a">
+                <div class="title">购买方式</div>
+                <div class="public-info clearfix">
+                    <div class="col-lg-3 first">
+                        <div class="one-list">
+                            <p>商家配送</p>
+                            <div class="btn-sel @(Model.IsDelivery?"b-green":"b-grey")" onclick="change(this,'@BuyType.Delivery')"></div>
+
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3">
+                        <div class="one-list">
+                            <p>到店消费</p>
+                            <div class="btn-sel @(Model.IsArrival?"b-green":"b-grey")" onclick="change(this,'@BuyType.Arrival')"></div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row-a">
+                <div class="title">门店地址</div>
+                <div class="public-info clearfix">
+                    <div class="form-group info-b clearfix">
+                        <div class="col-lg-5">
+                            <input type="text" name="Address" value="@Model.Address" class="form-control" placeholder="店铺展示地址">
+                        </div>
+                    </div>
+                    <div class="form-group info-b clearfix">
+                        <div class="col-lg-5">
+                            <input type="text" class="form-control w-all" placeholder="店铺坐标地址" id="place">
+                        </div>
+                        <div class="col-lg-1 del-btn">
+                            <input type="button" value="搜索地图" class="input-submit-default w100 blue" onclick="mapsearch()">
+                        </div>
+                    </div>
+                    <div class="info" id="container" style="width: 600px; height: 400px;">
+
+                    </div>
+                    @Html.HiddenFor(m => m.Lat)
+                    @Html.HiddenFor(m => m.Lng)
+                </div>
+            </div>
+            <div class="row-a pic-bm-boder">
+                <div class="title">店铺简介</div>
+                <div class="public-info clearfix">
+                    <div class="info">
+                        @*Descript 富文本*@
+                        <textarea class="form-control summernote" name="Descript" id="Descript" placeholder="店铺简介">@Model.Descript</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row-a">
+                <div class="add">
+                    <input type="button" id="btnSave" value="保存" class="input-submit-default blue w300 h50">
+                </div>
+            </div>
+        </form>
+        <!--发布商品end-->
+    </div>
+</div>

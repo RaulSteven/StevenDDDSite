@@ -1,0 +1,43 @@
+﻿
+@{
+    var configRep = DependencyResolver.Current.GetService<ISysConfigRepository>();
+    Layout = null;
+    var title = "没有权限_管理系统_" + configRep.WebSiteName;
+}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@title</title>
+    <link href="/Res/admin/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/Res/admin/font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="/Res/admin/css/animate.css" rel="stylesheet">
+    <link href="/Res/admin/css/style.css" rel="stylesheet">
+
+</head>
+
+<body class="gray-bg">
+
+
+    <div class="middle-box text-center animated fadeInDown">
+        <h1>禁止</h1>
+        <h3 class="font-bold">您的权限不足！</h3>
+
+        <div class="error-desc">
+            您可以更换账号重新登录，或者前往首页 <br />
+            <a href="@Url.AdminLogout()" class="btn btn-primary m-t">重新登录</a> <a href="@Url.AdminHome()" class="btn btn-primary m-t">首页</a>
+        </div>
+    </div>
+
+    <!-- Mainly scripts -->
+    <script src="/Res/admin/js/jquery-3.1.1.min.js"></script>
+    <script src="/Res/admin/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>
+

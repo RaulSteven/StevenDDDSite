@@ -1,0 +1,61 @@
+﻿@{
+    var configRep = DependencyResolver.Current.GetService<ISysConfigRepository>();
+
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <!-- Mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="address=no">
+    <title>@ViewBag.Title</title>
+    <meta name="Keywords" content="案例展示-北琳网络有限公司,互联网-培训教育,互联网-师资力量,互联网-特色课程,互联网-学员分享,商务型官网,购物商城,黑色大气,互联网服务-北琳网络有限公司,团队建设,案例展示,政府类信息传递,要闻,领导活动">
+    <meta name="description" content="北琳网络有限公司，致力于互联网领域构建全新的合作和服务新体系。旗下有海遇网hielites网站！致力于响应式网站，小程序和APP的开发，让我们为你提供更好的服务！">
+    <!-- 页面样式 -->
+    <link rel="stylesheet" type="text/css" href="/Res/home/global/style/global.css">
+    <link rel="stylesheet" type="text/css" href="/Res/home/index/style/css.css">
+    @RenderSection("headCss",false)
+    @Html.Raw(configRep.StatisticsJS)
+</head>
+<body>
+    @RenderBody()
+    <!-- 联系我们 -->
+    <div class="wrap-5" id="link-us">
+        <div class="title-a">联系我们</div>
+        <div class="list">
+            <a href="tel:0771-3177777" class="tel"><img src="/Res/home/index/images/icon-tel.png" alt=""><label>0771-3177777</label></a>
+            <a href="javascript:;" class="qq"><img src="/Res/home/index/images/icon-qq.png" alt=""><label>1400056503</label>
+                <div class="qq-chat">
+                    <img style="CURSOR: pointer" onclick="javascript: window.open('http://b.qq.com/webc.htm?new=0&sid=1400056503&o=http://www.beilinsoft.com/&q=7', '_blank', 'height=502, width=644,toolbar=no,scrollbars=no,menubar=no,status=no');" border="0" SRC=http://wpa.qq.com/pa?p=1:1400056503:1 alt="点击这里给我发消息">
+                </div> 
+            </a>
+            <a href="javascript:;" class="wechat">
+                <img src="/Res/home/index/images/icon-wechat.png" alt=""><label>微信公众号</label>
+                <div class="ewm"><img src="/Res/home/index/images/ewm.jpg" alt=""><span>扫描二维码关注公众号</span></div>
+            </a>
+            <a href="mailto:info@beilinsoft.com" class="email"><img src="/Res/home/index/images/icon-email.png" alt="">info@beilinsoft.com<label></label></a>
+            <a href="mailto:info@beilinsoft.com" class="tel-email">
+                <img src="/Res/home/index/images/icon-email.png" alt="">
+                <div class="email-1">info@beilinsoft.com</div>
+            </a>
+         </div>
+
+    </div>
+    <!-- 联系我们 end-->
+    <!-- footer -->
+    <footer class="footer">
+        <div class="f-logo"><a href="@Url.Home()" target="_self"><img src="/Res/home/index/images/logo.png" alt=""></a></div>
+        <p>地址：南宁市青秀区佛子岭18号德利•东盟国际文化广场B1栋14楼　　　/　　　电话：0771-3177777</p>
+        <p><span>@configRep.WebSiteCopyRight</span> <span>@configRep.WebSiteICP</span></p>
+    </footer>
+    <!-- footer end -->
+    <!-- 脚本 -->
+    <script src="/Res/global/js/lib/jquery/jquery-3.1.1.min.js"></script>
+    @RenderSection("footJs",false)
+</body>
+</html>

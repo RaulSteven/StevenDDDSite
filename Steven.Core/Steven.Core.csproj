@@ -1,0 +1,176 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{263F36C1-79E8-46E6-A34B-E9AF95D8EDDB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Steven.Core</RootNamespace>
+    <AssemblyName>Steven.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CacheManager.Core, Version=1.1.1.0, Culture=neutral, PublicKeyToken=5b450b4fb65c4cdb, processorArchitecture=MSIL">
+      <HintPath>..\packages\CacheManager.Core.1.1.1\lib\net45\CacheManager.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="CacheManager.StackExchange.Redis, Version=1.1.1.0, Culture=neutral, PublicKeyToken=5b450b4fb65c4cdb, processorArchitecture=MSIL">
+      <HintPath>..\packages\CacheManager.StackExchange.Redis.1.1.1\lib\net45\CacheManager.StackExchange.Redis.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="CacheManager.SystemRuntimeCaching, Version=1.1.1.0, Culture=neutral, PublicKeyToken=5b450b4fb65c4cdb, processorArchitecture=MSIL">
+      <HintPath>..\packages\CacheManager.SystemRuntimeCaching.1.1.1\lib\net45\CacheManager.SystemRuntimeCaching.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ImageProcessor, Version=2.5.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ImageProcessor.2.5.4\lib\net45\ImageProcessor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.Types, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.SqlServer.Types.14.0.314.76\lib\net40\Microsoft.SqlServer.Types.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="StackExchange.Redis, Version=1.2.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\StackExchange.Redis.1.2.6\lib\net45\StackExchange.Redis.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="StackExchange.Redis.StrongName, Version=1.2.6.0, Culture=neutral, PublicKeyToken=c219ff1ca8c2ce46, processorArchitecture=MSIL">
+      <HintPath>..\packages\StackExchange.Redis.StrongName.1.2.6\lib\net45\StackExchange.Redis.StrongName.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Cache\Extensions.cs" />
+    <Compile Include="Cache\ICacheManager.cs" />
+    <Compile Include="Cache\MemoryCacheManager.cs" />
+    <Compile Include="Cache\PerRequestCacheManager.cs" />
+    <Compile Include="Cache\RedisCacheManager.cs" />
+    <Compile Include="Extensions\DateTimeExtensions.cs" />
+    <Compile Include="Extensions\DecimalExtensions.cs" />
+    <Compile Include="Extensions\EnumExtension.cs" />
+    <Compile Include="Extensions\IntExtensions.cs" />
+    <Compile Include="Extensions\LongExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Infrastructure\IStartupTask.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlServerTypes\Loader.cs" />
+    <Compile Include="Utilities\BrowserUtility.cs" />
+    <Compile Include="Utilities\CookieUtils.cs" />
+    <Compile Include="Utilities\DateTimeUtility.cs" />
+    <Compile Include="Utilities\EncryptUtils.cs" />
+    <Compile Include="Utilities\ErrorMsgUtils.cs" />
+    <Compile Include="Utilities\GIS\BaiduMapUtility.cs" />
+    <Compile Include="Utilities\GIS\GoogleMapUtility.cs" />
+    <Compile Include="Utilities\HashUtils.cs" />
+    <Compile Include="Utilities\HttpWebResponseUtility.cs" />
+    <Compile Include="Utilities\IPUtility.cs" />
+    <Compile Include="Utilities\PageUtility.cs" />
+    <Compile Include="Utilities\Pinyin.cs" />
+    <Compile Include="Utilities\ProductImg.cs" />
+    <Compile Include="Utilities\RegexUtility.cs" />
+    <Compile Include="Utilities\StringUtility.cs" />
+    <Compile Include="Utilities\TimeZoneUtility.cs" />
+    <Compile Include="Utilities\VeryfyCodeUtility.cs" />
+    <Compile Include="Utilities\WorkFlow\WorkFlowEncryption.cs" />
+    <Compile Include="Utilities\WorkFlow\WorkFlowEncryptionDes.cs" />
+    <Compile Include="Utilities\WorkFlow\WorkFlowHashEncrypt.cs" />
+    <Compile Include="Utilities\WorkFlow\WorkFlowExtensions.cs" />
+    <Compile Include="Utilities\WorkFlow\WorkFlowTools.cs" />
+    <Compile Include="Utilities\TranslateUtility.cs" />
+    <Compile Include="Utilities\XmlUtility.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="SqlServerTypes\x64\" />
+    <Folder Include="SqlServerTypes\x86\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="SqlServerTypes\readme.htm" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

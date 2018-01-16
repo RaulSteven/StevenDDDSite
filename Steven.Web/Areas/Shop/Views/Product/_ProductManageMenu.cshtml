@@ -1,0 +1,7 @@
+﻿@model int
+<div class="col-lg-12 ibox">
+    <ul class="title-list clearfix">
+        <li><a href="@Url.Action("Index")" @(Model == 0 ? "class=cur" : "")>商品管理</a></li>
+        <li><a href="@Url.Action("ClassifyList")" @(Model == 4 ? "class=cur" : "")>分组管理</a></li>
+    </ul>
+</div>

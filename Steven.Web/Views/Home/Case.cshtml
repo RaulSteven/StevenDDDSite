@@ -1,0 +1,87 @@
+﻿@model IEnumerable<SysCase>
+@{
+    ViewBag.Title = "案例列表_北琳网络有限公司";
+}
+@section footJs{
+    <script src="/Res/home/index/js/jquery.qrcode.min.js"></script>
+
+    <script type="text/javascript">
+
+        $(".look .tel").hover(function () {
+            $(this).find(".ewm").show();
+        }, function () {
+            $('.look .ewm').hide();
+        });
+
+
+        //微信二维码
+        $(".wrap-5 .list a.wechat").hover(function () {
+            $(".wrap-5 .list a .ewm").show();
+        }, function () {
+            $('.wrap-5 .list a .ewm').hide();
+        });
+
+    </script>
+}
+<!-- header -->
+<header class="header-case">
+    <div class="logo-case"><a href="@Url.Home()"><img src="/Res/home/index/images/logo-w.png" alt=""></a></div>
+</header>
+<!-- header end -->
+<!-- 功能展示 -->
+<div class="case-1">
+    <div class="text">
+        <h1>案例</h1>
+        <p>我们的真正目的，便是透过创意和点子，为客户塑造商誉并不断开创销售佳绩。</p>
+    </div>
+</div>
+<!-- 功能展示 end-->
+<!-- 我们的服务 -->
+<div class="case-2">
+    <ul class="clearfix">
+        @foreach (var item in Model)
+        {
+            <li>
+                <div class="info">
+                    <div class="pic">
+                        <img src="@Url.ThumbUrl(item.PicAttaId,540,360)" alt="">
+                    </div>
+                    <div class="text">
+                        <h1>@item.Name</h1>
+                        <p>@item.Brief</p>
+                    </div>
+                    <div class="look">
+                        <a href="@Url.Action("ShowCase",new { id = item.Id })" target="_blank" class="com"><img src="/Res/home/index/images/icon-look.png" alt="">在线预览</a>
+                        <a href="javascript:;" class="tel">
+                            <img src="/Res/home/index/images/icon-ewm.png" alt="">手机预览
+                            <div class="ewm"><img src="@Url.ThumbUrl(item.QrAttaId,200,200)" alt=""><span>扫描二维码预览</span></div>
+                        </a>
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+</div>
+<!-- 我们的服务 end-->
+<!-- 我们的服务 -->
+<div class="case-3">
+    <ul class="clearfix">
+        @foreach (var item in Model)
+        {
+            <li>
+                <div class="info">
+                    <div class="pic">
+                        <a href="@item.CaseUrl" target="_blank">
+                            <img src="@Url.ThumbUrl(item.PicAttaId,540,360)" alt="">
+                        </a>
+                    </div>
+                    <div class="text">
+                        <h1>@item.Name</h1>
+                        <p>@item.Brief</p>
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+</div>
+<!-- 我们的服务 end-->

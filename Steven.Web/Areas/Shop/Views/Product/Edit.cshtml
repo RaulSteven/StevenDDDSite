@@ -1,0 +1,461 @@
+﻿@model ProductModel
+@{
+    ViewBag.Title = "编辑商品";
+    ViewBag.MenuIndex = 1;
+    long[] picIdArr = null;
+    if (!string.IsNullOrEmpty(Model.PicAttIds))
+    {
+        picIdArr = StringUtility.ConvertToBigIntArray(Model.PicAttIds, ',');
+    }
+    else
+    {
+        picIdArr = new long[0];
+    }
+}
+@section headCss{
+    @Styles.Render("~/bundles/ladda-css", 
+    "~/bundles/jQuery-File-Upload-css", 
+    "~/Res/admin/css/plugins/iCheck/skins/beilin/css-bundle", 
+    "~/Res/admin/css/plugins/summernote/summernote-css")
+    <style>
+        .title-list {
+            padding: 0;
+        }
+    </style>
+}
+
+@section footJs{
+    @Scripts.Render("~/bundles/jQuery-File-Upload",
+    "~/bundles/ladda-js",
+    "~/bundles/summernote-js",
+    "~/Res/admin/js/plugins/validate/validate-bundle",
+    "~/bundles/submit-js")
+    <!-- jquery UI -->
+    <script src="/Res/admin/js/plugins/jquery-ui/jquery-ui.min.js"></script>
+    <!-- Touch Punch - Touch Event Support for jQuery UI -->
+    <script src="/Res/admin/js/plugins/touchpunch/jquery.ui.touch-punch.min.js"></script>
+    <!-- 自动完成组件 Typehead -->
+    <script src="/Res/admin/js/plugins/typehead/bootstrap3-typeahead.min.js"></script>
+    <!-- iCheck -->
+    <script src="/Res/admin/js/plugins/iCheck/icheck.min.js"></script>
+    <script>
+        var rules = {
+            Title: {
+                required: true,
+                rangelength: [2, 50]
+            },
+            Unit: {
+                required: true,
+                rangelength: [1, 3]
+            },
+            Stock: {
+                required: true,
+                digits: true,
+                range: [0, 100000]
+            },
+            OldPrice: {
+                required: true,
+                number: true,
+                range: [0, 100000]
+            },
+            Price: {
+                required: true,
+                number: true,
+                range: [0, 100000]
+            },
+            Sort: {
+                required: true,
+                digits: true,
+                range: [0, 1000]
+            }
+        };
+        var preSubmit = function () {
+            doSetSpecsJson();
+            computeImgIds();
+            var picIds = $('#PicAttIds').val();
+            if (!picIds) {               
+                $('#divImgMsg').text('请上传图片').show();
+                var targetTop = $("#productForm").offset().top;
+                $("html,body").scrollTop(targetTop);
+                return false;
+            } else {
+                $('#divImgMsg').hide();
+            }
+            return true;
+        };
+        commonSubmit('@Url.Action("Edit")', '@ViewBag.ReUrl', 'productForm', 'btnSave', rules, preSubmit);
+        commonSubmit('@Url.Action("Edit")', '@Url.Action("Edit",new { id=0,reUrl=ViewBag.ReUrl})', 'productForm', 'btnSaveNext', rules, preSubmit);
+
+        $('#btnAddClassify').click(function () {
+            window.location = '@Url.Action("ClassifyList")' + '?id=0&op=add&reUrl=' + encodeURIComponent(window.location);
+        });
+
+        $(document).ready(function () {
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue',
+            });
+        });
+
+    </script>
+    @*上传图片*@
+    <script>
+        $(function () {
+            //还差文件筛选，不能上传别的文件只能是图片。
+            $('#btnUpload').fileupload({
+                url: '@Url.Action("BatchUpload", "Utility", new { src = TableSource.Product })',
+                dataType: 'json',
+                add: function (e, data) {
+                    //判断文件类型
+                    var acceptFileTypes = /^image\/(gif|jpe?g|png)$/i;
+                    //文件类型判断
+                    if (data.files[0]['type'].length && !acceptFileTypes.test(data.files[0]['type'])) {
+                        showErrorMsg('请上传图片!');
+                        return;
+                    }
+
+                    $('#divImgMsg').hide();
+                    var picLength = $('.picId').length - 1;
+                    if (picLength >= 6) {
+                        $('#divImgMsg').text('图片只能上传6张').show();
+                        return;
+                    }
+                    //var fileId = guid();
+                    var fileId = hashCode(data.files[0].name);
+
+                    var $html = $('#divImgTemplate').clone().removeAttr('hidden').removeAttr('id');
+                    var imgId = 'img_' + fileId
+                    $html.find('img').attr('id', imgId);
+                    $html.find('.progress-bar').attr('id', 'progress_' + fileId);
+                    $html.attr('id', 'li_' + fileId);
+                    $('#ulImgLst').append($html);
+
+                    //预览
+                    if (data.files && data.files[0]) {
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            $('#'+imgId).attr('src', e.target.result);
+                        }
+                        reader.readAsDataURL(data.files[0]);
+                    }
+
+                    data.submit();
+                },
+                progress: function (e, data) {
+                    var fileId = hashCode(data.files[0].name);
+                    var progress = parseInt(data.loaded / data.total * 100, 10);
+                    $('#progress_' + fileId).css('width', progress + '%');
+                },
+                done: function (e, data) {
+                    uploadCallBack(data.result);
+                    initSortable();
+                }
+            });
+        });
+
+        var hashCode = function (str) {
+            var hash = 0;
+            if (str.length == 0) return hash;
+            for (i = 0; i < str.length; i++) {
+                char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; // Convert to 32bit integer
+            }
+            return hash;
+        };
+
+        var uploadCallBack = function (json) {
+            var fileId = hashCode(json.fileId);
+            //apend html
+            $('#img_' + fileId).attr('src', json.imgPath)
+                .attr('id','img_'+json.id);
+            var liId = 'li_' + json.id;
+            $('#li_' + fileId).attr('id', liId).attr('data-id', json.id);
+            var $li = $('#' + liId);
+            $li.find('.cur').removeClass('cur');
+            $li.find('.ico-close').attr('onclick', 'doRemoveImg(' + json.id + ')');
+            $li.find('.progress').remove();
+        };
+
+        var initSortable = function () {
+            $("ul.imglist").sortable({
+                handle: '.picImg',
+                tolerance: 'pointer',
+                forcePlaceholderSize: true,
+                opacity: 0.8
+            });
+        };
+
+        var doRemoveImg = function (id) {
+            var li = $('#li_' + id);
+            if (li) {
+                li.remove();
+            }
+        };
+
+        var computeImgIds = function () {
+            var idArr = [];
+            $('.picId').each(function (index, ele) {
+                var dataId = $(ele).attr('data-id');
+                if (dataId) {
+                    idArr.push(dataId);
+                }
+            });
+            $("#PicAttIds").val(idArr.join(','));
+            delete idArr; idArr = null;
+        };
+
+        $(function () {
+            initSortable();
+        });
+
+    </script>
+    @*规格管理*@
+    <script>
+
+        var doSetSpecsJson = function () {
+            var specsArr = [];
+            $('#speceLst .specsItem').each(function (index, ele) {
+                var Name = $(ele).find('.SpecsName').val();
+                var SpecsValue = $(ele).find('.SpecsValue').val();
+                specsArr.push({ Name: Name, SpecsValue: SpecsValue });
+            });
+            $('#SpecsJson').val(JSON.stringify(specsArr));
+            delete specsArr;
+            specsArr = null;
+        };
+
+        $('#speceLst').on('click', '.removeSpecs', function () {
+            $(this).parents('.specsItem').remove();
+        });
+
+        $('#btnAddSpecs').click(function () {
+            var html = $('#divSpecsTemplate').clone().removeAttr('hidden').removeAttr('id');
+            $('#speceLst .add').before(html);
+        });
+    </script>
+    @*富文本*@
+    <script>
+        $(document).ready(function () {
+            var $ArticleContent = $('#Descript');
+            $ArticleContent.summernote({
+                height: 200,   //set editable area's height
+                lang: "zh-CN",
+                callbacks: {
+                    onImageUpload: function (image) {
+                        for (var i = 0; i < image.length; i++) {
+                            sendFile(image[i]);
+                        }
+
+                    }
+                },
+                toolbar: [
+                // [groupName, [list of button]]
+                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['font', ['strikethrough', 'superscript', 'subscript']],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['height', ['height']],
+                ['Insert', ['picture']]]
+            });
+
+            function sendFile(file) {
+                data = new FormData();
+                data.append("Filedata", file);
+                $.ajax({
+                    data: data,
+                    type: "POST",
+                    url: "@Url.Action("BatchUpload", "Utility", new { src=TableSource.Product})",
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (result) {
+                        var image = $('<img>').attr('src', result.imgPathOriginal);
+                        $ArticleContent.summernote("insertNode", image[0]);
+                        //var picTitle = $('<p>').text(file.name);
+                        //$ArticleContent.summernote("insertNode", picTitle[0]);
+                    }
+                });
+            };
+        });
+    </script>
+}
+<div class="wrapper wrapper-content animated fadeInLeft content">
+    <div class="box-set box-b">
+        <!--头部菜单-->
+        <div class="row">
+            @Html.Partial("_ProductManageMenu", 0)
+            <!--头部菜单 end-->
+            <div class="title-a">
+                <a href="@Url.Action("Index")">商品管理</a><span>></span><a href="javascript:;" class="cur">发布商品</a>
+            </div>
+        </div>
+        <!--发布商品-->
+        <div class="box-b">
+            <form id="productForm" method="post">
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.Id)
+                <div class="row-all">
+                    <div class="row-a">
+                        <div class="title">图片</div>
+                        <!-- 上传图片列表 -->
+                        <div class="pic-upload-wrap">
+                            @Html.HiddenFor(m => m.PicAttIds)
+                            <div class="btn-up">
+                                <div class="btn-uploading">
+                                    <input id="btnUpload" type="file" class="btn btn-outline btn-primary" name="Filedata" multiple>
+                                    @*<button id="btnUpload">上传</button>*@
+                                </div>
+                            </div>
+                            <ul class="clearfix imglist pic-up" id="ulImgLst">
+                                @foreach (var item in picIdArr)
+                                {
+                                    <li class="picId" data-id="@item" id="li_@item">
+                                        <span class="pic"><img src="@Url.ThumbUrl(item)" alt="" class="picImg" /></span>
+                                        <a href="javascript:;" title="删除" onclick="doRemoveImg(@item)" class="ico-close"></a>
+                                    </li>
+                                }
+                            </ul>
+                            <div class="pic-tip">图片大小不超过3M，最多 6张，建议使用正方形图片（最佳尺寸：750 x 750像素）</div>
+                            <span class="field-validation-error" data-valmsg-replace="true">
+                                <span generated="true" id="divImgMsg" style="display: none" class="">请上传图片</span>
+                            </span>
+                        </div>
+                        <!-- 上传图片列表 end -->
+                    </div>
+                    <div class="row-a">
+                        <div class="title">标题</div>
+                        <div class="public-info clearfix">
+                            <div class="info">
+                                <input type="text" name="Title" value="@Model.Title" class="form-control" placeholder="可输入50个字">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-a">
+                        <div class="title">单位</div>
+                        <div class="public-info clearfix">
+                            <div class="info">
+                                <div class="half">
+                                    @*@Html.DropDownListFor(m => m.Unit, ProductUnit.Ba.GetSList(), "请选择", new { @class = "form-control" })*@
+                                    <input type="text" value="@Model.Unit" data-provide="typeahead" data-show-hint-on-focus="true" name="Unit" required maxLength="3" data-source='@Model.LstUnit' autocomplete="off" placeholder="请输入单位(限3个字)" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-a">
+                        <div class="title">价格</div>
+                        <div class="public-info clearfix">
+                            <div class="info clearfix">
+                                <div class="half">
+                                    <input type="text" name="Price" value="@(Model.Id > 0 ? Model.Price.ToString() : "")" class="form-control" placeholder="￥现价">
+                                </div>
+                                <div class="half last close-time">
+                                    <input type="text" value="@(Model.Id > 0 ? Model.OldPrice.ToString() : "")" name="OldPrice" class="form-control" placeholder="￥原价">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-a">
+                        <div class="title">库存</div>
+                        <div class="public-info clearfix">
+                            <div class="info">
+                                <input type="text" value="@(Model.Id > 0 ? Model.Stock.ToString() : "")" name="Stock" class="form-control" placeholder="请输入库存">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-a">
+                        <div class="title">状态</div>
+                        <div class="public-info clearfix">
+                            <div class="info">
+                                @Html.RadioButtonList("Status", ProductStatus.OnSale.GetSList(), Model.Status)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-a pic-bm-boder">
+                        <div class="title">排序</div>
+                        <div class="public-info clearfix">
+                            <div class="info">
+                                <input type="text" value="@(Model.Id > 0 ? Model.Sort.ToString() : "")" name="Sort" class="form-control" placeholder="排序值越大越靠前">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-a pic-bm-boder" id="speceLst">
+                        <div class="title">商品规格</div>
+                        @if (Model.LstSpecs != null && Model.LstSpecs.Count() > 0)
+                        {
+                            foreach (var specs in Model.LstSpecs)
+                            {
+                                <div class="public-info clearfix specsItem">
+                                    <div class="info">
+                                        <div class="half">
+                                            <input type="text" value="@specs.Name" data-provide="typeahead" data-show-hint-on-focus="true" name="SpecsName" required maxLength="10" data-source='@Model.LstSysSpecs' autocomplete="off" placeholder="请输入规格名称(限10个字)" class="form-control SpecsName">
+                                        </div>
+                                        <div class="half last close-time tel-btn">
+                                            <input type="text" value="@specs.SpecsValue" placeholder="请输入规格值(限30个字)" name="SpecsValue" required maxLength="30" class="form-control SpecsValue">
+                                        </div>
+                                    </div>
+                                    <div class="infos">
+                                        <input type="button" value="删除" class="input-submit-default w150 white del-btn removeSpecs">
+                                    </div>
+                                </div>
+                            }
+                        }
+                        @Html.HiddenFor(m => m.SpecsJson)
+                        <div class="add">
+                            <input type="button" id="btnAddSpecs" value="+添加规格" class="input-submit-default w150">
+                        </div>
+                    </div>
+                    <div class="row-a pic-bm-boder">
+                        <div class="title">分组</div>
+                        <div class="add">
+                            <input type="button" value="+新建分组" id="btnAddClassify" class="input-submit-default w150">
+                            <div class="ground-list">
+                                @Html.RadioButtonList("ProductClassifyId", new SelectList(Model.LstClassify, "id", "name", Model.ProductClassifyId))
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-a pic-bm-boder">
+                        <div class="title">描述</div>
+                        <div class="public-info clearfix">
+                            <div class="info">
+                                @*Descript 富文本*@
+                                <textarea class="form-control summernote" name="Descript" id="Descript" placeholder="描述">@Model.Descript</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-a">
+                        <div class="add">
+                            <input type="button" value="完成" id="btnSave" class="input-submit-default blue w150">
+                            <input type="button" value="完成，继续添加下一个" id="btnSaveNext" class="input-submit-default w250 del-btn">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--发布商品end-->
+        <div class="public-info clearfix specsItem" hidden id="divSpecsTemplate">
+            <div class="info">
+                <div class="half">
+                    <input type="text" data-provide="typeahead" data-show-hint-on-focus="true" name="SpecsName" maxLength="10" required data-source='@Model.LstSysSpecs' autocomplete="off" placeholder="请输入规格名称(限10个字)" class="form-control SpecsName">
+                </div>
+                <div class="half last close-time">
+                    <input type="text" placeholder="请输入规格值(限30个字)" name="SpecsValue" required maxLength="30" class="form-control SpecsValue">
+                </div>
+            </div>
+            <div class="infos">
+                <input type="button" value="删除" class="input-submit-default w150 white ml10 removeSpecs">
+            </div>
+        </div>
+
+        <li class="picId" hidden id="divImgTemplate">
+            <div class="cur" id="div_shade"></div>
+            <span class="pic"><img src="/Res/shop/img/img_icon.png" alt="" class="picImg" /></span>
+            <a href="javascipt:;" title="删除" class="ico-close"></a>
+            <div class="progress mt10">
+                <div style="width: 0%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="35" role="progressbar" class="progress-bar">
+                </div>
+            </div>
+        </li>
+    </div>
+</div>

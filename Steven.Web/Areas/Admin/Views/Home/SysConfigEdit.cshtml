@@ -1,0 +1,163 @@
+﻿@model SysConfigModel
+@{
+    ViewBag.Title = "编辑配置信息";
+}
+@section headCss{
+    <!-- 选择美化 -->
+    <link href="/Res/admin/css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="/Res/admin/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <!-- Ladda style -->
+    <link href="/Res/admin/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
+}
+@section footJs{
+    <!-- Jquery Validate -->
+    <script src="/Res/admin/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="~/Res/admin/js/plugins/validate/messages_cn.js"></script>
+    <!-- iCheck -->
+    <script src="/Res/admin/js/plugins/iCheck/icheck.min.js"></script>
+    <!-- Ladda -->
+    <script src="/Res/admin/js/plugins/ladda/spin.min.js"></script>
+    <script src="/Res/admin/js/plugins/ladda/ladda.min.js"></script>
+    <script src="/Res/admin/js/plugins/ladda/ladda.jquery.min.js"></script>
+    <script src="~/Res/admin/js/CommonSubmit.js"></script>
+    <script>
+        var rules = {
+            ConKey: {
+                required: true,
+                rangelength: [2, 50]
+            },
+            Name: {
+                required: true,
+                rangelength: [2, 50]
+            }
+        };
+        commonSubmit('@Url.Action("SysConfigEdit")', '@ViewBag.ReUrl','saveForm','btnSave',rules);
+
+        $(document).ready(function () {
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+
+        });
+
+        $('#configType .i-checks').on('ifChecked', function (e) {
+            var selectValue = $(this).find('input').val();
+            changeConfigType(selectValue);
+        });
+
+        var changeConfigType = function (selectType) {
+            $('.ConValue').hide();
+            $('#ConValue_' + selectType).show();
+        };
+
+        changeConfigType('@Model.ConfigType');
+
+
+
+
+    </script>
+}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>@ViewBag.Title</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link"> <i class="fa fa-chevron-up"></i> </a>
+                    <a class="close-link"> <i class="fa fa-times"></i> </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <form method="post" class="form-horizontal" id="saveForm">
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(m => m.Id)
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Key：</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="ConKey" value="@Model.ConKey" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">名称：</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="Name" value="@Model.Name" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">备注：</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" name="Remark" placeholder="备注">@Model.Remark</textarea>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">分类：</label>
+                        <div class="col-sm-10">
+                            @Html.RadioButtonList("ConfigClassify", SysConfigClassify.Home.GetSList(), Model.ConfigClassify)
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">分类：</label>
+                        <div class="col-sm-10" id="configType">
+                            @Html.RadioButtonList("ConfigType", SysConfigType.String.GetSList(), Model.ConfigType)
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group ConValue" id="ConValue_@SysConfigType.String">
+                        <label class="col-sm-2 control-label">字符内容：</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="StringValue" value="@Model.StringValue" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-group ConValue" id="ConValue_@SysConfigType.Bool">
+                        <label class="col-sm-2 control-label">bool内容：</label>
+                        <div class="col-sm-10">
+                            <div class="i-checks">
+                                <label>
+                                    <input type="checkbox" name="BoolValue" value="" checked="@(Model.BoolValue?"checked":"")">
+                                    <i></i>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group ConValue" id="ConValue_@SysConfigType.Int">
+                        <label class="col-sm-2 control-label">整形内容：</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="IntValue" value="@Model.IntValue" class="form-control" digits />
+                        </div>
+                    </div>
+                    <div class="form-group ConValue" id="ConValue_@SysConfigType.Long">
+                        <label class="col-sm-2 control-label">长整型内容：</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="LongValue" value="@Model.LongValue" class="form-control" digits />
+                        </div>
+                    </div>
+                    <div class="form-group ConValue" id="ConValue_@SysConfigType.StringArray">
+                        <label class="col-sm-2 control-label">字符数组内容：</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" name="StringArrayValue" placeholder="字符数组内容">@Model.StringArrayValue</textarea>
+                            <span class="help-block m-b-none">用英文逗号 ","隔开</span>
+                        </div>
+                    </div>
+                    <div class="form-group ConValue" id="ConValue_@SysConfigType.TextArea">
+                        <label class="col-sm-2 control-label">文本框内容：</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" name="TextAreaValue" placeholder="文本框内容">@Model.TextAreaValue</textarea>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <div class="col-sm-10 col-sm-offset-2">
+                            <a class="btn btn-white" href="@ViewBag.ReUrl">返回</a>
+                            <button class="btn btn-primary" type="button" id="btnSave">保存</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

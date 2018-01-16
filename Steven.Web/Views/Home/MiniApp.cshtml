@@ -1,0 +1,482 @@
+﻿
+@{
+    ViewBag.Title = "小程序介绍";
+}
+@section headCss{
+    <link rel="stylesheet" type="text/css" href="/Res/global/js/lib/swiper3.4/swiper.css">
+    <link rel="stylesheet" type="text/css" href="/Res/miniapp/js/wow/animate.css">
+    <link rel="stylesheet" type="text/css" href="/Res/miniapp/style/style.css">
+}
+@section footJs{
+    <script src="/Res/global/js/lib/swiper3.4/swiper.js"></script>
+    <script src="/Res/miniapp/js/wow/wow.min.js"></script>
+    <script src="/Res/miniapp/js/lazyload/lazyload.min.js"></script>
+    <script>
+
+        $("img.lazy").lazyload({ effect: "fadeIn" });
+
+        new WOW().init();
+
+        /*banner*/
+        var mySwiper = new Swiper('.swiper-container', {
+            autoplay: 3000,
+            speed: 300,
+            pagination: '.pagination',
+        });
+
+        $(".list a.wechat").hover(function () {
+            $(".list a .ewm").show();
+        }, function () {
+            $('.list a .ewm').hide();
+        });
+
+
+        $(".list a.tel-email").hover(function () {
+            $(".list a .email-1").show();
+        }, function () {
+            $('.list a .email-1').hide();
+        });
+
+
+        /*立即使用*/
+        $(".use").click(function () {
+            $(".wrap-a").show();
+        });
+
+        $(".close").click(function () {
+            $(".wrap-a").hide();
+        });
+
+
+        /* 回到顶部*/
+        $('.back').click(function () {
+            $('html,body').stop();
+            $('html,body').animate({
+                scrollTop: '0px'
+            }, 500);
+        });
+
+        //回到顶部的 显示 隐藏代码
+        $(".back").hide();
+        // fade in #back-top
+        $(function () {
+            $(window).scroll(function () {
+                if ($(this).scrollTop() > 1500) {
+                    $('.back').fadeIn();
+                } else {
+                    $('.back').fadeOut();
+                }
+            });
+
+            // scroll body to 0px on click
+            $('.back').click(function () {
+                $('body,html').animate({
+                    scrollTop: 0
+                }, 'fast');
+                return false;
+            });
+        });
+
+
+    </script>
+}
+<!-- 菜单 -->
+<div class="shortcut">
+    <div class="back"><a href="javascript:;" target="_self">Top</a></div>
+</div>
+<!-- 菜单 --> 
+<div class="wrap-all">
+
+    <div class="logo"><a href="@Url.Home()" target="_self"><img src="/Res/miniapp/images/logo.png" alt=""></a></div>
+
+    <div class="banner-wrap">
+        <!--导航s-->
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <div class="banner banner-2">
+                        <div class="text-2">
+                            <h1>北琳小程序</h1>
+                            <p>使用北琳小程序，更好的体验，更有效的管理商品展示、商品信息、订单管理，帮助您线上线下同步经营，更好的推广商品内容。</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="banner banner-1">
+                        <div class="text">
+                            <h1>小程序管理后台</h1>
+                            <p>使用北琳小程序后台管理，您可以快速对自己的商品和订单进行管理，店铺照片、介绍，全凭自己做主，做自己喜欢的页面效果，也让管理变得更快捷方便。</p>
+                            <a href="#" class="use">开始使用</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="banner banner-3">
+                        <div class="text-2">
+                            <h1>价格体系</h1>
+                            <p>更低成本的选择，更高效的开发体验，使用北琳小程序，你对小程序的想法将不再局限于想法，你的小程序开发也不再有求于人。</p>
+                            <a href="#page2">查看详情</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 如果需要分页器 -->
+            <div class="pagination case-page"></div>
+        </div>
+        <!--导航end-->
+
+        <div class="jion">
+            <a href="#page1">
+                进入场景使用<br>
+                <img src="/Res/miniapp/images/icon-down.png" alt="">
+            </a>
+        </div>
+
+    </div>
+
+    <!--水果 star-->
+    <div class="section first" id="page1">
+        <div class="content">
+            <div class="text fruit wow fadeInDown" data-wow-duration=".5s" data-wow-delay=".2s">
+                <h1>水果<span></span></h1>
+                <p>生鲜无忧生鲜无忧是一款卖生鲜综合社区商城。包含每日优选、果蔬超市、生鲜水产、乳品粮油及商品分种类显示等功能，最大程度上满足商城用户的需求。</p>
+            </div>
+            <div class="tel-main">
+                <div class="left">
+                    <ul>
+                        <li class="wow fadeInUp" data-wow-duration="1s" data-wow-delay=".8s"><img src="/Res/miniapp/images/tel1-1.png" alt=""></li>
+                        <li class="wow fadeInUp" data-wow-duration="1s" data-wow-delay=".6s"><img src="/Res/miniapp/images/tel1-2.png" alt=""></li>
+                    </ul>
+                </div>
+                <div class="middle"><div class="wow bounceInUp" data-wow-duration=".5s" data-wow-delay=".2s"><img src="/Res/miniapp/images/tel-1.png" alt=""></div></div>
+                <div class="right">
+                    <ul>
+                        <li class="wow bounceInRight" data-wow-duration="1s" data-wow-delay="1s"><img src="/Res/miniapp/images/tel1-3.png" alt=""></li>
+                        <li class="wow bounceInRight" data-wow-duration="1s" data-wow-delay="1.2s"><img src="/Res/miniapp/images/tel1-4.png" alt=""></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="tel-info wow bounceInUp" data-wow-duration=".5s" data-wow-delay=".2s">
+                <img src="/Res/miniapp/images/tel-fruit.jpg" alt="">
+            </div>
+        </div>
+    </div>
+    <!--水果 end-->
+    <!--海鲜s-->
+    <div class="section second">
+        <div class="content">
+            <div class="text seafood wow fadeInDown" data-wow-duration=".5s" data-wow-delay=".2s">
+                <h1>海鲜<span></span></h1>
+                <p>生鲜无忧生鲜无忧是一款卖生鲜综合社区商城。包含每日优选、果蔬超市、生鲜水产、乳品粮油及商品分种类显示等功能，最大程度上满足商城用户的需求。</p>
+            </div>
+            <div class="tel-main">
+                <div class="left">
+                    <ul>
+                        <li class="wow fadeInUp" data-wow-duration="1s" data-wow-delay=".8s"><img src="/Res/miniapp/images/tel2-1.png" alt=""></li>
+                        <li class="wow fadeInUp" data-wow-duration="1s" data-wow-delay=".6s"><img src="/Res/miniapp/images/tel2-2.png" alt=""></li>
+                    </ul>
+                </div>
+                <div class="middle"><div class="wow bounceInUp" data-wow-duration=".5s" data-wow-delay=".2s"><img src="/Res/miniapp/images/tel-2.png" alt=""></div></div>
+                <div class="right">
+                    <ul>
+                        <li class="wow bounceInRight" data-wow-duration="1s" data-wow-delay="1s"><img src="/Res/miniapp/images/tel2-3.png" alt=""></li>
+                        <li class="wow bounceInRight" data-wow-duration="1s" data-wow-delay="1.2s"><img src="/Res/miniapp/images/tel2-4.png" alt=""></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="tel-info wow bounceInUp" data-wow-duration=".5s" data-wow-delay=".2s">
+                <img src="/Res/miniapp/images/tel-seafood.jpg" alt="">
+            </div>
+        </div>
+    </div>
+    <!--海鲜e-->
+    <!--蛋糕s-->
+    <div class="section three">
+        <div class="content">
+            <div class="text cake wow fadeInDown" data-wow-duration=".5s" data-wow-delay=".2s">
+                <h1>蛋糕<span></span></h1>
+                <p>生鲜无忧生鲜无忧是一款卖生鲜综合社区商城。包含每日优选、果蔬超市、生鲜水产、乳品粮油及商品分种类显示等功能，最大程度上满足商城用户的需求。</p>
+            </div>
+            <div class="tel-main">
+                <div class="left">
+                    <ul>
+                        <li class="wow fadeInUp" data-wow-duration="1s" data-wow-delay=".8s"><img src="/Res/miniapp/images/tel3-1.png" alt=""></li>
+                        <li class="wow fadeInUp" data-wow-duration="1s" data-wow-delay=".6s"><img src="/Res/miniapp/images/tel3-2.png" alt=""></li>
+                    </ul>
+                </div>
+                <div class="middle"><div class="wow bounceInUp" data-wow-duration=".5s" data-wow-delay=".2s"><img src="/Res/miniapp/images/tel-3.png" alt=""></div></div>
+                <div class="right">
+                    <ul>
+                        <li class="wow bounceInRight" data-wow-duration="1s" data-wow-delay="1s"><img src="/Res/miniapp/images/tel3-3.png" alt=""></li>
+                        <li class="wow bounceInRight" data-wow-duration="1s" data-wow-delay="1.2s"><img src="/Res/miniapp/images/tel3-4.png" alt=""></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="tel-info wow bounceInUp" data-wow-duration=".5s" data-wow-delay=".2s">
+                <img src="/Res/miniapp/images/tel-cake.jpg" alt="">
+            </div>
+        </div>
+    </div>
+    <!--蛋糕e-->
+    <!--零食s-->
+    <div class="section four">
+        <div class="content">
+            <div class="text snacks wow fadeInDown" data-wow-duration=".5s" data-wow-delay=".2s">
+                <h1>零食<span></span></h1>
+                <p>生鲜无忧生鲜无忧是一款卖生鲜综合社区商城。包含每日优选、果蔬超市、生鲜水产、乳品粮油及商品分种类显示等功能，最大程度上满足商城用户的需求。</p>
+            </div>
+            <div class="tel-main">
+                <div class="left">
+                    <ul>
+                        <li class="wow fadeInUp" data-wow-duration="1s" data-wow-delay=".8s"><img src="/Res/miniapp/images/tel4-1.png" alt=""></li>
+                        <li class="wow fadeInUp" data-wow-duration="1s" data-wow-delay=".6s"><img src="/Res/miniapp/images/tel4-2.png" alt=""></li>
+                    </ul>
+                </div>
+                <div class="middle"><div class="wow bounceInUp" data-wow-duration=".5s" data-wow-delay=".2s"><img src="/Res/miniapp/images/tel-4.png" alt=""></div></div>
+                <div class="right">
+                    <ul>
+                        <li class="wow bounceInRight" data-wow-duration="1s" data-wow-delay="1s"><img src="/Res/miniapp/images/tel4-3.png" alt=""></li>
+                        <li class="wow bounceInRight" data-wow-duration="1s" data-wow-delay="1.2s"><img src="/Res/miniapp/images/tel4-4.png" alt=""></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="tel-info wow bounceInUp" data-wow-duration=".5s" data-wow-delay=".2s">
+                <img src="/Res/miniapp/images/tel-snacks.jpg" alt="">
+            </div>
+        </div>
+    </div>
+    <!--零食e-->
+    <!--美妆s-->
+    <div class="section five">
+        <div class="content">
+            <div class="text beauty wow fadeInDown" data-wow-duration=".5s" data-wow-delay=".2s">
+                <h1>美妆<span></span></h1>
+                <p>生鲜无忧生鲜无忧是一款卖生鲜综合社区商城。包含每日优选、果蔬超市、生鲜水产、乳品粮油及商品分种类显示等功能，最大程度上满足商城用户的需求。</p>
+            </div>
+            <div class="tel-main">
+                <div class="left">
+                    <ul>
+                        <li class="wow fadeInUp" data-wow-duration="1s" data-wow-delay=".8s"><img src="/Res/miniapp/images/tel5-1.png" alt=""></li>
+                        <li class="wow fadeInUp" data-wow-duration="1s" data-wow-delay=".6s"><img src="/Res/miniapp/images/tel5-2.png" alt=""></li>
+                    </ul>
+                </div>
+                <div class="middle"><div class="wow bounceInUp" data-wow-duration=".5s" data-wow-delay=".2s"><img src="/Res/miniapp/images/tel-5.png" alt=""></div></div>
+                <div class="right">
+                    <ul>
+                        <li class="wow bounceInRight" data-wow-duration="1s" data-wow-delay="1s"><img src="/Res/miniapp/images/tel5-3.png" alt=""></li>
+                        <li class="wow bounceInRight" data-wow-duration="1s" data-wow-delay="1.2s"><img src="/Res/miniapp/images/tel5-4.png" alt=""></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="tel-info wow bounceInUp" data-wow-duration=".5s" data-wow-delay=".2s">
+                <img src="/Res/miniapp/images/tel-beauty.jpg" alt="">
+            </div>
+        </div>
+    </div>
+    <!--美妆e-->
+    <!--家电s-->
+    <div class="section six">
+        <div class="content">
+            <div class="text appliances wow fadeInDown" data-wow-duration=".5s" data-wow-delay=".2s">
+                <h1>家电<span></span></h1>
+                <p>生鲜无忧生鲜无忧是一款卖生鲜综合社区商城。包含每日优选、果蔬超市、生鲜水产、乳品粮油及商品分种类显示等功能，最大程度上满足商城用户的需求。</p>
+            </div>
+            <div class="tel-main">
+                <div class="left">
+                    <ul>
+                        <li class="wow fadeInUp" data-wow-duration="1s" data-wow-delay=".8s"><img src="/Res/miniapp/images/tel6-1.png" alt=""></li>
+                        <li class="wow fadeInUp" data-wow-duration="1s" data-wow-delay=".6s"><img src="/Res/miniapp/images/tel6-2.png" alt=""></li>
+                    </ul>
+                </div>
+                <div class="middle"><div class="wow bounceInUp" data-wow-duration=".5s" data-wow-delay=".2s"><img src="/Res/miniapp/images/tel-6.png" alt=""></div></div>
+                <div class="right">
+                    <ul>
+                        <li class="wow bounceInRight" data-wow-duration="1s" data-wow-delay="1s"><img src="/Res/miniapp/images/tel6-3.png" alt=""></li>
+                        <li class="wow bounceInRight" data-wow-duration="1s" data-wow-delay="1.2s"><img src="/Res/miniapp/images/tel6-4.png" alt=""></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="tel-info wow bounceInUp" data-wow-duration=".5s" data-wow-delay=".2s">
+                <img src="/Res/miniapp/images/tel-appliances.jpg" alt="">
+            </div>
+        </div>
+    </div>
+    <!--家电e-->
+    <!--花店s-->
+    <div class="section seven">
+        <div class="content">
+            <div class="text flower wow fadeInDown" data-wow-duration=".5s" data-wow-delay=".2s">
+                <h1>花店<span></span></h1>
+                <p>生鲜无忧生鲜无忧是一款卖生鲜综合社区商城。包含每日优选、果蔬超市、生鲜水产、乳品粮油及商品分种类显示等功能，最大程度上满足商城用户的需求。</p>
+            </div>
+            <div class="tel-main">
+                <div class="left">
+                    <ul>
+                        <li class="wow fadeInUp" data-wow-duration="1s" data-wow-delay=".8s"><img src="/Res/miniapp/images/tel7-1.png" alt=""></li>
+                        <li class="wow fadeInUp" data-wow-duration="1s" data-wow-delay=".6s"><img src="/Res/miniapp/images/tel7-2.png" alt=""></li>
+                    </ul>
+                </div>
+                <div class="middle"><div class="wow bounceInUp" data-wow-duration=".5s" data-wow-delay=".2s"><img src="/Res/miniapp/images/tel-7.png" alt=""></div></div>
+                <div class="right">
+                    <ul>
+                        <li class="wow bounceInRight" data-wow-duration="1s" data-wow-delay="1s"><img src="/Res/miniapp/images/tel7-3.png" alt=""></li>
+                        <li class="wow bounceInRight" data-wow-duration="1s" data-wow-delay="1.2s"><img src="/Res/miniapp/images/tel7-4.png" alt=""></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="tel-info wow bounceInUp" data-wow-duration=".5s" data-wow-delay=".2s">
+                <img src="/Res/miniapp/images/tel-flower.jpg" alt="">
+            </div>
+        </div>
+    </div>
+    <!--花店e-->
+    <!--五金s-->
+    <div class="section eight">
+        <div class="content">
+            <div class="text hardware wow fadeInDown" data-wow-duration=".5s" data-wow-delay=".2s">
+                <h1>五金<span></span></h1>
+                <p>生鲜无忧生鲜无忧是一款卖生鲜综合社区商城。包含每日优选、果蔬超市、生鲜水产、乳品粮油及商品分种类显示等功能，最大程度上满足商城用户的需求。</p>
+            </div>
+            <div class="tel-main">
+                <div class="left">
+                    <ul>
+                        <li class="wow fadeInUp" data-wow-duration="1s" data-wow-delay=".8s"><img src="/Res/miniapp/images/tel8-1.png" alt=""></li>
+                        <li class="wow fadeInUp" data-wow-duration="1s" data-wow-delay=".6s"><img src="/Res/miniapp/images/tel8-2.png" alt=""></li>
+                    </ul>
+                </div>
+                <div class="middle"><div class="wow bounceInUp" data-wow-duration=".5s" data-wow-delay=".2s"><img src="/Res/miniapp/images/tel-8.png" alt=""></div></div>
+                <div class="right">
+                    <ul>
+                        <li class="wow bounceInRight" data-wow-duration="1s" data-wow-delay="1s"><img src="/Res/miniapp/images/tel8-3.png" alt=""></li>
+                        <li class="wow bounceInRight" data-wow-duration="1s" data-wow-delay="1.2s"><img src="/Res/miniapp/images/tel8-4.png" alt=""></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="tel-info wow bounceInUp" data-wow-duration=".5s" data-wow-delay=".2s">
+                <img src="/Res/miniapp/images/tel-hardware.jpg" alt="">
+            </div>
+        </div>
+    </div>
+    <!--五金e-->
+    <!--价格体系s-->
+    <div class="section">
+        <div class="wrap-price" id="page2">
+            <div class="text wow fadeInDown" data-wow-duration=".5s" data-wow-delay=".2s">
+                <h1>价格体系</h1>
+                <p>采用灵活、简单的收费方式，您可以根据需求为不同的应用选择合适的方案。</p>
+            </div>
+            <ul class="clearfix">
+                <li class="wow fadeInLeft">
+                    <div class="info">
+                        <div class="top">
+                            <h2>基础版</h2>
+                            <p><span>￥300</span>/月</p>
+                            <p>￥3000/年（按年优惠两个月）</p>
+                        </div>
+                        <dl class="bottom">
+                            <dd class="clearfix"><span>形式</span><a><strong>基础模板</strong></a></dd>
+                            <dd class="clearfix"><span>小程序注册</span><a><img src="/Res/miniapp/images/icon-sel.png" alt=""></a></dd>
+                            <dd class="clearfix"><span>微信支付申请</span><a><img src="/Res/miniapp/images/icon-sel.png" alt=""></a></dd>
+                            <dd class="clearfix"><span>北琳商城</span><a><img src="/Res/miniapp/images/icon-sel.png" alt=""></a></dd>
+                            <dd class="clearfix"><span>商户后台</span><a><img src="/Res/miniapp/images/icon-sel.png" alt=""></a></dd>
+                            <dd class="clearfix"><span>7*24小时售后</span><a><img src="/Res/miniapp/images/icon-sel.png" alt=""></a></dd>
+                        </dl>
+                        <div class="tip">（以上费用不含微信平台注册必交费用）</div>
+                    </div>
+                </li>
+                <li class="wow fadeInLeft">
+                    <div class="info">
+                        <div class="top">
+                            <h2>升级版</h2>
+                            <p><span>￥500</span>/月</p>
+                            <p>￥5000/年（按年优惠两个月）</p>
+                        </div>
+                        <dl class="bottom">
+                            <dt>基础版</dt>
+                            <dd class="clearfix"><span>形式</span><a><strong>功能升级</strong></a></dd>
+                            <dd class="clearfix"><span>动态主推显示</span><a><img src="/Res/miniapp/images/icon-sel.png" alt=""></a></dd>
+                            <dd class="clearfix"><span>订单查收提醒</span><a><img src="/Res/miniapp/images/icon-sel.png" alt=""></a></dd>
+                            <dd class="clearfix"><span>图标定制</span><a><img src="/Res/miniapp/images/icon-sel.png" alt=""></a></dd>
+                            <dd class="clearfix"><span>商品数量升级</span><a><img src="/Res/miniapp/images/icon-sel.png" alt=""></a></dd>
+                            <dd class="clearfix"><span>首页模板更换</span><a><img src="/Res/miniapp/images/icon-sel.png" alt=""></a></dd>
+                            <dd class="clearfix"><span>营销页面插件包</span><a><img src="/Res/miniapp/images/icon-sel.png" alt=""></a></dd>
+                            <dd class="clearfix"><span>精英晋级培训包</span><a><img src="/Res/miniapp/images/icon-sel.png" alt=""></a></dd>
+                            <dd class="clearfix"><span>专属客服经理</span><a><img src="/Res/miniapp/images/icon-sel.png" alt=""></a></dd>
+                        </dl>
+                        <div class="tip">（以上费用不含微信平台注册必交费用）</div>
+                    </div>
+                </li>
+                <li class="wow fadeInRight">
+                    <div class="info">
+                        <div class="top">
+                            <h2>高级版</h2>
+                            <p><span>￥8000</span>(起)/年</p>
+                            <p>次年起，每套400/月（维护费），4000/年</p>
+                        </div>
+                        <dl class="bottom">
+                            <dt>升级版</dt>
+                            <dd class="clearfix"><span>形式</span><a><strong>展示效果定制</strong></a></dd>
+                            <dd class="clearfix"><span>首页模板定制</span><a><strong>1版(全新设计)</strong></a></dd>
+                            <dd class="clearfix"><span>详情展示方式定制</span><a><strong>+1000元/版(设计)</strong></a></dd>
+                            <dd class="clearfix"><span>富文本插件植入</span><a><strong>+1000元/个(插件)</strong></a></dd>
+                            <dd class="clearfix"><span>展示框特效植入</span><a><strong>+1000元/个(框)</strong></a></dd>
+                            <dd class="clearfix"><span>商品展示视频</span><a><strong>+1000元/个(模块)</strong></a></dd>
+                        </dl>
+                        <div class="tip">（以上费用不含微信平台注册必交费用）</div>
+                    </div>
+                </li>
+                <li class="wow fadeInLeft">
+                    <div class="info">
+                        <div class="top">
+                            <h2>全套定制</h2>
+                            <p><span>￥12000</span>/(起)年</p>
+                            <p>次年起，每套500/月（维护费），5000/年</p>
+                        </div>
+                        <dl class="bottom">
+                            <dd class="clearfix"><span>形式</span><a><strong>商场架构功能定制</strong></a></dd>
+                            <dd class="clearfix"><span>首页模板定制</span><a><strong>1版(全新设计)</strong></a></dd>
+                            <dd class="clearfix"><span>详情展示方式定制</span><a><strong>1版(全新设计)</strong></a></dd>
+                            <dd class="clearfix"><span>富文本插件植入</span><a><strong>全套(全新升级)</strong></a></dd>
+                            <dd class="clearfix"><span>展示框特效植入</span><a><strong>3个特效框(全新设计)</strong></a></dd>
+                            <dd class="clearfix"><span>商品展示视频</span><a><strong>2组接入位(全新设计)</strong></a></dd>
+                            <dd class="clearfix"><span>商家后台</span><a><strong>根据功能需求附加价</strong></a></dd>
+                        </dl>
+                        <div class="tip">（以上费用不含微信平台注册必交费用）</div>
+                    </div>
+                </li>
+                <li class="new wow fadeInRight">
+                    <div class="info">
+                        <div class="top">
+                            <h2>全新小程序系统开发</h2>
+                            <p><span>￥12000</span>/(起)年</p>
+                            <p>全需求定制，根据具体定制需求估价</p>
+                        </div>
+                        <dl class="bottom">
+                            <div class="pic"><img src="/Res/miniapp/images/price.png" alt=""></div>
+                        </dl>
+                    </div>
+                </li>
+            </ul>
+
+
+
+        </div>
+    </div>
+    <!--价格体系end-->
+
+
+
+
+
+
+</div>
+
+ <!--弹框s-->
+<div class="wrap-a">
+    <div class="info">
+        <div class="close"><img src="/Res/miniapp/images/icon-close.png" alt=""></div>
+        <div class="pic"><img src="/Res/miniapp/images/tk-ewm.jpg" alt=""></div>
+        <p>扫描二维码关注「 北琳网络 」公众号<br>申请北琳小程序</p>
+    </div>
+</div>
+<!--弹框end--> 

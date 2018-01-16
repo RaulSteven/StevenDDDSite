@@ -1,0 +1,273 @@
+﻿@{
+    ViewBag.Title = "菜单管理";
+}
+@section headCss{
+    <!-- 选择美化 -->
+    <link href="/Res/admin/css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="/Res/admin/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <!-- 树形菜单样式 -->
+    <link href="/Res/admin/css/plugins/jsTree/style.min.css" rel="stylesheet">
+    <!-- Ladda style -->
+    <link href="/Res/admin/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
+}
+@section footJs{
+    <!-- iCheck -->
+    <script src="/Res/admin/js/plugins/iCheck/icheck.min.js"></script>
+    <!-- Jquery Validate -->
+    <script src="/Res/admin/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="~/Res/admin/js/plugins/validate/messages_cn.js"></script>
+    <!-- Ladda -->
+    <script src="/Res/admin/js/plugins/ladda/spin.min.js"></script>
+    <script src="/Res/admin/js/plugins/ladda/ladda.min.js"></script>
+    <script src="/Res/admin/js/plugins/ladda/ladda.jquery.min.js"></script>
+    <!-- jsTree -->
+    <script src="/Res/admin/js/plugins/jsTree/jstree.min.js"></script>
+    <script src="~/Res/admin/js/CommonSubmit.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#menuJsTree').jstree({
+                'core': {
+                    'data': {
+                        'url': function (node) {
+                            return "@Url.Action("GetJsonList")";
+                        }
+                    }
+                }
+            }).bind("loaded.jstree", function (e, data) {
+                data.instance.open_all(); // -1 opens all nodes in the container
+            });
+
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+        });
+        var $apartTree = $('#menuJsTree');
+
+        var currentNode;
+        $apartTree.bind("activate_node.jstree", function (obj, e) {
+            // 处理代码
+            // 获取当前节点
+            currentNode = e.node;
+            $.get('@Url.Action("GetMenu")' + '?id=' + currentNode.id, function (result) {
+                if (result.code != 1) {
+                    showErrorMsg(result.msg);
+                    return;
+                }
+                setForm(result.data);
+            });
+        });
+
+        var setForm = function (menu) {
+            $('.i-checks').iCheck('uncheck');
+            $('#hdId').val(menu.Id);
+            $('#hdPid').val(menu.Pid);
+            $('#txtName').val(menu.Name);
+            $('#txtSort').val(menu.Sort);
+            $('#txtRemark').val(menu.Remark);
+            $('#txtUrl').val(menu.Url);
+            $('#txtIcon').val(menu.Icon);
+            if (menu.ButtonList) {
+                for (var i = 0; i < menu.ButtonList.length; i++) {
+                    var btnId = menu.ButtonList[i];
+                    $('#ButtonArray_' + btnId).iCheck('check');
+                }
+            }
+
+        };
+
+        var submitCallBack = function (result) {
+            if (result.code != 1) {
+                //错误
+                showErrorMsg(result.msg);
+                return;
+            }
+            showSuccMsg(result.msg);
+            $apartTree.jstree('refresh');
+            $('#hdId').val(result.data.Id);
+            $('#hdPid').val(result.data.Pid);
+        };
+        var rules = {
+            Name: {
+                required: true,
+                rangelength: [2, 50]
+            },
+            Sort: {
+                required: true,
+                digits: true
+            },
+            Remark: {
+                rangelength: [0, 250]
+            },
+            Url: {
+                required: true,
+                rangelength: [0, 250]
+            },
+            Icon: {
+                required: true,
+                rangelength: [2, 20]
+            }
+        };
+        callBackSubmit('@Url.Action("Save")', 'menuForm', 'btnSave', rules, submitCallBack);
+
+        $('#btnAddRoot').click(function () {
+            var emptyApart = { Id: 0, Pid: 0, Sort: 0 };
+            setForm(emptyApart);
+        });
+
+        $('#btnAdd').click(function () {
+            var pid = 0;
+            if (currentNode) {
+                pid = currentNode.id;
+            }
+            var emptyApart = { Id: 0, Pid: pid,Sort: 0 };
+            setForm(emptyApart);
+        });
+
+        var btnDelete = $('#btnDele').ladda();
+        btnDelete.click(function () {
+            if (currentNode) {
+                showDeleConfirm(doDelete);
+
+            } else {
+                showErrorMsg('请选择需要删除的菜单！');
+            }
+        });
+
+        var doDelete = function () {
+            btnDelete.ladda('start');
+            $.ajax({
+                url: '@Url.Action("Delete")',
+                type: "Post",
+                data: { Id: currentNode.id },
+                success: function (result) {
+                    btnDelete.ladda('stop');
+                    if (result.code != 1) {
+                        showErrorMsg(result.msg);
+                    } else {
+                        showSuccMsg(result.msg);
+                        $apartTree.jstree('refresh');
+                    }
+                },
+            });
+        };
+    </script>
+}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>操作区</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button type="button" class="btn btn-w-m btn-primary" id="btnAddRoot">添加菜单</button>
+                        <button type="button" class="btn btn-w-m btn-primary" id="btnAdd">添加子菜单</button>
+                        <button type="button" class="btn btn-w-m btn-danger" id="btnDele">删除</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>菜单树形列表</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+
+                <div id="menuJsTree"></div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>编辑区</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <form method="post" class="form-horizontal" id="menuForm">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="hdId" name="Id" />
+                    <input type="hidden" id="hdPid" name="Pid" />
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">名称：</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="Name" class="form-control" id="txtName" />
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">排序：</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="Sort" class="form-control" id="txtSort" />
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Url：</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="Url" class="form-control" id="txtUrl" />
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Icon：</label>
+                        <div class="col-sm-4">
+                            <input type="text" name="Icon" class="form-control" id="txtIcon" />
+                        </div>
+                        <a target="_blank" href="http://fontawesome.io/icons/" class="btn btn-default">查看Icon</a>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">按钮：</label>
+                        <div class="col-sm-10">
+                            @Html.CheckboxList("ButtonArray", SysButton.Add.GetSList())
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">备注：</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" name="Remark" id="txtRemark" placeholder="备注"></textarea>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <div class="col-sm-10 col-sm-offset-2">
+                            <button class="btn btn-primary" type="button" id="btnSave">保存</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

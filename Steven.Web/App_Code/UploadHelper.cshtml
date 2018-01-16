@@ -1,0 +1,138 @@
+﻿@using System.Web.Mvc
+@using Steven.Domain.Enums
+@using Steven.Web.Framework.Extensions
+@helper SingleUpload(WebViewPage wvp, TableSource src, string btnId, string imgId, string hdId, long imgAttaId = 0, int width = 100, int height = 100)
+{
+    <div class="row" id="row_upload_@btnId">
+        <input type="hidden" name="@hdId" id="@hdId" value="@imgAttaId" />
+        <div class="col-md-4">
+            <span class="btn btn-success fileinput-button">
+                <span>上传图片</span>
+                <input type="file" accept="image/*" name="Filedata" id="@btnId">
+            </span>
+        </div>
+        <div class="col-md-6">
+            <div class="text-center">
+                <span class="thumbnail">
+                    <img id="@imgId" src="@wvp.Url.ThumbUrl(imgAttaId,width,height,"/Res/shop/img/img_icon.png")" width="@width" height="@height" alt="" />
+                </span>
+            </div>
+            <div class="progress mt10" @(imgAttaId == 0 ? "" : "hidden")>
+                <div style="width: 00%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="0" role="progressbar" class="progress-bar">
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(function () {
+            var $row = $('#row_upload_@btnId');
+
+            $('#@btnId').fileupload({
+                url: '@wvp.Html.Raw(wvp.Url.Action("BatchUpload", "Attachment", new { src, width, height }))',
+                dataType: 'json',
+                add: function (e, data) {
+                    //判断文件类型
+                    var acceptFileTypes = /^image\/(gif|jpe?g|png)$/i;
+                    //文件类型判断
+                    if (data.files[0]['type'].length && !acceptFileTypes.test(data.files[0]['type'])) {
+                        showErrorMsg('请上传图片!');
+                        return;
+                    }
+
+                    $row.find('.progress-bar').css('width', '0%');
+                    $row.find('.progress').show();
+                    //预览
+                    if (data.files && data.files[0]) {
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            $('#@imgId').attr('src', e.target.result);
+                        }
+                        reader.readAsDataURL(data.files[0]);
+                    }
+
+                    data.submit();
+                },
+                progress: function (e, data) {
+                    var progress = parseInt(data.loaded / data.total * 100, 10);
+                    $row.find('.progress-bar').css('width', progress + '%');
+                },
+                done: function (e, data) {
+                    var json = data.result;
+                    $('#@imgId').attr('src', json.imgPath);
+                    $('#@hdId').val(json.id);
+                    $row.find('.progress').hide();
+                }
+            });
+        });
+    </script>
+}
+
+@helper ShopSingleUpload(WebViewPage wvp, TableSource src, string btnId, string imgId, string hdId, long imgAttaId = 0, int width = 100, int height = 100)
+{
+    <div class="btn-up">
+        <div class="btn-uploading">
+            <input id="@btnId" type="file" class="btn btn-outline btn-primary" name="Filedata">
+        </div>
+    </div>
+    <ul class="clearfix imglist pic-up" id="ul_@btnId">
+        <li>
+            <input type="hidden" name="@hdId" id="@hdId" value="@imgAttaId" />
+            <div class="cur" id="shade_@hdId"></div>
+            <span class="pic"><img id="@imgId" src="@wvp.Url.ThumbUrl(imgAttaId,width,height,"/Res/shop/img/img_icon.png")" width="@width" height="@height" alt="" /></span>
+            <a href="javascript:;" title="删除" class="ico-close"></a>
+            <div class="progress mt10" hidden>
+                <div style="width: 00%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="0" role="progressbar" class="progress-bar">
+                </div>
+            </div>
+        </li>
+    </ul>
+    <script>
+        $(function () {
+            var $ulImg = $('#ul_@btnId');
+
+            $ulImg.find('.ico-close').click(function () {
+                $('#@hdId').val('');
+                $('#@imgId').attr('src', '/Res/shop/img/img_icon.png');
+            });
+
+            $('#@btnId').fileupload({
+                url: '@wvp.Html.Raw(wvp.Url.Action("BatchUpload", "Utility", new { src, width, height }))',
+                dataType: 'json',
+                add: function (e, data) {
+                    //判断文件类型
+                    var acceptFileTypes = /^image\/(gif|jpe?g|png)$/i;
+                    //文件类型判断
+                    if (data.files[0]['type'].length && !acceptFileTypes.test(data.files[0]['type'])) {
+                        showErrorMsg('请上传图片!');
+                        return;
+                    }
+
+                    $ulImg.find('.progress-bar').css('width', '0%');
+                    $ulImg.find('.progress').show();
+                    //预览
+                    if (data.files && data.files[0]) {
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            $('#@imgId').attr('src', e.target.result);
+                        }
+                        reader.readAsDataURL(data.files[0]);
+                    }
+                    $('#shade_@hdId').addClass('cur');
+
+                    data.submit();
+                },
+                progress: function (e, data) {
+                    var progress = parseInt(data.loaded / data.total * 100, 10);
+                    $ulImg.find('.progress-bar').css('width', progress + '%');
+                },
+                done: function (e, data) {
+                    var json = data.result;
+                    $('#@imgId').attr('src', json.imgPath);
+                    $('#@hdId').val(json.id);
+                    $ulImg.find('.progress').hide();
+                    $('#shade_@hdId').removeClass('cur');
+                }
+            });
+        });
+    </script>
+}

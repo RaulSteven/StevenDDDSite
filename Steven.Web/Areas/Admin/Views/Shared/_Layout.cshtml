@@ -1,0 +1,221 @@
+﻿@{
+    var configRep = DependencyResolver.Current.GetService<ISysConfigRepository>();
+    var title = ViewBag.Title + "_管理系统_" + configRep.WebSiteName;
+    AdminUser user = ViewBag.CurrUser;
+
+    var msg = (string)TempData["msg"];
+    var msgType = (string)TempData["msgType"];
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@title</title>
+    <!-- style -->
+    <link href="/Res/admin/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/Res/admin/font-awesome/css/font-awesome.css" rel="stylesheet">
+    <!-- Toastr style -->
+    <link href="/Res/admin/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+    <!-- Gritter -->
+    <link href="/Res/admin/js/plugins/gritter/jquery.gritter.css" rel="stylesheet">
+    <!-- 弹窗提示 Sweet Alert -->
+    <link href="/Res/admin/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+    <link href="/Res/admin/css/animate.css" rel="stylesheet">
+    @RenderSection("headCss", required: false)
+    <link href="/Res/admin/css/style.css" rel="stylesheet">
+    <script src="/Res/admin/js/jquery-3.1.1.min.js"></script>
+</head>
+<body>
+    <div id="wrapper">
+        <!-- 菜单 -->
+        <nav class="navbar-default navbar-static-side" role="navigation">
+            <div class="sidebar-collapse">
+                <ul class="nav metismenu" id="side-menu">
+                    <!-- header -->
+                    <li class="nav-header">
+                        <div class="dropdown profile-element">
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                                <span class="clear">
+                                    <span class="text-center"><img alt="image" class="img-circle" src="@Url.ThumbUrl(user.UserModel.HeadImageId,48,48,"/Res/admin/img/profile_small.jpg")" /></span>
+                                    <span class="block m-t-xs"><strong class="font-bold">@user.UserModel.UserName</strong></span>
+                                    <span class="text-muted text-xs block">@user.UserModel.RealName <strong class="caret"></strong></span>
+                                </span>
+                            </a>
+                            <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                                <li><a href="@Url.Home()" target="_blank">网站首页</a></li>
+                                <li><a href="@Url.Action("ClearCache","Home")">更新缓存</a></li>
+                                <li><a href="@Url.Action("UserProfile","Home")">个人中心</a></li>
+                                <li><a href="@Url.AdminLogout()">退出登录</a></li>
+                            </ul>
+                        </div>
+                        <div class="logo-element"> BL </div>
+                    </li>
+                    <!-- header -->
+                    <!-- item -->
+                    @foreach (var menu in user.UserModel.MenuList)
+                    {
+                        <li @user.UserModel.IsFirstMenu(menu)>
+                            <a href="@menu.Url">
+                                <i class="@menu.Icon"></i> <span class="nav-label">@menu.Name</span>
+                                @if (menu.HasChildren)
+                                {
+                                    <span class="fa arrow"></span>
+                                }
+                            </a>
+                            @if (menu.HasChildren)
+                            {
+                                <ul class="nav nav-second-level">
+                                    @foreach (var secMenu in menu.Children)
+                                    {
+                                        <li @user.UserModel.IsSecMenu(secMenu) >
+                                            <a href="@secMenu.Url"><i class="@secMenu.Icon"></i>@secMenu.Name
+                                            @if (secMenu.HasChildren)
+                                            {
+                                                <span class="fa arrow"></span>
+                                            }
+                                            </a>
+                                            @if (secMenu.Children != null && secMenu.Children.Any())
+                                            {
+                                                <ul class="nav nav-third-level">
+                                                    @foreach (var thirdMenu in secMenu.Children)
+                                                    {
+                                                        <li @user.UserModel.IsThirdMenu(thirdMenu) >
+                                                            <a href="@thirdMenu.Url"><i class="@thirdMenu.Icon"></i>@thirdMenu.Name</a>
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            }
+                                        </li>
+
+                                    }
+                                </ul>
+                            }
+
+                        </li>
+                    }
+                    <!-- item -->
+                </ul>
+            </div>
+        </nav>
+        <!-- 菜单 end -->
+        <div id="page-wrapper" class="gray-bg">
+            <!-- 顶部栏 -->
+            <div class="row border-bottom">
+                <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
+                    <div class="navbar-header">
+                        <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+                    </div>
+                    <ul class="nav navbar-top-links navbar-right">
+                        <li> <a href="@Url.AdminLogout()"> <i class="fa fa-sign-out"></i>退出</a> </li>
+                    </ul>
+                </nav>
+            </div>
+            <!-- 顶部栏 end -->
+            <div class="row wrapper border-bottom white-bg page-heading">
+                <div class="col-lg-10">
+                    <h2>@ViewBag.Title</h2>
+                    <ol class="breadcrumb">
+                        @if (user.UserModel.FirstMenu != null)
+                        {
+                            <li> <a href="@user.UserModel.FirstMenu.Url">@user.UserModel.FirstMenu.Name</a> </li>
+                        }
+                        @if (user.UserModel.SecMenu != null)
+                        {
+                            <li> <a href="@user.UserModel.SecMenu.Url">@user.UserModel.SecMenu.Name</a> </li>
+                        }
+                        @if (user.UserModel.ThiredMenu != null)
+                        {
+                            <li> <a href="@user.UserModel.ThiredMenu.Url">@user.UserModel.ThiredMenu.Name</a> </li>
+                        }
+                    </ol>
+                </div>
+                <div class="col-lg-2"></div>
+            </div>
+            <!-- 主体 -->
+            <div class="wrapper wrapper-content animated fadeInLeft">
+                @RenderBody()
+            </div>
+            <!-- 主体 end -->
+            <!-- 底部信息 -->
+            <div class="footer">
+                <div class="pull-right"><strong>@configRep.WebSiteName 管理系统</strong> </div>
+                <div> @configRep.WebSiteCopyRight </div>
+            </div>
+            <!-- 底部信息 end -->
+
+        </div>
+    </div>
+
+    <!-- Mainly scripts -->
+    <script src="/Res/admin/js/bootstrap.min.js"></script>
+    <script src="/Res/admin/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="/Res/admin/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="/Res/admin/js/inspinia.js"></script>
+    <script src="/Res/admin/js/plugins/pace/pace.min.js"></script>
+    <!-- toastr -->
+    <script src="/Res/admin/js/plugins/toastr/toastr.min.js"></script>
+    <!-- 弹窗 Sweet alert -->
+    <script src="/Res/admin/js/plugins/sweetalert/sweetalert.min.js"></script>
+    <script>
+        var showMsg = function (msg) {
+            swal({
+                title: msg,
+                timer: 2000,
+                showConfirmButton: true
+            });
+        };
+
+        var showSuccMsg = function (msg) {
+            swal({
+                title: msg,
+                type: "success",
+                timer: 2000
+            });
+        };
+
+        var showErrorMsg = function (msg) {
+            swal({
+                title: msg,
+                type: "error",
+                timer: 2000
+            });
+        };
+
+
+        var showDeleConfirm = function (deleCallBack) {
+            swal({
+                title: '确定删除这些数据吗？',
+                text: '数据删除后将无法恢复！',
+                type: "warning",
+                showCancelButton: true,
+                cancelButtonText: "取消",
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "删除",
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true
+            }, function () {
+                if (deleCallBack) {
+                    deleCallBack();
+                }
+            });
+        };
+
+    </script>
+    @if (!string.IsNullOrEmpty(msg))
+    {
+
+        <script type="text/javascript">
+            var msgType = '@msgType';
+            if (msgType == 'succ') {
+                showSuccMsg('@msg');
+            } else {
+                showErrorMsg('@msg');
+            }
+        </script>
+    }
+    @RenderSection("footJs", false)
+</body>
+</html>

@@ -1,0 +1,168 @@
+﻿@model IEnumerable<ProductClassify>
+@{
+    ViewBag.Title = "分组管理";
+    ViewBag.MenuIndex = 1;
+    string op = ViewBag.Op;
+}
+
+@section headCss{
+    @Styles.Render("~/bundles/ladda-css", "~/bundles/jQuery-File-Upload-css", "~/Res/admin/css/plugins/iCheck/skins/beilin/css-bundle")
+}
+
+@section footJs{
+    @Scripts.Render("~/bundles/ladda-js", "~/Res/admin/js/plugins/validate/validate-bundle", "~/bundles/jQuery-File-Upload", "~/bundles/submit-js")
+
+    @*提交表单*@
+    <script>
+        var rules = {
+            Name: {
+                required: true,
+                rangelength: [1, 4]
+            },
+            Sort: {
+                required: true,
+                digits: true
+            }
+        };
+        var calBack = function (result) {
+            if (result.code != 1) {
+                showErrorMsg(result.msg);
+                return;
+            }
+            $editModal.modal('hide');
+            showSuccMsg(result.msg);
+            loadData();
+        };
+        var preSubmit = function () {
+            var picId = $("#IconAttaId").val();
+            if (!picId || picId == '0') {
+                $('#spanImgMsg').show();
+                return false;
+            }
+            $('#spanImgMsg').hide();
+            return true;
+        };
+        callBackSubmit('@Url.Action("ClassifyEdit")', 'productClassifyForm', 'btnSaveClz', rules, calBack, preSubmit);
+    </script>
+    @*添加、编辑、加载列表*@
+    <script>
+        var loadData = function () {
+            $('.group-a').load('@Url.Action("_ClassifyList")');
+        };
+        loadData();
+
+        var $editModal = $('#productClassifyEdit');
+        $('#btnAdd').click(function () {
+            doEdit(0);
+        });
+
+
+        var doEdit = function (id) {
+            //$.get 获取数据，设置表单
+            if (id == 0) {
+                var clz = { Id: 0, IconAttaId: 0, IconUrl: '/Res/shop/img/img_icon.png', Name: '', Sort: '' };
+                setForm(clz);
+                $editModal.modal('show');
+                return;
+            }
+            $.get("@Url.Action("GetClassify")" + '?id=' + id, function (data) {
+                setForm(data);
+                $editModal.modal('show');
+            }, 'json');
+        };
+
+        var setForm = function (clz) {
+            $('#hdId').val(clz.Id);
+            $('#IconAttaId').val(clz.IconAttaId);
+            $('#imgThum').attr('src', clz.IconUrl);
+            $('#txtName').val(clz.Name);
+            $('#txtSort').val(clz.Sort);
+        };
+
+        if ('@op' == 'add') {
+            doEdit(0);
+        }
+    </script>
+    @*删除*@
+    @BatchDeleteHelper.ShopSingleDele(Url.Action("ClassifyDele"))
+    <script>
+
+        var doDele = function (name, id) {
+            showConfirm('确定要删除【' + name + '】吗？', function () {
+                doSingleDele(id, function (result) {
+                    hideConfim();
+                    if (result.code == 1) {
+                        loadData();
+                    }
+                });
+            });
+        };
+    </script>
+}
+<div class="wrapper wrapper-content animated fadeInLeft content">
+    <div class="box-set box-b">
+        <!--头部菜单-->
+        <!--头部菜单-->
+        <div class="row">
+            @Html.Partial("_ProductManageMenu", 4)
+            <div class="add-btns"><button class="btn btn-success w100" id="btnAdd">+ 添加分组</button></div>
+        </div>
+        <!--头部菜单 end-->
+        <!--内容-->
+        <div class="box-a">
+            <!--分组-->
+            <div class="group-a">
+            </div>
+            <!--分组end-->
+        </div>
+        <!--内容end-->
+
+        <div class="modal inmodal" id="productClassifyEdit" tabindex="-1" role="dialog" data-backdrop="static" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content animated bounceInRight">
+                    <div class="modal-body">
+                        <form method="post" id="productClassifyForm">
+                            <h1 class="title-tip">
+                                提示<img data-dismiss="modal" src="/Res/shop/img/icon-close-g.png" alt="">
+                            </h1>
+                            <input type="hidden" id="hdId" name="Id" />
+                            @Html.AntiForgeryToken()
+                            <div class="row-up">
+                                <div class="row-a">
+                                    <div class="title">分组图标</div>
+                                    <!-- 上传图片列表 -->
+                                    <div class="pic-upload-wrap">
+                                        <span class="field-validation-error" id="spanImgMsg" style="display: none" data-valmsg-for="IconAttaId" data-valmsg-replace="true">
+                                            <span for="IconAttaId" generated="true" class="">请上传图片</span>
+                                        </span>
+                                        @UploadHelper.ShopSingleUpload(this, TableSource.ProductClassify, "btnUpload", "imgThum", "IconAttaId")
+                                        <div class="pic-tip">图片大小不超过3M，建议使用正方形图片（最佳尺寸：750 x 750像素）</div>
+                                    </div>
+                                    <!-- 上传图片列表 end -->
+                                </div>
+                                <div class="row-a">
+                                    <div class="title">分组名称</div>
+                                    <div class="info-a">
+                                        <input type="text" id="txtName" class="form-control" name="Name" placeholder="请输入分组名称">
+                                    </div>
+                                </div>
+                                <div class="row-a">
+                                    <div class="title">排序</div>
+                                    <div class="info-a">
+                                        <input type="text" name="Sort" id="txtSort" class="form-control" placeholder="排序值，排序值越大越靠前">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="btn-sure">
+                                <button id="btnSaveClz" class="btn-sure-a">确定</button>
+                            </div>
+                            <div class="cancel">
+                                <button data-dismiss="modal" class="btn-cancel-a">取消</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

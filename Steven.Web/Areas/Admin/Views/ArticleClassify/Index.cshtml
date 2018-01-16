@@ -1,0 +1,250 @@
+﻿@{
+    ViewBag.Title = "文章分类管理";
+}
+@section headCss{
+    <!-- 选择美化 -->
+    <link href="/Res/admin/css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="/Res/admin/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <!-- 树形菜单样式 -->
+    <link href="/Res/admin/css/plugins/jsTree/style.min.css" rel="stylesheet">
+    <!-- Ladda style -->
+    <link href="/Res/admin/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
+    @Styles.Render("~/bundles/jQuery-File-Upload-css")
+}
+@section footJs{
+    <!--上传插件-->
+    @Scripts.Render("~/bundles/jQuery-File-Upload")
+    <!-- iCheck -->
+    <script src="/Res/admin/js/plugins/iCheck/icheck.min.js"></script>
+    <!-- Jquery Validate -->
+    <script src="/Res/admin/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="~/Res/admin/js/plugins/validate/messages_cn.js"></script>
+    <!-- Ladda -->
+    <script src="/Res/admin/js/plugins/ladda/spin.min.js"></script>
+    <script src="/Res/admin/js/plugins/ladda/ladda.min.js"></script>
+    <script src="/Res/admin/js/plugins/ladda/ladda.jquery.min.js"></script>
+    <!-- jsTree -->
+    <script src="/Res/admin/js/plugins/jsTree/jstree.min.js"></script>
+    <script src="~/Res/admin/js/CommonSubmit.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#articleClassifyZtree').jstree({
+                'core': {
+                    'data': {
+                        'url': function (node) {
+                            return "@Url.Action("GetZTreeJson")";
+                        }
+                    }
+                }
+            }).bind("loaded.jstree", function (e, data) {
+                data.instance.open_all(); // -1 opens all nodes in the container
+            });
+
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+        });
+        var $jsTree = $('#articleClassifyZtree');
+
+        var currentNode;
+        $jsTree.bind("activate_node.jstree", function (obj, e) {
+            // 处理代码
+            // 获取当前节点
+            currentNode = e.node;
+            $.get('@Url.Action("GetClassify")' + '?id=' + currentNode.id, function (result) {
+                if (result.code != 1) {
+                    showErrorMsg(result.msg);
+                    return;
+                }
+                setForm(result.data);
+            });
+        });
+
+        var setForm = function (clz) {
+            $('.i-checks').iCheck('uncheck');
+            $('#hdId').val(clz.Id);
+            $('#hdPid').val(clz.PId);
+            $('#hdTreePath').val(clz.TreePath);
+            $('#txtName').val(clz.Name);
+            $('#txtRemark').val(clz.Remark);
+            if (clz.PartialViewCode) {
+                $('#PartialViewCode_' + clz.PartialViewCode).iCheck('check');
+            }
+            //PicUrl
+            $('#PicAttaId').val(clz.PicAttaId);
+            if (clz.PicUrl) {
+                $('#imgThum').attr('src', clz.PicUrl);
+            } else {
+                $('#imgThum').attr('src', '/Res/shop/img/img_icon.png');
+            }
+        };
+
+        var submitCallBack = function (result) {
+            if (result.code != 1) {
+                //错误
+                showErrorMsg(result.msg);
+                return;
+            }
+            showSuccMsg(result.msg);
+            $jsTree.jstree('refresh');
+            $('#hdId').val(result.data.Id);
+            $('#hdPid').val(result.data.PId);
+            $('#hdTreePath').val(result.data.treePath);
+        };
+        var rules = {
+            Name: {
+                required: true,
+                rangelength: [2, 50]
+            },
+            Remark: {
+                rangelength: [0, 250]
+            }
+        };
+        callBackSubmit('@Url.Action("Save")', 'classifyForm', 'btnSave', rules, submitCallBack);
+
+        $('#btnAddRoot').click(function () {
+            var emptyClz = { Id: 0, PId: 0, TreePath: '', PartialViewCode:1 };
+            setForm(emptyClz);
+        });
+
+        $('#btnAdd').click(function () {
+            var pid = 0;
+            var treePath = '';
+            if (currentNode) {
+                pid = currentNode.id;
+            }
+            var apart = { Id: 0, PId: pid, treePath: treePath, PartialViewCode: 1 };
+            setForm(apart);
+        });
+
+        var btnDelete = $('#btnDele').ladda();
+        btnDelete.click(function () {
+            if (currentNode) {
+                showDeleConfirm(doDelete);
+            } else {
+                showErrorMsg('请选择需要删除的菜单！');
+            }
+        });
+
+        var doDelete = function () {
+            btnDelete.ladda('start');
+            $.ajax({
+                url: '@Url.Action("Delete")',
+                type: "Post",
+                data: { Id: currentNode.id },
+                success: function (result) {
+                    btnDelete.ladda('stop');
+                    if (result.code != 1) {
+                        showErrorMsg(result.msg);
+                    } else {
+                        showSuccMsg(result.msg);
+                        $jsTree.jstree('refresh');
+                    }
+                },
+            });
+        };
+    </script>
+}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>操作区</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button type="button" class="btn btn-w-m btn-primary" id="btnAddRoot">添加主分类</button>
+                        <button type="button" class="btn btn-w-m btn-primary" id="btnAdd">添加子分类</button>
+                        <button type="button" class="btn btn-w-m btn-danger" id="btnDele">删除</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>分类树形列表</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div id="articleClassifyZtree"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>编辑区</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <form method="post" class="form-horizontal" id="classifyForm">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="hdId" name="Id" />
+                    <input type="hidden" id="hdPid" name="Pid"/>
+                    <input type="hidden" id="hdTreePath" name="TreePath" />
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">名称：</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="Name" class="form-control" id="txtName"/>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">图标：</label>
+                        <div class="col-sm-5">
+                            @UploadHelper.SingleUpload(this, TableSource.ArticleClassify, "btnUpload", "imgThum", "PicAttaId")
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">显示模板：</label>
+                        <div class="col-sm-10">
+                            @Html.RadioButtonList("PartialViewCode", ArticleListType.Text.GetSListInt())                       
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">备注：</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" name="Remark" id="txtRemark" placeholder="备注"></textarea>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <div class="col-sm-10 col-sm-offset-2">
+                            <button class="btn btn-primary" type="button" id="btnSave">保存</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

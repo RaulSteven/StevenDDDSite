@@ -1,0 +1,197 @@
+﻿@{
+    Shop shop = ViewBag.Shop;
+    ViewBag.Title =string.Format("商户[{0}]-商品分类列表", shop.Name);
+}
+@section headCss{
+    <link href="~/Res/admin/js/plugins/boostrap-table/bootstrap-table.css" rel="stylesheet" />
+    <!-- Ladda style -->
+    <link href="/Res/admin/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
+    <!-- 选择美化 -->
+    <link href="/Res/admin/css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="/Res/admin/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+
+}
+@section footJs{
+    <!--上传插件-->
+    <script src="~/Res/global/js/lib/uploadify/jquery.uploadify.min.js"></script>
+    <!-- Jquery Validate -->
+    <script src="/Res/admin/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="~/Res/admin/js/plugins/validate/messages_cn.js"></script>
+    <!-- iCheck -->
+    <script src="/Res/admin/js/plugins/iCheck/icheck.min.js"></script>
+    <!-- Ladda -->
+    <script src="/Res/admin/js/plugins/ladda/spin.min.js"></script>
+    <script src="/Res/admin/js/plugins/ladda/ladda.min.js"></script>
+    <script src="/Res/admin/js/plugins/ladda/ladda.jquery.min.js"></script>
+    <script src="~/Res/admin/js/plugins/boostrap-table/bootstrap-table.js"></script>
+    <script src="~/Res/admin/js/plugins/boostrap-table/locale/bootstrap-table-zh-CN.js"></script>
+    <script src="~/Res/admin/js/datefommater.js"></script>
+    @BoostrapTableHelper.InitTable("datatable", Url.Action("GetProductClassifyList", new {shopId=shop.Id }))
+    @BatchDeleteHelper.InitBatchDele(this, TableSource.ProductClassify, "datatable",Url.Action("ProductClassifyBatchDele"))
+    @UploadHelper.SingleUpload(this, TableSource.Shop, "btnUpload", "imgThum", "IconAttaId")
+    <script src="~/Res/admin/js/CommonSubmit.js"></script>
+
+    @*列表，编辑*@
+    <script>
+        var searchQuery = function (params) {
+            return params;
+        };
+
+        $('#btnSearch').click(function () {
+            $('#datatable').bootstrapTable('refreshOptions', {
+                pageNumber: 1
+            });
+        });
+
+        var $editModal = $('#productClassifyEdit');
+        var doEdit = function (id) {
+            //$.get 获取数据，设置表单
+            if (id == 0) {
+                var clz = { Id: 0, IconAttaId: 0, IconUrl: '/Res/admin/img/logo.jpg', Name: '', Sort: 0 };
+                setForm(clz);
+                $editModal.modal('show');
+                return;
+            }
+            $.get("@Url.Action("GetProductClassify")"+'?id='+id, function (data) {
+                setForm(data);
+                $editModal.modal('show');
+            }, 'json');
+        };
+
+        var setForm = function (clz) {
+            $('#hdId').val(clz.Id);
+            $('#IconAttaId').val(clz.IconAttaId);
+            $('#imgThum').attr('src', clz.IconUrl);
+            $('#txtName').val(clz.Name);
+            $('#txtSort').val(clz.Sort);
+        };
+
+        $('#btnAdd').click(function () {
+            doEdit(0);
+        });
+
+        function editFormatter(value, row) {
+            var html = '<button class="btn-white btn  btn-xs" onClick="doEdit(' + value + ')"><i class="fa fa-edit"></i> 编辑</button>';
+            return html;
+        };
+
+    </script>
+
+    @*表单提交*@
+    <script>
+        var rules = {
+            Name: {
+                required: true,
+                rangelength: [1, 4]
+            },
+            Sort: {
+                required: true,
+                digits: true
+            }
+        };
+        callBackSubmit('@Url.Action("ProductClassifyEdit")','productClassifyForm', 'btnSaveClz', rules, function (result) {
+            if (result.code != 1) {
+                showErrorMsg(result.msg);
+                return;
+            }
+            $editModal.modal('hide');
+            showSuccMsg(result.msg);
+            $('#datatable').bootstrapTable('refresh');
+        });
+    </script>
+
+}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>@ViewBag.Title</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div class="row" id="toolBar">
+                    
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <a class="btn btn-white" href="@ViewBag.ReUrl">返回</a>
+                        <button type="button" class="btn btn-w-m btn-primary" id="btnAdd">新建</button>
+                        <button type="button" onclick="doBathDele()" class="btn btn-w-m btn-danger">批量删除</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="jqGrid_wrapper">
+                        <table id="datatable">
+                            <thead>
+                                <tr>
+                                    <th data-checkbox="true"></th>
+                                    <th data-field="Name" data-sortable="true">名称</th>
+                                    <th data-field="ProductNumber" data-sortable="true">商品数量</th>
+                                    <th data-field="Sort" data-sortable="true">排序</th>
+                                    <th data-field="UpdateTime" data-sortable="true" data-formatter="dateTimeFormatter">更新时间</th>
+                                    <th data-field="Id" data-formatter="editFormatter">操作</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal inmodal" id="productClassifyEdit" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content animated bounceInRight">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">编辑商品分类</h4>
+                <small class="font-bold"></small>
+            </div>
+            <div class="modal-body">
+                <form method="post" class="form-horizontal" id="productClassifyForm">
+                    <input type="hidden" name="ShopId" value="@shop.Id" />
+                    <input type="hidden" id="hdId" name="Id" />
+                    @Html.AntiForgeryToken()
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">分组图标：</label>
+                        <div class="col-sm-4">
+                            <div class="row">
+                                <input type="hidden" name="IconAttaId" id="IconAttaId" />
+                                <div class="col-sm-8 text-center">
+                                    <span class="thumbnail">
+                                        <img src="/Res/admin/img/logo.jpg" id="imgThum" width="100" height="100">
+                                        <button class="btn btn-xs mt10 btn-danger">删除</button>
+                                    </span>
+                                </div>
+                                <div class="col-lg-4"><button class="btn btn-primary mb10" id="btnUpload">上传图片</button></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">分组名称：</label>
+                        <div class="col-sm-4">
+                            <input type="text" name="Name" id="txtName" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">排序：</label>
+                        <div class="col-sm-4">
+                            <input type="text" name="Sort" id="txtSort" class="form-control" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="btnSaveClz">保存</button>
+            </div>
+        </div>
+    </div>
+</div>

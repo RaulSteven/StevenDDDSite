@@ -1,0 +1,121 @@
+﻿@model JobTask
+@{
+    ViewBag.Title = "编辑任务";
+
+}
+@section headCss{
+    <!-- Ladda style -->
+    <link href="/Res/admin/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
+}
+@section footJs{
+    <!-- Jquery Validate -->
+    <script src="/Res/admin/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="~/Res/admin/js/plugins/validate/messages_cn.js"></script>
+    <!-- Ladda -->
+    <script src="/Res/admin/js/plugins/ladda/spin.min.js"></script>
+    <script src="/Res/admin/js/plugins/ladda/ladda.min.js"></script>
+    <script src="/Res/admin/js/plugins/ladda/ladda.jquery.min.js"></script>
+
+    <script src="~/Res/admin/js/CommonSubmit.js"></script>
+    <script>
+        var rules = {
+            TaskName: {
+                maxlength: 255
+            },
+            CronExpressionString: {
+                maxlength: 200
+            },
+            CronRemark: {
+                maxlength: 300
+            },
+            Assembly: {
+                maxlength: 150
+            },
+            Class: {
+                maxlength: 150
+            }
+        };
+        commonSubmit('@Url.Action("JobTaskEdit")', '@ViewBag.ReUrl', 'saveForm', 'btnSave', rules,null);
+
+      
+    </script>
+   
+}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>@ViewBag.Title</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link"> <i class="fa fa-chevron-up"></i> </a>
+                    <a class="close-link"> <i class="fa fa-times"></i> </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <form method="post" class="form-horizontal" id="saveForm">
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(m => m.Id)
+                    @Html.HiddenFor(m => m.TaskId)
+                    @Html.HiddenFor(m => m.RecentRunTime)
+                    @Html.HiddenFor(m => m.LastRunTime)
+                    @Html.HiddenFor(m => m.Status)
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">名称：</label>
+                        <div class="col-sm-11">
+                            <input type="text" name="TaskName" value="@Model.TaskName" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">任务参数：</label>
+                        <div class="col-sm-11">
+                            <input type="text" name="TaskParam" value="@Model.TaskParam" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">Cron表达式：</label>
+                        <div class="col-sm-11">
+                            <input type="text" name="CronExpressionString" value="@Model.CronExpressionString" class="form-control"/>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">表达式说明：</label>
+                        <div class="col-sm-11">
+                            <input type="text" name="CronRemark" value="@Model.CronRemark" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">程序集名称：</label>
+                        <div class="col-sm-11">
+                            <input type="text" name="Assembly" value="@Model.Assembly" class="form-control"/>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">类名(包含命名空间)：</label>
+                        <div class="col-sm-11">
+                            <input type="text" name="Class" value="@Model.Class" class="form-control"/>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">备注：</label>
+                        <div class="col-sm-11">
+                            <textarea class="form-control" name="Remark" placeholder="备注">@Model.Remark</textarea>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <div class="col-sm-11 col-sm-offset-2">
+                            <a class="btn btn-white" href="@ViewBag.ReUrl">返回</a>
+                            <button class="btn btn-primary" type="button" id="btnSave">保存</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,57 @@
+﻿@model  ArticleClassify
+@{
+    ViewBag.Title = Model.Name;
+    ViewBag.MenuIndex = 0;
+}
+
+@section footJs{
+    @Scripts.Render("~/shop/pagination")
+    <script>
+        var limit = 8;
+        var currPage = 1;
+        var lstUrl = '@Url.Action("_ArticleList",new {clzId=Model.Id })';
+        var total = 1;
+        var loadPager = function () {
+            var offset = (currPage - 1) * limit;
+            if (offset > total) {
+                showMsg('没有更多数据了！');
+                return;
+            }
+            var url = lstUrl+"&offset="+offset+"&limit="+limit;
+            $("#lstArticle").load(url, function () {
+                //判断当前数据
+            });
+        };
+        loadPager();
+    </script>
+}
+<div class="wrapper wrapper-content animated fadeInLeft">
+    <div class="clearfix">
+        <div class="middle-info">
+
+            <div class="box-b">
+                <!--头部菜单-->
+                <div class="row">
+                    <div class="col-lg-12 ibox">
+                        <div class="left-title">@Model.Name</div>
+                    </div>
+                </div>
+                <!--头部菜单 end-->
+                <!--信息列表s-->
+                <div class="meg-list">
+                    <ul id="lstArticle"></ul>
+                    <!--翻页-->
+                    <div class="box-page">
+                        <div id="pagination" class="page"></div>
+                    </div>
+                </div>
+                <!--信息列表end-->
+            </div>
+        </div>
+        <!--右边问题-->
+        <div class="right-info">
+            @Html.Partial("_Link")
+        </div>
+        <!--右边问题end-->
+    </div>
+</div>

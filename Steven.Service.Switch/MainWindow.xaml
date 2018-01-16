@@ -1,0 +1,11 @@
+﻿<Window x:Class="Steven.Service.Switch.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MLS后台服务" Height="162.667" Width="263">
+    <Grid>
+        <Button Content="安装服务" Click="btnSetup_Click" Height="23" HorizontalAlignment="Left" Margin="44,24,0,0" Name="btnSetup" VerticalAlignment="Top" Width="75" />
+        <Button Content="卸载服务" Click="btnRemove_Click" Height="23" HorizontalAlignment="Right" Margin="0,24,28,0" Name="btnRemove" VerticalAlignment="Top" Width="75" />
+        <Button Content="启动" Click="btnStart_Click" Height="23" HorizontalAlignment="Left" Margin="44,70,0,0" Name="btnStart" VerticalAlignment="Top" Width="75" />
+        <Button Content="停止" Click="btnStop_Click" Height="23" HorizontalAlignment="Left" Margin="156,70,0,0" Name="btnStop" VerticalAlignment="Top" Width="75" />
+    </Grid>
+</Window>

@@ -1,0 +1,114 @@
+﻿@model SysPartnerModel
+@{
+    ViewBag.Title = "编辑合作伙伴信息";
+
+}
+@section headCss{
+    <!-- Ladda style -->
+    <link href="/Res/admin/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
+}
+@section footJs{
+    <!-- Jquery Validate -->
+    <script src="/Res/admin/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="~/Res/admin/js/plugins/validate/messages_cn.js"></script>
+    <!--上传插件-->
+    <script src="~/Res/global/js/lib/uploadify/jquery.uploadify.min.js"></script>
+    <!-- Ladda -->
+    <script src="/Res/admin/js/plugins/ladda/spin.min.js"></script>
+    <script src="/Res/admin/js/plugins/ladda/ladda.min.js"></script>
+    <script src="/Res/admin/js/plugins/ladda/ladda.jquery.min.js"></script>
+
+    <script src="~/Res/admin/js/CommonSubmit.js"></script>
+    <script>
+        var rules = {
+            Name: {
+                required: true,
+                rangelength: [2, 50]
+            },
+            Sort: {
+                required: true,
+                digits: true
+            },
+            PartnerUrl: {
+                required: true,
+                rangelength: [2, 250],
+                url:true
+            }
+        };
+        var preSubmit = function () {
+            var picId = $('#PicAttaId').val();
+            if (!picId || picId == '0') {
+                showErrorMsg('图片不能为空！');
+                return false;
+            }
+            return true;
+        };
+        commonSubmit('@Url.Action("Edit")', '@ViewBag.ReUrl', 'saveForm', 'btnSave', rules,preSubmit);
+
+      
+    </script>
+    @UploadHelper.SingleUpload(this, TableSource.SysCase, "btnUpload", "imgThum", "PicAttaId")
+   
+}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>@ViewBag.Title</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link"> <i class="fa fa-chevron-up"></i> </a>
+                    <a class="close-link"> <i class="fa fa-times"></i> </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <form method="post" class="form-horizontal" id="saveForm">
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(m => m.Id)
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">名称：</label>
+                        <div class="col-sm-11">
+                            <input type="text" name="Name" value="@Model.Name" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">伙伴Logo：</label>
+                        <div class="col-sm-11">
+                            <div class="row">
+                                @Html.HiddenFor(m=>m.PicAttaId)
+                                <div class="col-sm-2 text-center">
+                                    <span class="thumbnail">
+                                        <img src="@Url.ThumbUrl(Model.PicAttaId,100,100, "/Res/shop/img/img_icon.png")" id="imgThum" width="100" height="100">
+                                        <button class="btn btn-xs mt10 btn-danger">删除</button>
+                                    </span>
+                                </div>
+                                <div class="col-lg-4"><button class="btn btn-primary mb10" id="btnUpload">上传图片</button></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">排序：</label>
+                        <div class="col-sm-11">
+                            <input type="text" name="Sort" placeholder="排序值越大，越靠前" value="@(Model.Id>0?Model.Sort.ToString():"")" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">Url地址：</label>
+                        <div class="col-sm-11">
+                            <input type="text" name="PartnerUrl" value="@Model.PartnerUrl" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <div class="col-sm-11 col-sm-offset-2">
+                            <a class="btn btn-white" href="@ViewBag.ReUrl">返回</a>
+                            <button class="btn btn-primary" type="button" id="btnSave">保存</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

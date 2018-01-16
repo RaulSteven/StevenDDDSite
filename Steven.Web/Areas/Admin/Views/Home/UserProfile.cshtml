@@ -1,0 +1,191 @@
+﻿@model Users
+@{
+    ViewBag.Title = "个人中心";
+    string genderIcon = "";
+    switch (Model.Gender)
+    {
+        case Gender.Unknown:
+            genderIcon = "fa-user";
+            break;
+        case Gender.Male:
+            genderIcon = "fa-male";
+            break;
+        case Gender.Female:
+            genderIcon = "fa-female";
+            break;
+        default:
+            break;
+    }
+}
+@section headCss{
+    <!-- 选择美化 -->
+    <link href="/Res/admin/css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="/Res/admin/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <!-- Ladda style -->
+    <link href="/Res/admin/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
+    @Styles.Render("~/bundles/jQuery-File-Upload-css")
+}
+@section footJs{
+    <!-- Jquery Validate -->
+    <script src="/Res/admin/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="~/Res/admin/js/plugins/validate/messages_cn.js"></script>
+    <!-- iCheck -->
+    <script src="/Res/admin/js/plugins/iCheck/icheck.min.js"></script>
+    <!--上传插件-->
+    @Scripts.Render("~/bundles/jQuery-File-Upload")
+    <!-- Ladda -->
+    <script src="/Res/admin/js/plugins/ladda/spin.min.js"></script>
+    <script src="/Res/admin/js/plugins/ladda/ladda.min.js"></script>
+    <script src="/Res/admin/js/plugins/ladda/ladda.jquery.min.js"></script>
+    <script src="~/Res/admin/js/CommonSubmit.js"></script>
+    <script>
+        var pwdRules = {
+            Password: {
+                required: true,
+                rangelength: [6, 10]
+            },
+            NewPassword: {
+                required: true,
+                rangelength: [6, 10]
+            }
+        };
+        commonSubmit('@Url.Action("ModifyPwd")', '@Request.RawUrl', 'ModifyPwdForm', 'btnSavePwd', pwdRules);
+
+
+        var infoRules = {
+            LoginName: {
+                required: true,
+                rangelength: [2, 50]
+            },
+            RealName: {
+                required: true,
+                rangelength: [2, 50]
+            }
+        };
+        commonSubmit('@Url.Action("ModifyInfo")', '@Request.RawUrl', 'modifyInfoForm', 'btnSaveInfo', infoRules);
+
+
+        $(document).ready(function () {
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+        });
+
+    </script>
+}
+<div class="wrapper wrapper-content">
+    <div class="row animated fadeInRight">
+        <div class="col-md-4">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>个人信息</h5>
+                </div>
+                <div>
+                    <div class="ibox-content no-padding border-left-right">
+                        <img alt="image" class="img-responsive" src="@Url.FileUrl(Model.HeadImageId)">
+                    </div>
+                    <div class="ibox-content profile-content">
+                        <h4><strong>@Model.LoginName</strong>/<strong>@Model.RealName</strong></h4>
+                        <p><i class="fa @genderIcon"></i> @Model.Gender.GetDescriotion()</p>
+                        <p>登录次数:@Model.LoginCount</p>
+                        <p>状态：@Model.CommonStatus.GetDescriotion()</p>
+                        <div class="user-button">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <button type="button" class="btn btn-primary btn-sm btn-block" data-toggle="modal" data-target="#modifyPwd"><i class="fa fa-lock"></i> 修改密码</button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button type="button" class="btn btn-default btn-sm btn-block" data-toggle="modal" data-target="#modifyInfo"><i class="fa fa-info-circle"></i> 修改个人信息</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal inmodal" id="modifyPwd" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content animated bounceInRight">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <i class="fa fa-laptop modal-icon"></i>
+                    <h4 class="modal-title">修改密码</h4>
+                </div>
+                <div class="modal-body">
+                    <form method="post" class="form-horizontal" id="ModifyPwdForm">
+                        @Html.AntiForgeryToken()
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">旧密码：</label>
+                            <div class="col-sm-10">
+                                <input type="password" name="Password" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">新密码：</label>
+                            <div class="col-sm-10">
+                                <input type="password" name="NewPassword" class="form-control" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="btnSavePwd">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal inmodal" id="modifyInfo" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content animated bounceInRight">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <i class="fa fa-laptop modal-icon"></i>
+                    <h4 class="modal-title">修改个人信息</h4>
+                </div>
+                <div class="modal-body">
+                    <form method="post" class="form-horizontal" id="modifyInfoForm">
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.Id)
+                        @Html.HiddenFor(m => m.CommonStatus)
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">登录名：</label>
+                            <div class="col-sm-9">
+                                <input type="text" name="LoginName" value="@Model.LoginName" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">真实姓名：</label>
+                            <div class="col-sm-9">
+                                <input type="text" name="RealName" value="@Model.RealName" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">性别：</label>
+                            <div class="col-sm-9">
+                                @Html.RadioButtonList("Gender", Gender.Female.GetSList(), Model.Gender)
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">头像：</label>
+                            <div class="col-sm-6">
+                                @UploadHelper.SingleUpload(this, TableSource.Users, "btnUpload", "imgThum", "HeadImageId", Model.HeadImageId)
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="btnSaveInfo">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

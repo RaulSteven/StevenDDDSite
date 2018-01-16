@@ -1,0 +1,141 @@
+﻿@model LoginModel
+@{
+    Layout = null;
+    var configRep = DependencyResolver.Current.GetService<ISysConfigRepository>();
+    var title = configRep.WebSiteName + "_商户系统";
+}
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <!-- Mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="address=no">
+    <meta name="Keywords" content="government">
+    <meta name="description" content="government">
+    <title>@title</title>
+    <!-- 页面样式 -->
+    <link rel="stylesheet" type="text/css" href="/Res/global/style/global.css">
+    <link rel="stylesheet" type="text/css" href="/Res/login/style/login.css">
+    <!-- style -->
+    <link href="/Res/admin/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/Res/admin/font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="/Res/admin/css/animate.css" rel="stylesheet">
+    <!-- 弹窗提示 Sweet Alert -->
+    <link href="/Res/admin/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+    <!-- Ladda style -->
+    <link href="/Res/admin/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- 主体 -->
+    <div class="main">
+        <!-- 左边 -->
+        <div class="wrap-1">
+            <div class="logo"><a href="@Url.Home()"><img src="/Res/login/imags/logo.jpg" alt=""></a></div>
+            <div class="info">
+                <form id="loginForm" method="post" >
+                    <ul>
+                        <li>
+                            <span>用户名</span>
+                            <input type="text" name="UserName" class="input-text sel" placeholder="请输入用户名">
+                        </li>
+                        <li>
+                            <span>密码</span>
+                            <input type="password" name="Password" class="input-text sel-mm" placeholder="请输入密码"  >
+                        </li>
+                        <li class="yzm-tip">
+                            <span>验证码</span>
+                            <input type="text" name="ValidateCode" class="input-text sel-yzm" placeholder="请输入验证码">
+                            <div class="yzm"><img id="captcha_img" width="100" height="50" src="@Url.GetVerifyCode()" alt=""></div>
+                        </li>
+                        <li><div class="tip-error" id="divError" style="display:none"></div> </li>
+                        <li class="clearfix">
+                            @Html.AntiForgeryToken()
+                            <input type="submit" id="btnLogin" value="登录" class="btn-login cur">
+                        </li>
+                    </ul>
+                </form>
+            </div>
+            <div class="copyright">@configRep.WebSiteCopyRight @configRep.WebSiteICP</div>
+        </div>
+        <!-- 左边 end-->
+        <!-- 右边 -->
+        <div class="wrap-2">
+            <div class="pic"><img src="/Res/login/imags/banner.jpg" alt=""></div>
+            <div class="help">技术支持：@configRep.CompanyName</div>
+        </div>
+        <!-- 右边 end-->
+    </div>
+    <!-- 主体 end -->
+    <!-- 脚本 -->
+    <!-- Mainly scripts -->
+    <script src="/Res/admin/js/jquery-3.1.1.min.js"></script>
+    <script src="/Res/admin/js/bootstrap.min.js"></script>
+    <!-- Jquery Validate -->
+    <script src="/Res/admin/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="~/Res/admin/js/plugins/validate/messages_cn.js"></script>
+    <!-- 弹窗 Sweet alert -->
+    <script src="/Res/admin/js/plugins/sweetalert/sweetalert.min.js"></script>
+    <!-- Ladda -->
+    <script src="/Res/admin/js/plugins/ladda/spin.min.js"></script>
+    <script src="/Res/admin/js/plugins/ladda/ladda.min.js"></script>
+    <script src="/Res/admin/js/plugins/ladda/ladda.jquery.min.js"></script>
+    <script src="~/Res/admin/js/CommonSubmit.js"></script>
+    <script type="text/javascript">
+        var showSuccMsg = function (msg) {
+            swal({
+                title: msg,
+                type: "success",
+                timer: 2000
+            });
+        };
+
+        var showErrorMsg = function (msg) {
+            swal({
+                title: msg,
+                type: "error",
+                timer: 2000
+            });
+        };
+        $(document).ready(function () {
+
+            $("input[type!='button']").focus(function () {
+                $(this).css({ "border-bottom": "1px solid #ff7146", "color": "#ff7146" });
+            });
+            $("input[type!='button']").blur(function () {
+                $(this).css({ "border-bottom": "1px solid #dedede", "color": "#000" });
+            });
+
+            $('#captcha_img').click(function () {
+                changeCode();
+            });
+            function genTimestamp() {
+                var time = new Date();
+                return time.getTime();
+            };
+            function changeCode() {
+                $("#captcha_img").attr("src", "@Url.GetVerifyCode()?t=" + genTimestamp());
+            };
+            var rules = {
+                UserName: {
+                    required: true
+                },
+                Password: {
+                    required: true
+                },
+                ValidateCode: {
+                    required: true,
+                    digits:true
+                }
+            };
+            commonSubmit('@Url.Action("Login")', '@Url.ShopHome()', 'loginForm', 'btnLogin', rules);
+            
+        });
+    </script>
+</body>
+</html>

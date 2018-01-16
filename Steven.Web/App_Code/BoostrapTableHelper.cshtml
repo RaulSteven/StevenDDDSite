@@ -1,0 +1,25 @@
+﻿@helper  InitTable(string id, string url,string orderName="UpdateTime",string queryParams= "searchQuery")
+{
+
+    <script>
+        $(document).ready(function () {
+            $('#@id').bootstrapTable({
+                url: '@url',
+                sidePagination: 'server',
+                pagination: true,
+                sortName: '@orderName',
+                sortOrder: 'desc',
+                pageNumber: 1,
+                pageSize: 10,
+                pageList: [10, 25, 50, 100],
+                selectItemName: "Id",
+                searchOnEnterKey: true,
+                clickToSelect: true,
+                idField: "Id",
+                toolbar: 'toolBar',
+                queryParams: @queryParams
+            });
+        });
+
+    </script>
+}

@@ -1,0 +1,302 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{59C55421-76D6-443E-9254-A89EEED2186E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Steven.Domain</RootNamespace>
+    <AssemblyName>Steven.Domain</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Dapper, Version=1.50.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.1.50.2\lib\net451\Dapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Dapper.Contrib, Version=1.50.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.Contrib.1.50.0\lib\net45\Dapper.Contrib.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Senparc.Weixin, Version=4.14.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Senparc.Weixin.4.14.4\lib\net45\Senparc.Weixin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Senparc.Weixin.MP, Version=14.6.11.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Senparc.Weixin.MP.14.6.11\lib\net45\Senparc.Weixin.MP.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="APIModels\ConfirmOrderModel.cs" />
+    <Compile Include="APIModels\OrderModel.cs" />
+    <Compile Include="Enums\AdminHomeDataType.cs" />
+    <Compile Include="Enums\BuyType.cs" />
+    <Compile Include="Enums\ShopFittingType.cs" />
+    <Compile Include="Enums\ShopStatus.cs" />
+    <Compile Include="Enums\TemplateType.cs" />
+    <Compile Include="Infrastructure\SysUser\AdminUser.cs" />
+    <Compile Include="Infrastructure\SysUser\AdminUserModel.cs" />
+    <Compile Include="APIModels\ApiPagedModel.cs" />
+    <Compile Include="APIModels\ApiResultBase.cs" />
+    <Compile Include="APIModels\ApiResultCode.cs" />
+    <Compile Include="APIModels\ApiResultModel.cs" />
+    <Compile Include="APIModels\HeadUtility.cs" />
+    <Compile Include="APIModels\HomeProductModel.cs" />
+    <Compile Include="APIModels\IPaged.cs" />
+    <Compile Include="APIModels\ShipingAddressModel.cs" />
+    <Compile Include="APIModels\UserCartModel.cs" />
+    <Compile Include="Enums\AdPosKey.cs" />
+    <Compile Include="Enums\AdvertStatus.cs" />
+    <Compile Include="Enums\AdvertType.cs" />
+    <Compile Include="Enums\ArticleType.cs" />
+    <Compile Include="Enums\CommonStatus.cs" />
+    <Compile Include="Enums\FilterCurrent.cs" />
+    <Compile Include="Enums\FilterGroupOp.cs" />
+    <Compile Include="Enums\FilterRuleOp.cs" />
+    <Compile Include="Enums\Gender.cs" />
+    <Compile Include="Enums\OperationType.cs" />
+    <Compile Include="Enums\OrderStatus.cs" />
+    <Compile Include="Enums\ProductStatus.cs" />
+    <Compile Include="Enums\ProductUnit.cs" />
+    <Compile Include="Enums\ProductTag.cs" />
+    <Compile Include="Enums\SigninStatus.cs" />
+    <Compile Include="Enums\SysButton.cs" />
+    <Compile Include="Enums\SysConfigClassify.cs" />
+    <Compile Include="Enums\SysConfigType.cs" />
+    <Compile Include="Enums\TableSource.cs" />
+    <Compile Include="Enums\Target.cs" />
+    <Compile Include="Enums\ThumMode.cs" />
+    <Compile Include="Enums\UserJoinWay.cs" />
+    <Compile Include="Enums\WaterMarkingPosition.cs" />
+    <Compile Include="Infrastructure\AggregateRoot.cs" />
+    <Compile Include="Infrastructure\IAggregateRoot.cs" />
+    <Compile Include="Infrastructure\Pager.cs" />
+    <Compile Include="Infrastructure\SysUser\ISysUser.cs" />
+    <Compile Include="Infrastructure\SysUser\ISysUserModel.cs" />
+    <Compile Include="Infrastructure\SysUser\MemberUserModel.cs" />
+    <Compile Include="Infrastructure\SysUser\MemberUser.cs" />
+    <Compile Include="ModelMethods\AdPosition.cs" />
+    <Compile Include="ModelMethods\Advert.cs" />
+    <Compile Include="ModelMethods\Agent.cs" />
+    <Compile Include="ModelMethods\Article.cs" />
+    <Compile Include="ModelMethods\ArticleClassify.cs" />
+    <Compile Include="ModelMethods\Attachment.cs" />
+    <Compile Include="ModelMethods\Product.cs" />
+    <Compile Include="ModelMethods\Shop.cs" />
+    <Compile Include="ModelMethods\ShopOrder.cs" />
+    <Compile Include="ModelMethods\ShopOrderProduct.cs" />
+    <Compile Include="ModelMethods\SysApartment.cs" />
+    <Compile Include="ModelMethods\SysMenu.cs" />
+    <Compile Include="ModelMethods\UserRole2Filter.cs" />
+    <Compile Include="ModelMethods\Users.cs" />
+    <Compile Include="ModelMethods\WeixinNotify.cs" />
+    <Compile Include="Models\AdPosition.cs" />
+    <Compile Include="Models\Advert.cs" />
+    <Compile Include="Models\Agent.cs" />
+    <Compile Include="Models\Article.cs" />
+    <Compile Include="Models\ArticleClassify.cs" />
+    <Compile Include="Models\Attachment.cs" />
+    <Compile Include="Models\JobTask.cs" />
+    <Compile Include="Models\ShopBuyWay.cs" />
+    <Compile Include="Models\ShopOrder.cs" />
+    <Compile Include="Models\ShopOrderProduct.cs" />
+    <Compile Include="Models\Product.cs" />
+    <Compile Include="Models\ProductClassify.cs" />
+    <Compile Include="Models\ProductSpecs.cs" />
+    <Compile Include="Models\PropertyModel.cs" />
+    <Compile Include="Models\Shop.cs" />
+    <Compile Include="Models\ShopAppInfo.cs" />
+    <Compile Include="Models\ShoppingCart.cs" />
+    <Compile Include="Models\ShopFitting.cs" />
+    <Compile Include="Models\ShopTemplate.cs" />
+    <Compile Include="Models\SysApartment.cs" />
+    <Compile Include="Models\SysCase.cs" />
+    <Compile Include="Models\SysConfig.cs" />
+    <Compile Include="Models\SysExpress.cs" />
+    <Compile Include="Models\SysMenu.cs" />
+    <Compile Include="Models\SysOperationLog.cs" />
+    <Compile Include="Models\SysPartner.cs" />
+    <Compile Include="Models\SysSpecs.cs" />
+    <Compile Include="Models\SysUnit.cs" />
+    <Compile Include="Models\User2Apartment.cs" />
+    <Compile Include="Models\User2Role.cs" />
+    <Compile Include="Models\UserAppInfo.cs" />
+    <Compile Include="Models\UserHistory.cs" />
+    <Compile Include="Models\UserRole.cs" />
+    <Compile Include="Models\UserRole2Apartment.cs" />
+    <Compile Include="Models\UserRole2Filter.cs" />
+    <Compile Include="Models\UserRole2Menu.cs" />
+    <Compile Include="Models\Users.cs" />
+    <Compile Include="Models\UserShipingAddress.cs" />
+    <Compile Include="Models\UsersMedia.cs" />
+    <Compile Include="Models\UsersResetPwd.cs" />
+    <Compile Include="Models\ShopViewRecord.cs" />
+    <Compile Include="Models\WeixinNotify.cs" />
+    <Compile Include="Repositories\IAdPositionRepository.cs" />
+    <Compile Include="Repositories\IAdvertRepository.cs" />
+    <Compile Include="Repositories\IAgentRepository.cs" />
+    <Compile Include="Repositories\IArticleClassifyRepository.cs" />
+    <Compile Include="Repositories\IArticleRepository.cs" />
+    <Compile Include="Repositories\IAttachmentRepository.cs" />
+    <Compile Include="Repositories\IJobTaskRepository.cs" />
+    <Compile Include="Repositories\IShopBuyWayRepository.cs" />
+    <Compile Include="Repositories\IShopOrderProductRepository.cs" />
+    <Compile Include="Repositories\IShopOrderRepository.cs" />
+    <Compile Include="Repositories\IProductClassifyRepository.cs" />
+    <Compile Include="Repositories\IProductRepository.cs" />
+    <Compile Include="Repositories\IProductSpecsRepository.cs" />
+    <Compile Include="Repositories\IRepository.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\IShopAppInfoRepository.cs" />
+    <Compile Include="Repositories\IShoppingCartRepository.cs" />
+    <Compile Include="Repositories\IShopRepository.cs" />
+    <Compile Include="Repositories\IShopFittingRepository.cs" />
+    <Compile Include="Repositories\IShopTemplateRepository.cs" />
+    <Compile Include="Repositories\IShopViewRecordRepository.cs" />
+    <Compile Include="Repositories\ISysApartmentRepository.cs" />
+    <Compile Include="Repositories\ISysCaseRepository.cs" />
+    <Compile Include="Repositories\ISysConfigRepository.cs" />
+    <Compile Include="Repositories\ISysExpressRepository.cs" />
+    <Compile Include="Repositories\ISysMenuRepository.cs" />
+    <Compile Include="Repositories\ISysOperationLogRepository.cs" />
+    <Compile Include="Repositories\ISysPartnerRepository.cs" />
+    <Compile Include="Repositories\ISysSpecsRepository.cs" />
+    <Compile Include="Repositories\ISysUnitRepository.cs" />
+    <Compile Include="Repositories\IUser2ApartmentRepository.cs" />
+    <Compile Include="Repositories\IUser2RoleRepository.cs" />
+    <Compile Include="Repositories\IUserAppInfoRepository.cs" />
+    <Compile Include="Repositories\IUserHistoryRepository.cs" />
+    <Compile Include="Repositories\IUserRole2ApartmentRepository.cs" />
+    <Compile Include="Repositories\IUserRole2FilterRepository.cs" />
+    <Compile Include="Repositories\IUserRole2MenuRepository.cs" />
+    <Compile Include="Repositories\IUserRoleRepository.cs" />
+    <Compile Include="Repositories\IUserShipingAddressRepository.cs" />
+    <Compile Include="Repositories\IUsersMediaRepository.cs" />
+    <Compile Include="Repositories\IUsersRepository.cs" />
+    <Compile Include="Repositories\IUsersResetPwdRepository.cs" />
+    <Compile Include="Repositories\IWeixinNotifyRepository.cs" />
+    <Compile Include="Services\IAgentSvc.cs" />
+    <Compile Include="Services\IArticleSvc.cs" />
+    <Compile Include="Services\IAttachmentSvc.cs" />
+    <Compile Include="Services\IFormsAuthenticationSvc.cs" />
+    <Compile Include="Services\IProductSvc.cs" />
+    <Compile Include="Services\IShopOrderSvc.cs" />
+    <Compile Include="Services\IShoppingCartSvc.cs" />
+    <Compile Include="Services\IShopSvc.cs" />
+    <Compile Include="Services\ISysApartmenSvc.cs" />
+    <Compile Include="Services\ISysMenuSvc.cs" />
+    <Compile Include="Services\IUserRoleSvc.cs" />
+    <Compile Include="Infrastructure\SysUser\ShopUserModel.cs" />
+    <Compile Include="Infrastructure\SysUser\ShopUser.cs" />
+    <Compile Include="Services\IWeixinPaySvc.cs" />
+    <Compile Include="ViewModels\AdminHomeStatisModel.cs" />
+    <Compile Include="ViewModels\AdvertBizModel.cs" />
+    <Compile Include="ViewModels\ArticleFocusMapModel.cs" />
+    <Compile Include="ViewModels\ArticleSimpleModel.cs" />
+    <Compile Include="ViewModels\BuyTypeBizModel.cs" />
+    <Compile Include="ViewModels\ProductModel.cs" />
+    <Compile Include="ViewModels\ProductSelectModel.cs" />
+    <Compile Include="ViewModels\ProductSpecsModel.cs" />
+    <Compile Include="ViewModels\ShopOrderBizModel.cs" />
+    <Compile Include="ViewModels\TypeaheadModel.cs" />
+    <Compile Include="ViewModels\AgentModel.cs" />
+    <Compile Include="ViewModels\DropdownItemModel.cs" />
+    <Compile Include="ViewModels\FilterGroup.cs" />
+    <Compile Include="ViewModels\FilterGroupModel.cs" />
+    <Compile Include="ViewModels\JsonModel.cs" />
+    <Compile Include="ViewModels\LoginResult.cs" />
+    <Compile Include="ViewModels\JsTreeJsonModel.cs" />
+    <Compile Include="ViewModels\ShopModel.cs" />
+    <Compile Include="ViewModels\SysApartModel.cs" />
+    <Compile Include="ViewModels\SysConfigBizModel.cs" />
+    <Compile Include="ViewModels\SysMenuModel.cs" />
+    <Compile Include="ViewModels\SysUserRole2MenuModel.cs" />
+    <Compile Include="ViewModels\UserMenuModel.cs" />
+    <Compile Include="ViewModels\UserRoleModel.cs" />
+    <Compile Include="ViewModels\WxPayData.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Steven.Core\Steven.Core.csproj">
+      <Project>{263f36c1-79e8-46e6-a34b-e9af95d8eddb}</Project>
+      <Name>Steven.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,28 @@
+﻿@model Pager<ArticleListItemModel>
+<script>
+    total=@Model.total;
+    var totalPage = Math.ceil(total / limit);
+
+    $("#pagination").pagination({
+        currentPage: currPage,
+        totalPage: totalPage,
+        isShow: false,
+        count: 4,
+        prevPageText: "< 上一页",
+        nextPageText: "下一页 >",
+        callback: function (current) {
+            currPage = current;
+            loadPager();
+        }
+    });
+</script>
+@foreach (var article in Model.rows)
+{
+    <li>
+        <div class="pic"><img src="@Url.ThumbUrl(article.ClassifyPicAttaId,60,60,"/Res/shop/img/60x60-1.jpg")" alt=""></div>
+        <div class="text">
+            <div class="title"><a href="@Url.Action("ArticleDetail",new { id = article.Id })"><span>[@article.ClassifyName]</span>@article.Title</a></div>
+            <div class="info"><span>@article.Author</span><span>@article.ArticleDateTime.ToDisplayDateTime() 发表</span></div>
+        </div>
+    </li>
+}

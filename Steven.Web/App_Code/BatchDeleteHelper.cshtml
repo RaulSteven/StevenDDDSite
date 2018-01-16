@@ -1,0 +1,97 @@
+﻿@using System.Web.Mvc
+@using Steven.Domain.Enums
+@helper InitBatchDele(WebViewPage wvp, TableSource src, string tableId, string url = "")
+{
+if (string.IsNullOrEmpty(url))
+{
+    url = wvp.Url.Action("BatchDele", "Utility", new { area = "Admin" });
+}
+    <script>
+        var doBathDele = function () {
+            var selectArr = $('#@tableId').bootstrapTable('getSelections');
+            if (selectArr.length == 0) {
+                showMsg('请选择数据');
+                return;
+            }
+            var idArr = [];
+            for (var i = 0; i < selectArr.length; i++) {
+                idArr.push(selectArr[i].Id);
+            }
+            var ids = idArr.join(',');
+            showDeleConfirm(function () {
+                $.ajax({
+                    url: '@url',
+                    type: "Post",
+                    data: { src: '@src', ids: ids },
+                    success: function (result) {
+                        if (result.code != 1) {
+                            //错误
+                            showErrorMsg(result.msg);
+                            return;
+                        }
+                        swal({
+                            title: result.msg,
+                            type: "success",
+                            timer: 2000
+                        });
+                        $('#@tableId').bootstrapTable('refresh');
+                    },
+                });
+            });
+            delete idArr; idArr = null;
+        };
+
+    </script>
+}
+
+@helper ShopSingleDele(string url)
+{
+    <script>
+        var doSingleDele = function (id, deleCallback) {
+            $.ajax({
+                url: '@url',
+                type: "Post",
+                data: {id: id },
+                success: function (result) {
+                    if (result.code != 1) {
+                        //错误
+                        showErrorMsg(result.msg);
+                        return;
+                    }
+                    showSuccMsg(result.msg);
+
+                    if (deleCallback) {
+                        deleCallback(result);
+                    }
+                },
+            });
+        };
+
+    </script>
+}
+
+@helper ShopBatchDele(string url)
+{
+    <script>
+        var doBatchDele = function (ids, deleCallback) {
+            $.ajax({
+                url: '@url',
+                type: "Post",
+                data: {ids: ids },
+                success: function (result) {
+                    if (result.code != 1) {
+                        //错误
+                        showErrorMsg(result.msg);
+                        return;
+                    }
+                    showSuccMsg(result.msg);
+
+                    if (deleCallback) {
+                        deleCallback(result);
+                    }
+                },
+            });
+        };
+
+    </script>
+}

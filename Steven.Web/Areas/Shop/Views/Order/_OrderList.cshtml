@@ -1,0 +1,132 @@
+﻿@model Pager<ShopOrder>
+<script>
+    total=@Model.total;
+    var totalPage = Math.ceil(total / limit);
+
+    $("#pagination").pagination({
+        currentPage: currPage,
+        totalPage: totalPage,
+        isShow: false,
+        count: 4,
+        prevPageText: "< 上一页",
+        nextPageText: "下一页 >",
+        callback: function (current) {
+            currPage = current;
+            loadPager();
+        }
+    });
+    $(".info-more").hover(function () {
+        $(this).find(".info-meg").show();
+    }, function () {
+        $('.info-meg').hide();
+    });
+    if (total <= 0) {
+        $("#lstOrder").hide();
+        $(".box-page").hide();
+        $(".no-goods").show();
+    } else {
+        $("#lstOrder").show();
+        $(".box-page").show();
+        $(".no-goods").hide();
+    }
+</script>
+@foreach (var item in Model.rows)
+{
+    <div class="order-row">
+        <!--订单信息-->
+        <div class="meg clearfix">
+            <ul class="clearfix">
+                <li><span>订单号:</span>  @item.Code</li>
+                <li><span>下单时间:</span>  @item.CreateTime.ToDisplayDateTime()</li>
+                <li class="info-more">
+                    <span>买家:</span> <a>@item.UserName<img src="/Res/shop/img/icon-down.png" alt=""></a>
+                    <div class="info-meg">
+                        <div class="sanjiao">
+                            <img src="/Res/shop/img/icon-sj.png" alt="">
+                        </div>
+                        @if (item.BuyType == BuyType.Delivery)
+                        {
+                            <p><span>收货人:</span>  @item.Receiver</p>
+                        }
+                        <p><span>联系电话:</span>  @item.Phone</p>
+                        @if (item.BuyType == BuyType.Delivery)
+                        {
+                            <p><span>配送地址:</span>  @item.ShippingAddress</p>
+                        }
+                    </div>
+                </li>
+            </ul>
+
+            <div class="right-fun">
+                @item.OrderStatus.GetDescriotion()
+                @if (item.PaymentStatus == PaymentStatus.Payed && item.BuyType == BuyType.Delivery)
+                {
+                    @:  (@item.PayType.GetDescriotion())
+                }
+            </div>
+
+        </div>
+        <!--订单信息 end-->
+        <!--商品信息-->
+        <div class="info">
+            <ul>
+                @foreach (var pro in item.Products)
+                {
+                    <li>
+                        <div class="pic">
+                            <img src="@pro.ProductPic" alt="">
+                        </div>
+                        <div class="text">
+                            <p>@pro.ProductName</p>
+                            <span>￥@pro.Price</span>
+                            <em>x@(pro.Number)</em>
+                        </div>
+                    </li>
+                }
+            </ul>
+
+            <div class="remark">
+                <div class="top">
+                    <i>一共@(item.TotalProNum)件商品</i>
+                    <span>合计：<a>￥@item.TotalPrice</a></span>
+                </div>
+                <div class="bottom">
+                    <i>备注：</i><span>@item.LeaveMsg</span>
+                </div>
+            </div>
+
+        </div>
+        <!--商品信息 end-->
+
+        <div class="call">
+            @if (item.HasShopAction(ShopOrder.OrderShopAction.Pay))
+            {
+                <input class="btn btn-success w200 h40" data-id="@item.Id" data-act="@ShopOrder.OrderShopAction.Pay" type="button" value="@ShopOrder.OrderShopAction.Pay.GetDescriotion()" onclick="javascript:action(this);">
+            }
+            @if (item.HasShopAction(ShopOrder.OrderShopAction.Take))
+            {
+                <input class="btn btn-success w200 h40" data-id="@item.Id" data-act="@ShopOrder.OrderShopAction.Take" type="button" value="@ShopOrder.OrderShopAction.Take.GetDescriotion()" onclick="javascript:action(this);">
+            }
+            @if (item.HasShopAction(ShopOrder.OrderShopAction.Sended))
+            {
+                <input class="btn btn-success w200 h40" data-id="@item.Id" data-act="@ShopOrder.OrderShopAction.Sended" type="button" value="@ShopOrder.OrderShopAction.Sended.GetDescriotion()" onclick="javascript:action(this);">
+            }
+            @if (item.HasShopAction(ShopOrder.OrderShopAction.Signed))
+            {
+                <input class="btn btn-success w200 h40" data-id="@item.Id" data-act="@ShopOrder.OrderShopAction.Signed" type="button" value="@ShopOrder.OrderShopAction.Signed.GetDescriotion()" onclick="javascript:action(this);">
+            }
+            @if (item.HasShopAction(ShopOrder.OrderShopAction.Valid))
+            {
+                <input class="btn btn-success w200 h40" data-id="@item.Id" data-act="@ShopOrder.OrderShopAction.Valid" type="button" value="@ShopOrder.OrderShopAction.Valid.GetDescriotion()" onclick="javascript:action(this);">
+            }
+            @if (item.HasShopAction(ShopOrder.OrderShopAction.DeliveryType))
+            {
+                <input class="btn btn-success w200 h40" data-id="@item.Id" data-act="@ShopOrder.OrderShopAction.DeliveryType" type="button" value="@ShopOrder.OrderShopAction.DeliveryType.GetDescriotion()" onclick="javascript:action(this);">
+            }
+            @if (item.HasShopAction(ShopOrder.OrderShopAction.Closed))
+            {
+                <input class="btn btn-default w200 h40 tel-btn" data-id="@item.Id" data-act="@ShopOrder.OrderShopAction.Closed" type="button" value="@ShopOrder.OrderShopAction.Closed.GetDescriotion()" onclick="javascript:action(this);">
+            }
+        </div>
+    </div>
+}

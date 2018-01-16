@@ -1,0 +1,205 @@
+﻿@model HomeIndexModel
+@{
+    ViewBag.Title = "店铺概括";
+    ViewBag.MenuIndex = 0;
+}
+@section footJs{
+    @Scripts.Render("~/shop/chart")
+    @*统计*@
+    <script type="text/javascript">
+        $(function () {
+            var labels = @Html.Raw(Model.JsonTime);
+            var orderData= @Model.JsonCreateOrderCount;
+            var payData = @Model.JsonPayedOrderCount;
+            var lineData = {
+                labels: labels,
+                datasets: [
+
+                    {
+                        label: "下款单数",
+                        backgroundColor: 'rgba(134,142,241,0.2)',
+                        borderColor: "rgba(134,142,241,1)",
+                        pointBackgroundColor: "rgba(134,142,241,1)",
+                        pointBorderColor: "#fff",
+                        data: orderData
+                    },
+                    {
+                        label: "付款单数",
+                        backgroundColor: 'rgba(48,180,255,0.2)',
+                        borderColor: "rgba(48,180,255,1)",
+                        pointBackgroundColor: "rgba(48,180,255,1)",
+                        pointBorderColor: "#fff",
+                        data: payData
+                    }
+                ]
+            };
+
+            var lineOptions  = {
+                responsive: true,
+                tooltips: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                hover: {
+                    mode: 'nearest',
+                    intersect: true
+                },
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: '天'
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: '订单量'
+                        }
+                    }]
+                }
+            };
+
+
+            var ctx = document.getElementById("lineChart").getContext("2d");
+            new Chart(ctx, { type: 'line', data: lineData, options: lineOptions });
+        });
+    </script>
+    <script>
+        $('#cbxStatus').change(function(){
+            var status = $(this).is(':checked');
+            $.ajax({
+                url: '@Url.Action("ChangeStatus")',
+                type: "Post",
+                data: { status: status},
+                success: function (result) {
+                    if(result.code != 1){
+                        showErrorMsg(result.msg);
+                        return;
+                    }
+                    $('#spanStatus').text(result.data);
+                },
+            });
+        });
+        /*客服经理*/
+        $(".call .pic").hover(function(){
+            $(".call .tel").show();
+        } ,function() {
+            $('.call .tel').hide();
+        });
+    </script>
+}
+<div class="wrapper wrapper-content">
+    <div class="clearfix">
+        <div class="middle-info">
+            <!--概况-->
+            <div class="survey">
+                <ul class="clearfix">
+                    <li>
+                        <p>今日交易(元)</p><span>@Model.TodayTotalOrderPrice.ToMoney()</span><div>
+                            <img src="/Res/shop/img/icon-1.jpg" alt="">
+                        </div>
+                    </li>
+                    <li>
+                        <p>今日付款单数</p><span>@Model.TotalPayedOrderCount</span><div>
+                            <img src="/Res/shop/img/icon-2.jpg" alt="">
+                        </div>
+                    </li>
+                    <li class="last">
+                        <p>今日浏览量</p><span>@Model.TodayViewCount</span><div>
+                            <img src="/Res/shop/img/icon-3.jpg" alt="">
+                        </div>
+                    </li>
+                </ul>
+
+            </div>
+            <!--概况 end-->
+            <!--待办事项-->
+            <div class="matter clearfix">
+                <div class="title clearfix">待办事项</div>
+                <div class="left">
+                    <dl>
+                        <dt>
+                            <span>开店(<span id="spanStatus">@Model.Status.GetDescriotion()</span>)</span><div class="switch-con">
+                                <label><input class="mui-switch mui-switch-anim" id="cbxStatus" type="checkbox" @(Model.Status == ShopStatus.Open ? "checked" : "")></label>
+                            </div>
+                            <!--<img src="/Res/shop/img/icon-on.png" alt="">-->
+                        </dt>
+                        <dd>
+                            <div class="row clearfix">
+                                <div class="titles">待接单</div>
+                                <div class="order">
+                                    <span>@Model.WaitingCount</span>个订单
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="titles">待发货</div>
+                                <div class="order">
+                                    <span>@Model.ShipmentPendingCount</span>个订单
+                                </div>
+                            </div>
+                        </dd>
+                    </dl>
+
+                </div>
+
+                <div class="right">
+                    <dl>
+                        <dt>
+                            <span>自取(未开启)</span><div class="switch-con">
+                                <label><input class="mui-switch mui-switch-anim" type="checkbox"></label>
+                            </div><!--<img src="/Res/shop/img/icon-off.png" alt="">-->
+                        </dt>
+                        <dd>
+                            <div class="row clearfix">
+                                <div class="titles">待接单</div>
+                                <div class="order">
+                                    <span>2</span>个订单
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="titles">待发货</div>
+                                <div class="order">
+                                    <span>12</span>个订单
+                                </div>
+                            </div>
+                        </dd>
+                    </dl>
+
+                </div>
+            </div>
+            <!--待办事项-->
+            <!--趋势-->
+            <div class="trend">
+                <div class="title clearfix">近7天订单趋势</div>
+                <canvas id="lineChart" height="140"></canvas>
+            </div>
+            <!--趋势-->
+
+
+        </div>
+
+        <!--右边问题-->
+        <div class="right-info">
+            <!--联系-->
+            @Html.Partial("_Link")
+
+            <!--产品动态-->
+            <div class="dynamic">
+                <dl>
+                    <dt>产品动态</dt>
+                    <dd>
+                        @foreach (var article in Model.LstArticle)
+                        {
+                            <a href="@Url.Action("ArticleDetail", new {id = article.Id})">@article.ArticleDateTime.ToString("MM / dd")发布：@article.Title.ToEllipsis(17)</a>
+                        }
+                    </dd>
+                </dl>
+
+            </div>
+        </div>
+        <!--右边问题end-->
+    </div>
+</div>

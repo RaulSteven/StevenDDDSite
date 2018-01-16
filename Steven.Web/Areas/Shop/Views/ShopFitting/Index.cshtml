@@ -1,0 +1,1033 @@
+﻿@model ShopFittingModel
+@{
+    ViewBag.Title = "店铺装修";
+    ViewBag.MenuIndex = 3;
+    ShopUser user = ViewBag.CurrUser;
+}
+
+@section headCss{
+    @Styles.Render("~/bundles/ladda-css", 
+    "~/Res/admin/css/plugins/iCheck/skins/beilin/css-bundle", 
+    "~/Res/admin/css/plugins/summernote/summernote-css")
+    <script src="/Res/global/js/lib/vue/vue.js"></script>
+    <link rel="stylesheet" type="text/css" href="/Res/global/js/lib/swiper3.4/swiper.css">
+    <!-- Text spinners -->
+    <link href="/Res/admin/css/plugins/textSpinners/spinners.css" rel="stylesheet">
+    <style>
+        [v-cloak] {
+            display: none !important;
+        }
+        .uploadify-queue {
+            display: none;
+        }
+
+        .title-list {
+            padding: 0;
+        }
+    </style>
+}
+@section footJs{
+    @Scripts.Render("~/bundles/ladda-js",
+    "~/bundles/summernote-js",
+    "~/Res/admin/js/plugins/validate/validate-bundle",
+    "~/bundles/submit-js")
+    <script src="/Res/global/js/lib/swiper3.4/swiper.js"></script>
+
+
+    <script src="/Res/admin/js/plugins/iCheck/icheck.min.js"></script>
+
+    @*vue 数据绑定*@
+    <script>
+        var fittingApp = new Vue({
+            el: '#divAll',
+            data: {
+                main: {
+                    title: '@Model.MainPushTitle',
+                    subTitle: '@Model.MainPushSubTitle',
+                    hasSelected: @Model.MainPushHasSelected.ToString().ToLower(),
+                    products: [],
+                    showEdit: false,
+                    titleOld: '@Model.MainPushTitle',
+                    subTitleOld: '@Model.MainPushSubTitle',
+                },
+                hot: {
+                    title: '@Model.HotSaleTitle',
+                    subTitle: '@Model.HotSaleSubTitle',
+                    hasSelected: @Model.HotSaleHasSelected.ToString().ToLower(),
+                    products: [],
+                    showEdit: false,
+                    titleOld: '@Model.HotSaleTitle',
+                    subTitleOld: '@Model.HotSaleSubTitle',
+                },
+                newFitting: {
+                    title: '@Model.NewTitle',
+                    subTitle: '@Model.NewSubTitle',
+                    hasSelected: @Model.NewHasSelected.ToString().ToLower(),
+                    products: [],
+                    showEdit: false,
+                    titleOld: '@Model.NewTitle',
+                    subTitleOld: '@Model.NewSubTitle',
+                },
+                classify: {
+                    title: '@Model.ClassifyTitle',
+                    hasSelected: @Model.ClassifyHasSelected.ToString().ToLower(),
+                    showEdit: false,
+                    titleOld: '@Model.ClassifyTitle'
+                },
+                show: {
+                    others: '@Model.Others',
+                    hasSelected: @Model.ShowHasSelected.ToString().ToLower(),
+                    showcontact: @Model.ShowContact.ToString().ToLower(),
+                    showaddress: @Model.ShowAddress.ToString().ToLower(),
+                    showothers: @Model.ShowOthers.ToString().ToLower(),
+                    showEdit: false,
+                    othersOld: '@Model.Others'
+                }
+            },
+            methods: {
+                showEdit: function(t) {
+                    fittingApp.main.showEdit = false;
+                    fittingApp.classify.showEdit = false;
+                    fittingApp.hot.showEdit = false;
+                    fittingApp.newFitting.showEdit = false;
+                    fittingApp.show.showEdit = false;
+                    switch (t) {
+                    case 'main':
+                        fittingApp.main.showEdit = true;
+                        break;
+                    case 'classify':
+                        fittingApp.classify.showEdit = true;
+                        break;
+                    case 'hot':
+                        fittingApp.hot.showEdit = true;
+                        break;
+                    case 'new':
+                        fittingApp.newFitting.showEdit = true;
+                        break;
+                    case 'show':
+                        fittingApp.show.showEdit = true;
+                        break;
+                    }
+                },
+                cancelEdit: function(t) {
+                    switch (t) {
+                    case 'main':
+                        fittingApp.main.showEdit = false;
+                        fittingApp.main.title = fittingApp.main.titleOld;
+                        fittingApp.main.subTitle = fittingApp.main.subTitleOld;
+                        var idsMain = '@Model.MainPushProductIds';
+                        var lstPro = getLstPro(idsMain);
+                        fittingApp.main.products = lstPro;
+                        break;
+                    case 'classify':
+                        fittingApp.classify.showEdit = false;
+                        fittingApp.classify.title = fittingApp.classify.titleOld;
+                        break;
+                    case 'hot':
+                        fittingApp.hot.showEdit = false;
+                        fittingApp.hot.title = fittingApp.hot.titleOld;
+                        fittingApp.hot.subTitle = fittingApp.hot.subTitleOld;
+                        var idsHot = '@Model.HotSaleProductIds';
+                        var lstHotPro = getLstPro(idsHot);
+                        fittingApp.hot.products = lstHotPro;
+                        break;
+                    case 'new':
+                        fittingApp.newFitting.showEdit = false;
+                        fittingApp.newFitting.title = fittingApp.newFitting.titleOld;
+                        fittingApp.newFitting.subTitle = fittingApp.newFitting.subTitleOld;
+                        var idsNew = '@Model.NewProductIds';
+                        var lstNewPro = getLstPro(idsNew);
+                        fittingApp.newFitting.products = lstNewPro;
+                        break;
+                    case 'show':
+                        fittingApp.show.showEdit = false;
+                        fittingApp.show.others = fittingApp.show.othersOld;
+                        break;
+                    }
+                }
+            }
+        });
+
+        var lstAllPro = @Html.Raw(Model.JsonProducts);
+        var lstClzPro = lstAllPro;
+
+        var getById = function(id){
+            for (var i = 0; i < lstAllPro.length; i++) {
+                if (lstAllPro[i].Id ==id) {
+                    return lstAllPro[i];
+                }
+            }
+            return null;
+        };
+
+        var getLstPro = function(ids){
+            var productIdArr = [];
+            if (ids) {
+                productIdArr = ids.split(',');
+            }
+            var lstPro = [];
+            for (var i = 0; i < productIdArr.length; i++) {
+                var pro = getById(productIdArr[i]);
+                if (pro) {
+                    lstPro.push(pro);
+                }
+            }
+            delete productIdArr;productIdArr=null;
+            return lstPro;
+        };
+
+        var setMainPushProducts = function(){
+            var ids = $('#MainPushProductIds').val();
+            var lstPro = getLstPro(ids);
+            fittingApp.main.products = lstPro;
+        };
+
+        var setHotProducts = function(){
+            var ids = $('#HotSaleProductIds').val();
+            var lstHotPro = getLstPro(ids);
+            fittingApp.hot.products = lstHotPro;
+        };
+
+        var setNewProducts = function(){
+            var ids = $('#NewProductIds').val();
+            var lstPro = getLstPro(ids);
+            fittingApp.newFitting.products = lstPro;
+        };
+
+        var initDemo = function(){
+            setMainPushProducts();
+            setHotProducts();
+            setNewProducts();
+        };
+
+        initDemo();
+
+
+        var setHasSelect = function(t) {
+            $('.loading').show();
+            $.ajax({
+                url: '@Url.Action("SaveSelect")',
+                type: "Post",
+                data: { type: t },
+                success: function (result) {
+                    $('.loading').hide();
+                }
+            });
+        };
+
+        $('#MainPushHasMode').on('click', function (event) {
+            if (fittingApp.main.hasSelected == true) {
+                fittingApp.main.hasSelected = false;
+            } else {
+                fittingApp.main.hasSelected = true;
+            }
+            setHasSelect('@ShopFittingType.MainPush');
+        });
+
+        $('#HotSaleHasMode').on('click', function (event) {
+            if (fittingApp.hot.hasSelected == true) {
+                fittingApp.hot.hasSelected = false;
+            } else {
+                fittingApp.hot.hasSelected = true;
+            }
+            setHasSelect('@ShopFittingType.HotSale');
+        });
+
+        $('#NewHasMode').on('click', function (event) {
+            if (fittingApp.newFitting.hasSelected == true) {
+                fittingApp.newFitting.hasSelected = false;
+            } else {
+                fittingApp.newFitting.hasSelected = true;
+            }
+            setHasSelect('@ShopFittingType.TodayNews');
+        });
+
+        $('#ClassifyHasMode').on('click', function (event) {
+            if (fittingApp.classify.hasSelected == true) {
+                fittingApp.classify.hasSelected = false;
+            } else {
+                fittingApp.classify.hasSelected =true ;
+            }
+            setHasSelect('@ShopFittingType.ProductClassify');
+        });
+
+        $('#ShowHasMode').on('click', function (event) {
+            if (fittingApp.show.hasSelected == true) {
+                fittingApp.show.hasSelected = false;
+            } else {
+                fittingApp.show.hasSelected =true ;
+            }
+            setHasSelect('@ShopFittingType.Show');
+        });
+        $('#ShowContact').on('ifChanged', function (event) {
+            if (this.checked) {
+                fittingApp.show.showcontact = true;
+            } else {
+                fittingApp.show.showcontact = false;
+            }
+        });
+        $('#ShowAddress').on('ifChanged', function (event) {
+            if (this.checked) {
+                fittingApp.show.showaddress = true;
+            } else {
+                fittingApp.show.showaddress = false;
+            }
+        });
+        $('#ShowOthers').on('ifChanged', function (event) {
+            if (this.checked) {
+                fittingApp.show.showothers = true;
+            } else {
+                fittingApp.show.showothers = false;
+            }
+        });
+    </script>
+    @*编辑保存*@
+    <script>
+        
+        var callBackMain= function (result) {
+            if (result.code != 1) {
+                showErrorMsg(result.msg);
+                return;
+            }
+            showSuccMsg(result.msg);
+            fittingApp.main.titleOld = fittingApp.main.title;
+            fittingApp.main.subTitleOld = fittingApp.main.subTitle;
+        };
+
+        var rulesMain = {
+            MainPushTitle: {
+                required: true,
+                rangelength: [1, 50]
+            },
+            MainPushSubTitle: {
+                required: true,
+                rangelength: [1, 50]
+            },
+        };
+        callBackSubmit('@Url.Action("SaveMain")', 'mainForm', 'btnSaveMain', rulesMain, callBackMain);
+
+
+        var callBackClassfiy= function (result) {
+            if (result.code != 1) {
+                showErrorMsg(result.msg);
+                return;
+            }
+            showSuccMsg(result.msg);
+            fittingApp.classify.titleOld = fittingApp.classify.title;
+        };
+        var rulesClassfiy = {
+            ClassifyTitle: {
+                required: true,
+                rangelength: [1, 50]
+            },
+        };
+        callBackSubmit('@Url.Action("SaveClassify")', 'classifyForm', 'btnSaveClassify', rulesClassfiy, callBackClassfiy);
+
+
+        var callBackHot= function (result) {
+            if (result.code != 1) {
+                showErrorMsg(result.msg);
+                return;
+            }
+            showSuccMsg(result.msg);
+            fittingApp.hot.titleOld = fittingApp.hot.title;
+            fittingApp.hot.subTitleOld = fittingApp.hot.subTitle;
+        };
+        var rulesHot = {
+            HotSaleTitle: {
+                required: true,
+                rangelength: [1, 50]
+            },
+            HotSaleSubTitle: {
+                required: true,
+                rangelength: [1, 50]
+            },
+        };
+        callBackSubmit('@Url.Action("SaveHot")', 'hotForm', 'btnSaveHot', rulesHot, callBackHot);
+
+
+        var callBackNew= function (result) {
+            if (result.code != 1) {
+                showErrorMsg(result.msg);
+                return;
+            }
+            showSuccMsg(result.msg);
+            fittingApp.newFitting.titleOld = fittingApp.newFitting.title;
+            fittingApp.newFitting.subTitleOld = fittingApp.newFitting.subTitle;
+        };
+        var rulesNew = {
+            NewTitle: {
+                required: true,
+                rangelength: [1, 50]
+            },
+            NewSubTitle: {
+                required: true,
+                rangelength: [1, 50]
+            },
+        };
+        callBackSubmit('@Url.Action("SaveNew")', 'newForm', 'btnSaveNew', rulesNew, callBackNew);
+
+        var callBackShow= function (result) {
+            if (result.code != 1) {
+                showErrorMsg(result.msg);
+                return;
+            }
+            showSuccMsg(result.msg);
+            fittingApp.show.othersOld = fittingApp.show.others;
+        };
+        var rulesShow = {
+            Others: {
+                maxlength: 200
+            }
+        };
+        callBackSubmit('@Url.Action("SaveShow")', 'showForm', 'btnSaveShow', rulesShow, callBackShow);
+    </script>
+    @*选择商品弹窗*@
+    <script>
+        var lstAllApp = new Vue({
+            el:'#selectProModal',
+            data:{
+                products:lstAllPro,
+                clzProducts:lstClzPro
+            },
+            methods: {
+                SelectClick:function(pro){
+                    if(!pro.Selected && currLimit>0){
+                        var idArr = getSelectId();
+                        if (idArr.length >= currLimit) {
+                            showErrorMsg("只能选择"+currLimit+"个商品！");
+                            return;
+                        }
+                        delete idArr;idArr =null;
+                    }
+                    pro.Selected = !pro.Selected;
+                },
+                selectPro: function (products) {
+                    return products.filter(function (pro) {
+                        return pro.Selected;
+                    })
+                },
+                deleClick:function(pro){
+                    pro.Selected =false;
+                }
+            }
+        });
+
+
+        $('#selectProClzLst li a').click(function(){
+            $('#selectProClzLst .cur').removeClass('cur');
+            $(this).addClass('cur');
+            var clzId = $(this).attr('data-id');
+            if (clzId) {
+                //筛选商品列表
+                var tempArr = [];
+                for (var i = 0; i < lstAllPro.length; i++) {
+                    if (lstAllPro[i].ProductClassifyId == clzId) {
+                        tempArr.push(lstAllPro[i]);
+                    }
+                }
+                lstClzPro= tempArr;
+                delete tempArr;tempArr = null;
+            }
+            else{
+                //所有商品
+                lstClzPro = lstAllPro;
+            }
+            lstAllApp.clzProducts = lstClzPro;
+
+        });
+
+        var btnAddMain = function() {
+            showSelecPro('#MainPushProductIds');
+        };
+
+        var btnAddHot = function() {
+            showSelecPro('#HotSaleProductIds');
+        };
+
+        var btnAddNew = function() {
+            showSelecPro('#NewProductIds');
+        };
+
+        var currShowHdIds = '';
+        var currLimit=0;
+        var showSelecPro = function(hdIds){
+            currShowHdIds = hdIds;
+            var title = $(hdIds).attr('data-title');
+            var limit = $(hdIds).attr('data-limit');
+            if (limit) {
+                currLimit = limit;
+            }else{
+                currLimit = 0;
+            }
+            $('#spanSelectTitle').text(title);
+            var proIds = $(hdIds).val();
+            var productIdArr = [];
+            if (proIds) {
+                productIdArr = proIds.split(',');
+            }
+
+            for (var i = 0; i < lstAllPro.length; i++) {
+                lstAllPro[i].Selected =false;
+            }
+
+            for (var i = 0; i < productIdArr.length; i++) {
+                var pro = getById(productIdArr[i]);
+                if (pro) {
+                    pro.Selected = true;
+                }
+            }
+
+            $('#selectProModal').modal('show');
+        };
+
+        var getSelectId = function(){
+            var idArr = [];
+            for (var i = 0; i < lstAllPro.length; i++) {
+                if (lstAllPro[i].Selected) {
+                    idArr.push(lstAllPro[i].Id);
+                }
+            }
+            return idArr;
+        };
+
+        $('#btnSelectPro').click(function(){
+            var idArr = getSelectId();
+            $(currShowHdIds).val(idArr.join(','));
+            delete idArr;idArr=null;
+            //更新左边的demo商品
+            switch (currShowHdIds) {
+                case '#MainPushProductIds':
+                    setMainPushProducts();
+                    //var mySwiper = new Swiper('.swiper-container',{
+                    //    loop:true,
+                    //    autoplay: 3000,
+                    //    speed:1000,
+                    //    pagination : '.pagination',
+                    //    paginationType : 'fraction',
+                    //});
+                    break;
+                case '#HotSaleProductIds':
+                    setHotProducts();
+                    //var swiper = new Swiper('.swiper-hot',{
+                    //    pagination: '.swiper-pagination',
+                    //    paginationType : 'fraction',
+                    //    autoplay: 3000,
+                    //    speed:1000,
+                    //    slidesPerView: 2,
+                    //    spaceBetween : 20,
+                    //});
+                    break;
+                case '#NewProductIds':
+                    setNewProducts();
+                    break;
+                default:
+
+            }
+            $('#selectProModal').modal('hide');
+        });
+
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue',
+            });
+        });
+
+
+        $(".page-link").hover(function(){
+            $(".show-ewm").show();
+        } ,function() {
+            $('.show-ewm').hide();
+        });
+        /*添加列表*/
+        $(".icon-fun").click(function(){
+	
+	
+            if($(".list-add").is(":hidden")){
+                $(this).addClass("close-1");
+                $(".list-add").show().fadeIn(1000);
+		
+            }else{
+                $(this).removeClass("close-1");
+                $(".list-add").hide();
+		
+            }
+	
+ 
+        });
+
+        var mainSwiper = new Swiper('.swiper-container',{
+            loop:true,
+            autoplay: 3000,
+            speed:1000,
+            pagination : '.pagination',
+            paginationType : 'fraction',
+            observer:true,//修改swiper自己或子元素时，自动初始化swiper
+            observeParents:false,//修改swiper的父元素时，自动初始化swiper
+            onSlideChangeEnd: function(swiper){
+                swiper.update();
+                swiper.startAutoplay();
+                swiper.reLoop();
+            }
+        });
+
+
+        var hotSwiper= new Swiper('.swiper-hot',{
+            pagination: '.swiper-pagination',
+            paginationType : 'fraction',
+            autoplay: 3000,
+            speed:1000,
+            slidesPerView: 2,
+            spaceBetween : 20,
+            observer:true,//修改swiper自己或子元素时，自动初始化swiper
+            observeParents:false,//修改swiper的父元素时，自动初始化swiper
+            onSlideChangeEnd: function(swiper){
+                swiper.update();
+                swiper.startAutoplay();
+                swiper.reLoop();
+            }
+        });
+    </script>
+}
+<!-- 主体 -->
+<div class="wrapper wrapper-content">
+    <div class="box-set">
+        <div class="row">
+            <div class="col-lg-12 ibox">
+                <div class="left-title">店铺装修</div>
+                <div class="right-btn">
+                    <button class="btn btn-default w150 h40 btn-ewm page-link">
+                        <span><img src="/Res/shop/img/icon-ewm.png" alt=""></span>二维码
+                        <div class="show-ewm">
+                            <div class="sanjiao-bg"><img src="/Res/shop/img/icon-sj.png" alt=""></div>
+                            <div class="info">
+                                <p>手机扫一扫即可访问页面</p>
+                                <img src="@Url.ThumbUrl(Model.Shop.QrCodeAttaId,260,260, "/Res/shop/img/pic-ewm.jpg")" alt="">
+                                <div class="down"><a href="@Url.DownUrl(Model.Shop.QrCodeAttaId)">下载二维码</a></div>
+                            </div>
+                        </div>
+                    </button>
+
+                </div>
+            </div>
+        </div>
+        <div class="row" id="divAll">
+            <!--增删模块s-->
+            <div class="list-add">
+                <h4>模块增删 <span class="loading dots" style="display: none;"></span></h4>
+                <ul>
+                    <li id="ShowHasMode">
+                        <p>店铺展示</p>
+                        <img src="/Res/shop/img/list-1-1.jpg" alt="">
+                        <div v-bind:class="show.hasSelected?'cur':''"></div>
+                    </li>
+                    <li id="MainPushHasMode">
+                        <p>{{main.title}}</p>
+                        <img src="/Res/shop/img/list-1.jpg" alt="">
+                        <div v-bind:class="main.hasSelected?'cur':''"></div>
+                    </li>
+                    <li id="ClassifyHasMode">
+                        <p>{{classify.title}}</p>
+                        <img src="/Res/shop/img/list-2.jpg" alt="">
+                        <div v-bind:class="classify.hasSelected?'cur':''"></div>
+                    </li>
+                    <li id="HotSaleHasMode">
+                        <p>{{hot.title}}</p>
+                        <img src="/Res/shop/img/list-3.jpg" alt="">
+                        <div v-bind:class="hot.hasSelected?'cur':''"></div>
+                    </li>
+                    <li id="NewHasMode">
+                        <p>{{newFitting.title}}</p>
+                        <img src="/Res/shop/img/list-4.jpg" alt="">
+                        <div v-bind:class="newFitting.hasSelected?'cur':''"></div>
+                    </li>
+                </ul>
+            </div>
+            <!--增删模块e-->
+
+            <div class="right-meg">
+                <!--手机s-->
+                <div class="tel-main">
+                    <div class="tel-info">
+                    <div class="top">
+                        <h1>@Model.Shop.Name</h1></div>
+                    <div class="info">
+
+                        <!--店铺展示-->
+                        <div class="shop-show" v-show="show.hasSelected">
+                            <div class="show" v-on:click="showEdit('show')">
+                                <div class="pic">
+                                    <img src="@Url.ThumbUrl(user.UserModel.BgAttaId, 750, 220, "/Res/shop/img/com-bg.jpg")" alt="">
+                                    <div class="bg-black"><img src="/Res/shop/img/banner-bg.png" alt=""></div>
+                                    <div class="title"><img src="@Url.ThumbUrl(user.UserModel.LogoAttaId, 60, 60, "/Res/shop/img/logo.jpg")" alt=""><span>@Model.Shop.Name</span></div>
+                                    <div class="tel" v-show="show.showcontact" v-cloak><img src="/Res/shop/img/icon-tel.png" alt="">联系店家</div>
+                                </div>
+                                <div class="address" v-show="show.showaddress" v-cloak><p>@Model.Shop.Address</p><div class="icon-a"><img src="/Res/shop/img/icon-address.png" alt=""></div></div>
+                                <div class="time" v-show="show.showothers" v-cloak>{{show.others}}</div>
+
+                                <!--选中框-->
+                                <div class="select-edit" v-show="show.showEdit" v-cloak></div>
+
+                            </div>
+
+                            <div class="show-bg" v-show="show.showEdit" v-cloak></div>
+                            <div class="show-edit" v-show="show.showEdit" v-cloak>
+
+                                <div class="sanjiao-r"><img src="/Res/shop/img/icon-sj.jpg" alt="">
+                                </div>
+                                <form id="showForm" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <div class="edit-main">
+                                        <div class="row-set">
+                                            <div class="title">
+                                                店铺展示<p>店铺背景图片、logo、名称、联系店家、地址，请到设置进行完善</p>
+                                            </div>
+
+                                            <ul class="list-show">
+                                                <li><input type="checkbox" class="i-checks" id="ShowContact" v-model="show.showcontact">  联系卖家</li>
+                                                <li><input type="checkbox" class="i-checks" id="ShowAddress" v-model="show.showaddress">  地址</li>
+                                                <li>
+                                                    <input type="checkbox" class="i-checks" id="ShowOthers" v-model="show.showothers">  其他说明
+                                                    <div class="show-tip">
+                                                        <textarea class="form-control h100" name="Others" v-model="show.others" placeholder="可以设置营业时间，如：周一到周五 09：00 - 20：00"></textarea>
+                                                    </div>
+                                                </li>
+                                            </ul>
+
+                                            <input type="hidden" name="ShowHasSelected" v-model="show.hasSelected">
+                                            <input type="hidden" name="ShowContact" v-model="show.showcontact">
+                                            <input type="hidden" name="ShowAddress" v-model="show.showaddress">
+                                            <input type="hidden" name="ShowOthers" v-model="show.showothers">
+                                            <div class="set-btn">
+                                                <input id="btnSaveShow" type="button" value="保存" class="input-submit-default blue w200 h40 mr10">
+                                                <input type="button" value="取消" class="input-submit-default white w200 h40 ml10" v-on:click="cancelEdit('show')">
+                                            </div>
+
+                                        </div>
+
+
+                                    </div>
+                                </form>
+
+                            </div>
+                            <!--选中显示-->
+
+
+                        </div>
+
+
+                    <!--今日主推-->
+
+                    <div class="today-w" v-show="main.hasSelected">
+                        <div class="today" v-on:click="showEdit('main')">
+                            <div class="title">
+                                <h1>{{main.title}}</h1>
+                                <p>{{main.subTitle}}</p>
+                            </div>
+
+                            <!--导航s-->
+                            <div class="swiper-container">
+                                <div class="swiper-wrapper">
+                                    <div class="swiper-slide" v-for="item in main.products">
+                                        <div class="pic"><a href="javascript:;"><img v-bind:src="item.MainPushPicUrl" alt=""></a>
+                                        </div>
+                                        <div class="meg-shop">
+                                            <h1>{{item.Title}}</h1>
+                                            <div class="data"><span>￥{{item.Price}}/杯</span><i>￥{{item.OldPrice}}</i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--导航end-->
+                            <!-- 如果需要分页器 -->
+                            <div class="pagination case-page"></div>
+
+                            <!--选中框-->
+                            <div class="select-edit" v-show="main.showEdit" v-cloak></div>
+
+                        </div>
+
+                        <!--选中显示-->
+                        <div class="show-bg" v-show="main.showEdit" v-cloak></div>
+                        <div class="show-edit" v-show="main.showEdit" v-cloak>
+                            <div class="sanjiao-r">
+                                <img src="/Res/shop/img/icon-sj.jpg" alt="">
+                            </div>
+                            <form id="mainForm" method="post">
+                                @Html.AntiForgeryToken()
+                                <div class="edit-main">
+                                    <div class="row-set">
+                                        <div class="title">
+                                            模块标题、副标题<a href="javascript:btnAddMain()" class="set-title">→设置商品 ></a>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="MainPushTitle" maxLength="50" v-model="main.title">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="MainPushSubTitle" maxLength="50" v-model="main.subTitle">
+                                        </div>
+                                        <input type="hidden" name="MainPushProductIds" id="MainPushProductIds" value="@Model.MainPushProductIds" data-limit="4" v-bind:data-title="main.title"/>
+                                        <input type="hidden" name="MainPushHasSelected" id="MainPushHasSelected" v-model="main.hasSelected">
+                                        <div class="set-btn">
+                                            <input id="btnSaveMain" type="button" value="保存" class="input-submit-default blue w200 h40 mr10">
+                                            <input type="button" value="取消" class="input-submit-default white w200 h40 ml10" v-on:click="cancelEdit('main')">
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!--选中显示-->
+
+                    </div>
+
+
+
+
+
+                    <!--功能-->
+                    <div class="fun-lsit-w" v-show="classify.hasSelected">
+                        <div class="fun-lsit clearfix" v-on:click="showEdit('classify')">
+                            <div class="tip clearfix">{{classify.title}}</div>
+                            <ul>
+                                @if (Model.LstClassify != null && Model.LstClassify.Any())
+                                {
+                                    foreach (var item in Model.LstClassify)
+                                    {
+                                        <li>
+                                            <img src="@Url.ThumbUrl(item.IconAttaId, 100, 100)" alt="">
+                                            <p>@item.Name</p>
+                                        </li>
+                                    }
+                                }
+                            </ul>
+
+                            <!--选中框-->
+                            <div class="select-edit" v-show="classify.showEdit" v-cloak></div>
+
+                        </div>
+                        <div class="show-bg" v-show="classify.showEdit" v-cloak></div>
+                        <!--选中显示-->
+                        <div class="show-edit" v-show="classify.showEdit" v-cloak>
+
+                            <div class="sanjiao-r">
+                                <img src="/Res/shop/img/icon-sj.jpg" alt="">
+                            </div>
+                            <form id="classifyForm" method="post">
+                                @Html.AntiForgeryToken()
+                                <div class="edit-main">
+                                    <div class="row-set">
+                                        <div class="title">
+                                            模块副标题<a href="@Url.Action("ClassifyList", "Product", new {op = "add"})" class="set-title">→设置分组</a>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="ClassifyTitle" maxLength="50" v-model="classify.title">
+                                        </div>
+                                        <input type="hidden" id="ClassifyHasSelected" name="ClassifyHasSelected" v-model="classify.hasSelected">
+                                        <div class="set-btn">
+                                            <input id="btnSaveClassify" type="button" value="保存" class="input-submit-default blue w200 h40 mr10">
+                                            <input type="button" value="取消" class="input-submit-default white w200 h40 ml10" v-on:click="cancelEdit('classify')">
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </form>
+
+
+
+                        </div>
+                        <!--选中显示-->
+
+                    </div>
+
+                    <!--24小时热卖-->
+
+                    <div class="hot-sell-w" v-show="hot.hasSelected">
+                        <div class="hot-sell" v-on:click="showEdit('hot')">
+                            <div class="title">
+                                <h1>{{hot.title}}</h1>
+                                <p>{{hot.subTitle}}</p>
+                            </div>
+                            <div class="swiper-hot">
+                                <div class="swiper-wrapper">
+                                    <div class="swiper-slide" v-for="item in hot.products">
+                                        <div class="hot-list">
+                                            <div class="pic">
+                                                <img v-bind:src="item.PicUrl" alt="">
+                                            </div>
+                                            <div class="meg-shop">
+                                                <h1>{{item.Title}}</h1>
+                                                <div class="data">
+                                                    <span>￥{{item.Price}}/杯</span><i>￥{{item.OldPrice}}</i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 如果需要分页器 -->
+                                <div class="swiper-pagination case-page"></div>
+                            </div>
+                            <!--选中框-->
+                            <div class="select-edit" v-show="hot.showEdit" v-cloak></div>
+                        </div>
+                        <div class="show-bg" v-show="hot.showEdit" v-cloak></div>
+                        <!--选中显示-->
+                        <div class="show-edit" v-show="hot.showEdit" v-cloak>
+
+                            <div class="sanjiao-r">
+                                <img src="/Res/shop/img/icon-sj.jpg" alt="">
+                            </div>
+                            <form id="hotForm" method="post">
+                                @Html.AntiForgeryToken()
+                                <div class="edit-main">
+                                    <div class="row-set">
+                                        <div class="title">模块标题、副标题<a class="set-title" href="javascript:btnAddHot();" v-bind:data-title="hot.title">→设置商品 ></a>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="HotSaleTitle" maxLength="50" v-model="hot.title">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="HotSaleSubTitle" maxLength="50" v-model="hot.subTitle">
+                                        </div>
+                                        <input type="hidden" name="HotSaleProductIds" id="HotSaleProductIds" value="@Model.HotSaleProductIds" data-limit="4" v-bind:data-title="hot.title"/>
+                                        <input type="hidden" id="HotSaleHasSelected" name="HotSaleHasSelected" v-model="hot.hasSelected">
+                                        <div class="set-btn">
+                                            <input id="btnSaveHot" type="button" value="保存" class="input-submit-default blue w200 h40 mr10">
+                                            <input type="button" value="取消" class="input-submit-default white w200 h40 ml10" v-on:click="cancelEdit('hot')">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </form>
+
+                        </div>
+                        <!--选中显示-->
+
+                    </div>
+
+
+                    <!--今日新品-->
+                    <div class="hot-sell-w" v-show="newFitting.hasSelected">
+                        <div class="hot-sell" v-on:click="showEdit('new')">
+                            <div class="title">
+                                <h1>{{newFitting.title}}</h1>
+                                <div class="page-a"></div>
+                                <p>{{newFitting.subTitle}}</p>
+                            </div>
+                            <ul class="pic-list clearfix">
+                                <li v-for="item in newFitting.products">
+                                    <div class="pic">
+                                        <img v-bind:src="item.PicUrl" alt="">
+                                    </div>
+                                    <div class="meg-shop">
+                                        <h1>{{item.Title}}</h1>
+                                        <div class="data">
+                                            <span>￥{{item.Price}}/杯</span><i>￥{{item.OldPrice}}</i>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <!--选中框-->
+                            <div class="select-edit" v-show="newFitting.showEdit" v-cloak></div>
+                        </div>
+
+
+
+                        <div class="show-bg" v-show="newFitting.showEdit" v-cloak></div>
+                        <!--选中显示-->
+                        <div class="show-edit" v-show="newFitting.showEdit" v-cloak>
+
+                            <div class="sanjiao-r">
+                                <img src="/Res/shop/img/icon-sj.jpg" alt="">
+                            </div>
+                            <form id="newForm" method="post">
+                                @Html.AntiForgeryToken()
+                                <div class="edit-main">
+                                    <div class="row-set">
+                                        <div class="title">模块标题、副标题<a class="set-title" href="javascript:btnAddNew();" v-bind:data-title="newFitting.title">→设置商品 ></a>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" name="NewTitle" class="form-control" maxLength="50" v-model="newFitting.title">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" name="NewSubTitle" class="form-control" maxLength="50" v-model="newFitting.subTitle">
+                                        </div>
+                                        <input type="hidden" name="NewProductIds" id="NewProductIds" value="@Model.NewProductIds" v-bind:data-title="newFitting.title"/>
+                                        <input type="hidden" id="NewHasSelected" name="NewHasSelected" v-model="newFitting.hasSelected">
+                                        <div class="set-btn">
+                                            <input id="btnSaveNew" type="button" value="保存" class="input-submit-default blue w200 h40 mr10">
+                                            <input type="button" value="取消" class="input-submit-default white w200 h40 ml10" v-on:click="cancelEdit('new')">
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+
+                        </div>
+                        <!--选中显示-->
+                    </div>
+
+
+                    </div>
+                    </div>
+                    <div class="tab-bottom"><img src="/Res/shop/img/tab-tel.jpg" alt=""></div>
+                </div>
+                <!--手机e-->
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 主体 end -->
+<!--手机下添加按钮-->
+<div class="icon-fun add"></div>
+<!--弹框-->
+<div class="modal inmodal" id="selectProModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content animated fadeIn">
+            <div class="modal-header">
+                <div class="row-set">
+                    <div class="title"><span id="spanSelectTitle">今日主推</span><div class="close-1"><img data-dismiss="modal" src="/Res/shop/img/icon-close-g.png" alt=""></div></div>
+                    <!-- 选择商品上传图片列表 -->
+                    <div class="pic-upload-wrap" id="lstSelected">
+                        <ul class="set-list clearfix">
+                            <li v-for="item in selectPro(products)">
+                                <span class="pic"><img v-bind:src="item.PicUrl" alt="" /></span>
+                                <a href="javascript:;" v-on:click="deleClick(item)" title="删除" class="ico-close"></a>
+                            </li>
+                        </ul>
+                        <div class="set-btn">
+                            <input type="button" id="btnSelectPro" value="选好商品" class="input-submit-default blue w200 h50 mr10">
+                            <input type="button" value="取消" data-dismiss="modal" class="input-submit-default white w200 h50 ml10">
+                        </div>
+                    </div>
+                    <!-- 上传图片列表 end -->
+                </div>
+            </div>
+            <div class="modal-body">
+                <ul class="tab-title clearfix" id="selectProClzLst">
+                    <li><a href="javascript:;" class="cur" data-id="">全部</a></li>
+                    @if (Model.LstClassify != null && Model.LstClassify.Any())
+                    {
+                        foreach (var item in Model.LstClassify)
+                        {
+                            <li><a href="javascript:;" data-id="@item.Id">@item.Name</a></li>
+                        }
+                    }
+                </ul>
+                <ul class="info-list clearfix">
+                    <li v-for="item in clzProducts" v-on:click="SelectClick(item)">
+                        <div class="pic"><img v-bind:src="item.PicUrl" alt=""></div>
+                        <div class="sel" v-if="item.Selected"><img src="/Res/shop/img/icon-sel.png" alt=""></div>
+                        <div class="sel" v-else><img src="/Res/shop/img/icon-nosel.png" alt=""></div>
+                        <p>{{item.Title}}</p>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</div>

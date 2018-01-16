@@ -1,0 +1,251 @@
+﻿
+@{
+    ViewBag.Title = "部门管理";
+    SelectList roleSList = ViewBag.RoleSList;
+}
+@section headCss{
+    <!-- 选择美化 -->
+    <link href="/Res/admin/css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="/Res/admin/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <!-- 树形菜单样式 -->
+    <link href="/Res/admin/css/plugins/jsTree/style.min.css" rel="stylesheet">
+    <!-- Ladda style -->
+    <link href="/Res/admin/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
+}
+@section footJs{
+    <!-- iCheck -->
+    <script src="/Res/admin/js/plugins/iCheck/icheck.min.js"></script>
+    <!-- Jquery Validate -->
+    <script src="/Res/admin/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="~/Res/admin/js/plugins/validate/messages_cn.js"></script>
+    <!-- Ladda -->
+    <script src="/Res/admin/js/plugins/ladda/spin.min.js"></script>
+    <script src="/Res/admin/js/plugins/ladda/ladda.min.js"></script>
+    <script src="/Res/admin/js/plugins/ladda/ladda.jquery.min.js"></script>
+    <!-- jsTree -->
+    <script src="/Res/admin/js/plugins/jsTree/jstree.min.js"></script>
+    <script src="~/Res/admin/js/CommonSubmit.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#apartJsTree').jstree({
+                'core': {
+                    'data': {
+                        'url': function (node) {
+                            return "@Url.Action("GetJsonList")";
+                        }
+                    }
+                }
+            }).bind("loaded.jstree", function (e, data) {
+                data.instance.open_all(); // -1 opens all nodes in the container
+            });
+
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+        });
+        var $apartTree = $('#apartJsTree');
+
+        var currentNode;
+        $apartTree.bind("activate_node.jstree", function (obj, e) {
+            // 处理代码
+            // 获取当前节点
+            currentNode = e.node;
+            $.get('@Url.Action("GetApart")' + '?id=' + currentNode.id, function (result) {
+                if (result.code != 1) {
+                    showErrorMsg(result.msg);
+                    return;
+                }
+                setForm(result.data);
+            });
+        });
+
+        var setForm = function (apart) {
+            $('#hdId').val(apart.Id);
+            $('#hdPid').val(apart.Pid);
+            $('#txtName').val(apart.Name);
+            $('#txtSort').val(apart.Sort);
+            $('#txtRemark').val(apart.Remark);
+            $("input[name='RoleIds']:checkbox").each(function () { $(this).iCheck('uncheck') });
+            if (apart.LstRoleIds) {
+                for (var i = 0; i < apart.LstRoleIds.length; i++) {
+                    var roleId = apart.LstRoleIds[i];
+                    $('#RoleIds_' + roleId).iCheck('check');
+                }
+            }
+        };
+
+        var rules = {
+            Name: {
+                required: true,
+                rangelength: [2, 50]
+            },
+            Sort: {
+                required: true,
+                digits: true
+            },
+            Remark: {
+                rangelength: [0, 250]
+            }
+        };
+        var submitCallBack = function (result) {
+            if (result.code != 1) {
+                //错误
+                showErrorMsg(result.msg);
+                return;
+            }
+            showSuccMsg(result.msg);
+            $apartTree.jstree('refresh');
+            $('#hdId').val(result.data.Id);
+            $('#hdPid').val(result.data.Pid);
+        };
+        callBackSubmit('@Url.Action("Save")', 'apartForm', 'btnSave', rules, submitCallBack);
+
+        
+
+        $('#btnAddRoot').click(function () {
+            var emptyApart = { Id: 0, Pid: 0, Name: '', Sort: 0, Remark: '' };
+            setForm(emptyApart);
+        });
+
+        $('#btnAdd').click(function () {
+            var pid = 0;
+            if (currentNode) {
+                pid = currentNode.id;
+            }
+            var emptyApart = { Id: 0, Pid: pid, Name: '', Sort: 0, Remark: '' };
+            setForm(emptyApart);
+        });
+
+        var btnDelete = $('#btnDele').ladda();
+        btnDelete.click(function () {
+            if (currentNode) {
+                showDeleConfirm(doDelete);
+
+            } else {
+                showErrorMsg('请选择需要删除的部门！');
+            }
+        });
+
+        var doDelete = function () {
+            btnDelete.ladda('start');
+            $.ajax({
+                url: '@Url.Action("Delete")',
+                type: "Post",
+                data: { Id: currentNode.id },
+                success: function (result) {
+                    btnDelete.ladda('stop');
+                    if (result.code != 1) {
+                        showErrorMsg(result.msg);
+                    } else {
+                        showSuccMsg(result.msg);
+                        $apartTree.jstree('refresh');
+                    }
+                },
+            });
+        };
+    </script>
+}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>操作区</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button type="button" class="btn btn-w-m btn-primary" id="btnAddRoot">添加根部门</button>
+                        <button type="button" class="btn btn-w-m btn-primary" id="btnAdd">添加部门</button>
+                        <button type="button" class="btn btn-w-m btn-danger" id="btnDele">删除</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>部门树形列表</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+
+                <div id="apartJsTree"></div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>编辑区</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <form method="post" class="form-horizontal" id="apartForm">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="hdId" name="Id" />
+                    <input type="hidden" id="hdPid" name="Pid"/>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">名称：</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="Name" class="form-control" id="txtName" />
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">排序：</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="Sort" class="form-control"  id="txtSort" />
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">备注：</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" name="Remark" id="txtRemark" placeholder="备注"></textarea>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">角色：</label>
+                        <div class="col-sm-10">
+                            @Html.CheckboxList("RoleIds", roleSList)
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <div class="col-sm-10 col-sm-offset-2">
+                            <button class="btn btn-primary" type="button" id="btnSave">保存</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

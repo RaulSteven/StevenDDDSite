@@ -1,0 +1,52 @@
+﻿@model Article
+@{
+    ArticleClassify clz = ViewBag.Classify;
+    ViewBag.Title = Model.Title + "_" + clz.Name;
+    ViewBag.MenuIndex = 0;
+}
+
+@section footJs{
+    <script>
+        /*客服经理*/
+        $(".call .pic").hover(function () {
+            $(".call .tel").show();
+        }, function () {
+            $('.call .tel').hide();
+        });
+    </script>
+}
+
+@*<div class="title-a details"><a href="@Url.Action("Index")">店铺概况</a><span>></span><a href="@Url.Action("ArticleList")" class="cur">@clz.Name</a></div>*@
+<div class="wrapper wrapper-content clearfix">
+    <div class="middle-info">
+        <div class="box-b">
+            <!--信息列表s-->
+            <div class="meg-list detail-dt">
+                <ul>
+                    <li>
+                        <div class="pic">
+                            <img src="@Url.ThumbUrl(clz.PicAttaId, 60, 60, "/Res/shop/img/60x60-1.jpg")" alt="">
+                        </div>
+                        <div class="text">
+                            <div class="title">
+                                <a href="@Url.Action("ArticleList", new {clzId = clz.Id})"><span>[@clz.Name]</span>@Model.Title</a>
+                            </div>
+                            <div class="info"><span>@Model.Author</span><span>@Model.ArticleDateTime.ToDisplayDateTime() 发表</span></div>
+                        </div>
+                    </li>
+                </ul>
+                <div class="info-detail">
+                    @Html.Raw(Model.ArticleContent)
+                </div>
+            </div>
+            <!--信息列表end-->
+        </div>
+    </div>
+
+    <!--右边问题-->
+    <div class="right-info">
+        @Html.Partial("_Link")
+    </div>
+    <!--右边问题end-->
+
+</div>
