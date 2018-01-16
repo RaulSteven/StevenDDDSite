@@ -3,6 +3,8 @@ using Autofac;
 using Steven.Domain.Repositories;
 using Steven.Service.Tasks.Infrastructure;
 using Quartz;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Steven.Service.Tasks.Common
 {
@@ -83,6 +85,27 @@ namespace Steven.Service.Tasks.Common
         /// <param name="trigger">触发器</param>
         public void TriggerMisfired(ITrigger trigger)
         {
+        }
+
+        //TODO：Trigger有更新，需要补充
+        public Task TriggerFired(ITrigger trigger, IJobExecutionContext context, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> VetoJobExecution(ITrigger trigger, IJobExecutionContext context, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task TriggerMisfired(ITrigger trigger, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task TriggerComplete(ITrigger trigger, IJobExecutionContext context, SchedulerInstruction triggerInstructionCode, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            throw new NotImplementedException();
         }
     }
 }

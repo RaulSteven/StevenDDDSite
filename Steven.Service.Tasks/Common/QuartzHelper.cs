@@ -75,13 +75,13 @@ namespace Steven.Service.Tasks.Common
         /// 删除现有任务
         /// </summary>
         /// <param name="jobKey"></param>
-        public static void DeleteJob(string jobKey)
+        public static async void DeleteJob(string jobKey)
         {
             JobKey jk = new JobKey(jobKey);
-            if (TaskManager.scheduler.CheckExists(jk))
+            if (await TaskManager.scheduler.CheckExists(jk))
             {
                 //任务已经存在则删除
-                TaskManager.scheduler.DeleteJob(jk);
+                await TaskManager.scheduler.DeleteJob(jk);
                 LogHelper.WriteLog(string.Format("任务“{0}”已经删除", jobKey));
             }
         }
@@ -91,7 +91,7 @@ namespace Steven.Service.Tasks.Common
         /// <param name="taskUtil">任务信息</param>
         /// <returns>返回任务trigger</returns>
         /// </summary>
-        public static void ScheduleJob(JobTask taskUtil)
+        public static async void ScheduleJob(JobTask taskUtil)
         {
             if (taskUtil.IsDeleteOldTask)
             {
@@ -99,7 +99,7 @@ namespace Steven.Service.Tasks.Common
                 DeleteJob(taskUtil.TaskId.ToString());
             }
             JobKey jk = new JobKey(taskUtil.TaskId.ToString());
-            if (TaskManager.scheduler.CheckExists(jk))
+            if (await TaskManager.scheduler.CheckExists(jk))
             {
                 TaskStatus(taskUtil, jk);
                 return;
@@ -116,7 +116,7 @@ namespace Steven.Service.Tasks.Common
                     trigger.Description = taskUtil.TaskName;
                     //添加任务执行参数
                     job.JobDataMap.Add("TaskParam", taskUtil.TaskParam);
-                    TaskManager.scheduler.ScheduleJob(job, trigger);
+                    await TaskManager.scheduler.ScheduleJob(job, trigger);
                     TaskStatus(taskUtil, jk);
                     if (taskUtil.IsDeleteOldTask)
                     {
@@ -152,12 +152,12 @@ namespace Steven.Service.Tasks.Common
         /// 暂停任务
         /// </summary>
         /// <param name="jk"></param>
-        public static void PauseJob(JobKey jk)
+        public static async void PauseJob(JobKey jk)
         {
-            if (TaskManager.scheduler.CheckExists(jk))
+            if ( await TaskManager.scheduler.CheckExists(jk))
             {
                 //任务已经存在则暂停任务
-                TaskManager.scheduler.PauseJob(jk);
+                await TaskManager.scheduler.PauseJob(jk);
                 LogHelper.WriteLog(string.Format("任务“{0}”已经暂停", jk));
             }
         }
@@ -166,12 +166,12 @@ namespace Steven.Service.Tasks.Common
         /// 恢复运行暂停的任务
         /// </summary>
         /// <param name="jk">任务key</param>
-        public static void ResumeJob(JobKey jk)
+        public static async void ResumeJob(JobKey jk)
         {
-            if (TaskManager.scheduler.CheckExists(jk))
+            if (await TaskManager.scheduler.CheckExists(jk))
             {
                 //任务已经存在则暂停任务
-                TaskManager.scheduler.ResumeJob(jk);
+                await TaskManager.scheduler.ResumeJob(jk);
                 LogHelper.WriteLog(string.Format("任务“{0}”恢复运行", jk));
             }
         }

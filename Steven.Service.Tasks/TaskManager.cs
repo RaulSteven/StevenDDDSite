@@ -16,7 +16,7 @@ namespace Steven.Service.Tasks
     public class TaskManager
     {
         public static IScheduler scheduler = null;
-        public static void Start()
+        public static async void Start()
         {
             var log = LogManager.GetLogger("TaskManager");
             log.Info("任务开始");
@@ -25,7 +25,7 @@ namespace Steven.Service.Tasks
                 DependencyConfig.Register();
                 log.Info("完成ioc注入");
                 var schedulerFactory = new StdSchedulerFactory();
-                scheduler = schedulerFactory.GetScheduler();
+                scheduler = await schedulerFactory.GetScheduler();
                 log.Info("创建scheduler");
                 var xmlDocument = new XmlDocument();
                 var taskPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TasksSchedule.xml");
@@ -42,7 +42,7 @@ namespace Steven.Service.Tasks
                     log.Info(string.Format("正在启动任务{0},任务时间Cron表达式：{1}。", taskname, cronExpression));
                     IJobDetail jobDetail = new JobDetailImpl("task" + taskIndex, "group" + taskIndex, Assembly.GetExecutingAssembly().GetType(taskname));
                     var trigger = new CronTriggerImpl("trigger" + taskIndex, "group" + taskIndex, cronExpression);
-                    scheduler.ScheduleJob(jobDetail, trigger);
+                    await scheduler.ScheduleJob(jobDetail, trigger);
                     taskIndex++;
                 }
 
@@ -53,7 +53,7 @@ namespace Steven.Service.Tasks
                     scheduler.ListenerManager.AddTriggerListener(new CustomTriggerListener(),
                         GroupMatcher<TriggerKey>.AnyGroup());
                 }
-                scheduler.Start();
+                await scheduler.Start();
             }
             catch (Exception ex)
             {

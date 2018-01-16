@@ -43,5 +43,11 @@ namespace Steven.Service.Tasks.Jobs
         }
 
         public virtual void ExcuteTask() { }
+
+        //TODO：任务改为异步实现，需要修改
+        Task IJob.Execute(IJobExecutionContext context)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
