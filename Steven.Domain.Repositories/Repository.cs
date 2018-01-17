@@ -279,6 +279,7 @@ namespace Steven.Domain.Repositories
 
         public void Dispose()
         {
+            
             if (_dbConn != null)
             {
                 _dbConn.Close();

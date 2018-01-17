@@ -126,15 +126,6 @@ namespace Steven.Core.Utilities.WorkFlow
             return tmpByte;
         }
 
-        /// <summary>
-        /// .net系统的MD5加密方法
-        /// </summary>
-        /// <param name="strIN"></param>
-        /// <returns></returns>
-        public string MD5System(string strIN)
-        {
-            return strIN.IsNullOrEmpty() ? "" : System.Web.Security.FormsAuthentication.HashPasswordForStoringInConfigFile(strIN, "MD5");
-        }
 
     }
 }

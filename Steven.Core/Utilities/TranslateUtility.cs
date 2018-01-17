@@ -246,8 +246,8 @@ namespace Steven.Core.Utilities
                     var reader = new StreamReader(stream);
                     content = reader.ReadToEnd();
                     responseSorce.Close();
-                    reader.Dispose();
-                    stream.Dispose();
+                    reader.Close();
+                    stream.Close();
                 }
             }
             catch (WebException ex)
@@ -261,8 +261,7 @@ namespace Steven.Core.Utilities
                         var reader = new StreamReader(stream);
                         content = reader.ReadToEnd();
                         responseSorce.Close();
-                        reader.Dispose();
-                        stream.Dispose();
+                        stream.Close();
                     }
                 }
             }
@@ -412,7 +411,6 @@ namespace Steven.Core.Utilities
                     content = content.Replace("<string xmlns=\"http://schemas.microsoft.com/2003/10/Serialization/\">",
                                               "");
                     content = content.Replace("</string>", "");
-                    response.Close();
                     reader.Dispose();
                 }
             }

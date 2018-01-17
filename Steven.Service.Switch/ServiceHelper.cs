@@ -50,7 +50,6 @@ namespace Steven.Service.Switch
                         assemblyInstaller.UseNewContext = true;
                         assemblyInstaller.Path = strServiceInstallPath;
                         assemblyInstaller.Uninstall(null);
-                        assemblyInstaller.Dispose();
                     }
 
                     Thread.Sleep(1000);

@@ -153,7 +153,7 @@ namespace Steven.Core.Utilities
                               .ToList();
                 return string.Join(",", list);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return "";
             }

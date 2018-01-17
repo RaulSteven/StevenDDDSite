@@ -6,7 +6,7 @@ using System.Web;
 
 namespace Steven.Core.Utilities
 {
-    public class IPUtility
+    public class IPUtility:IDisposable
     {
         #region 私有成员
         //私有成员
@@ -308,6 +308,16 @@ namespace Steven.Core.Utilities
             this.ip = ip;
             QQwry();
             return country + local;
+        }
+
+        public void Dispose()
+        {
+            if (objfs != null)
+            {
+                objfs.Close();
+                objfs.Dispose();
+                objfs = null;
+            }
         }
     }
 }
