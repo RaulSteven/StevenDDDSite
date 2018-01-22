@@ -1,5 +1,4 @@
-﻿using Steven.Domain.Enums;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Steven.Domain.ViewModels
 {

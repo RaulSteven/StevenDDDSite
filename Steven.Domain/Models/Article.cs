@@ -1,97 +1,139 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using Steven.Domain.Enums;
 using Steven.Domain.Infrastructure;
 using Dapper.Contrib.Extensions;
 
 namespace Steven.Domain.Models
 {
+    /// <summary>
+    /// 文章类
+    /// </summary>
     [Table("Article")]
     public partial class Article : AggregateRoot
     {
-
-        [Display(Name = "分类")] 
+        /// <summary>
+        /// 文章分类主键
+        /// </summary>
         public long ClassifyId { get; set; }
 
-        [Display(Name = "肩标题")]
-        [StringLength(255)]
+        /// <summary>
+        /// 肩标题
+        /// </summary>
         public string ShoulderTitle { get; set; }
 
-        [Display(Name = "短标题")]
-        [StringLength(255)]
+        /// <summary>
+        /// 短标题
+        /// </summary>
         public string ShortTitle { get; set; }
 
-        [Display(Name = "原标题")]
-        [StringLength(255)]
+        /// <summary>
+        /// 原标题
+        /// </summary>
         public string OriginalTitle { get; set; }
 
-        [Display(Name = "标题")]
-        [Required]
-        [StringLength(255)]
+        /// <summary>
+        /// 标题
+        /// </summary>
         public string Title { get; set; }
 
-        [Display(Name = "副标题")]
-        [StringLength(255)]
+        /// <summary>
+        /// 副标题
+        /// </summary>
         public string TitleSub { get; set; }
 
-        [Display(Name = "作者")]
-        [StringLength(50)]
+        /// <summary>
+        /// 作者
+        /// </summary>
         public string Author { get; set; }
 
-        [Display(Name = "自动摘要")]
-        [StringLength(2000)]
+        /// <summary>
+        /// 自动摘要
+        /// </summary>
         public string Brief { get; set; }
 
-        [Display(Name = "文章内容")]
-        [Required]
+        /// <summary>
+        /// 文章内容
+        /// </summary>
         public string ArticleContent { get; set; }
 
-        [Display(Name = "显示时间")]
-        [Required]
-        public DateTime ArticleDateTime { get; set; } 
+        /// <summary>
+        /// 显示时间
+        /// </summary>
+        public DateTime ArticleDateTime { get; set; }
 
-        [Display(Name = "文章来源")]
-        [StringLength(200)]
+        /// <summary>
+        /// 文章来源
+        /// </summary>
         public string Source { get; set; }
 
-        [Display(Name = "来源网址")]
-        [StringLength(255)] 
+        /// <summary>
+        /// 来源网址
+        /// </summary>
         public string SourceLink { get; set; }
          
-        public int Sort { get; set; }  
+        /// <summary>
+        /// 排序值，倒序
+        /// </summary>
+        public int Sort { get; set; }
 
-        [Display(Name = "封面图")]
-        public long PicAttaId { get; set; } 
+        /// <summary>
+        /// 封面图
+        /// </summary>
+        public long PicAttaId { get; set; }
 
-        [Display(Name = "浏览次数")] 
+        /// <summary>
+        /// 浏览次数
+        /// </summary>
         public int ViewCount { get; set; }
 
-        [Display(Name = "责任编辑")]
-        [StringLength(50)]
+        /// <summary>
+        /// 责任编辑
+        /// </summary>
         public string ExecutiveEditor { get; set; }
 
-        [Display(Name = "关键字")]
-        [StringLength(250)]
+        /// <summary>
+        /// 关键字
+        /// </summary>
         public string Keyword { get; set; }
 
+        /// <summary>
+        /// 展示模板：图片、视频、高清
+        /// </summary>
         public ArticleDetailType PartialViewCode { get; set; }
 
-        [Display(Name = "标记")]
+        /// <summary>
+        /// 标记：无、推荐、置顶
+        /// </summary>
         public ArticleFlags Flags { get; set; }
 
-        [Display(Name = "视频")]
-        [StringLength(500)]
+        /// <summary>
+        /// 视频地址
+        /// </summary>
         public string VideoUrl { get; set; }
 
-        [Display(Name = "文章索引")]
-        [StringLength(100)]
+        /// <summary>
+        /// 文章索引，用于前台链接
+        /// </summary>
         public string ArticleIndex { get; set; }
 
-        [Display(Name = "高清轮播图")]
-        [StringLength(2000)]
+        /// <summary>
+        /// 高清轮播图，Json格式，包含图片id、图片说明、图片排序
+        /// </summary>
         public string FocusMap { get; set; }
+        
+        /// <summary>
+        /// 图片数量
+        /// </summary>
         public int ImageCount { get; set; }
+
+        /// <summary>
+        /// 文章目标：原文、本页。
+        /// </summary>
         public ArticleTarget ArticleTarget { get; set; }
+
+        /// <summary>
+        /// 状态
+        /// </summary>
         public CommonStatus CommonStatus { get; set; }
 
     }

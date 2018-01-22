@@ -1,43 +1,53 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Steven.Domain.Enums;
+﻿using Steven.Domain.Enums;
 using Steven.Domain.Infrastructure;
 using Dapper.Contrib.Extensions;
 
 namespace Steven.Domain.Models
 {
+    /// <summary>
+    /// 广告位
+    /// </summary>
     [Table("AdPosition")]
     public partial class AdPosition : AggregateRoot
     {
-        [Display(Name = "名称")]
-        [Required(ErrorMessage = "请填写“{0}”")]
-        [MaxLength(50, ErrorMessage = "{0}最多{1}个字符")]
+        /// <summary>
+        /// 名称
+        /// </summary>
         public string Name { get; set; }
 
-        [Display(Name = "位置")]
-        [Required(ErrorMessage = "请填写“{0}”")]
+        /// <summary>
+        /// 位置
+        /// </summary>
         public AdPosKey Code { get; set; }
 
-        [Display(Name = "显示模版")]
-        [Required(ErrorMessage = "请填写“{0}”")]
-        [MaxLength(255, ErrorMessage = "{0}最多{1}个字符")]
+        /// <summary>
+        /// 显示模版
+        /// </summary>
         public string ViewName { get; set; }
 
-        [Display(Name = "描述")]
+        /// <summary>
+        /// 描述
+        /// </summary>
         public string Descript { get; set; }
 
-        [Display(Name = "图片")]
+        /// <summary>
+        /// 图片
+        /// </summary>
         public long ImageId { get; set; }
 
-        [Display(Name = "宽高")]
-        [MaxLength(50, ErrorMessage = "{0}最多{1}个字符")]
+        /// <summary>
+        /// 宽高，如500x500
+        /// </summary>
         public string Size { get; set; }
 
-        [Display(Name = "排序")]
-        [Required(ErrorMessage = "请填写“{0}”")]
+        /// <summary>
+        /// 排序，排序值越大越靠前
+        /// </summary>
         public int Sort { get; set; }
 
-        [Display(Name = "链接目标")]
-        [MaxLength(255, ErrorMessage = "{0}最多{1}个字符")]
+        /// <summary>
+        /// 链接目标
+        /// </summary>
         public string LinkUrl { get; set; }
 
     }

@@ -1,8 +1,6 @@
-﻿using System.Threading.Tasks;
-using Steven.Domain.Infrastructure;
+﻿using Steven.Domain.Infrastructure;
 using Steven.Domain.Models;
 using Steven.Domain.ViewModels;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Steven.Domain.Repositories

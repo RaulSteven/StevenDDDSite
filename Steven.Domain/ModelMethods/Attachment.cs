@@ -5,6 +5,9 @@ namespace Steven.Domain.Models
 {
     public partial class Attachment
     {
+        /// <summary>
+        /// 文件大小
+        /// </summary>
         [Write(false)]
         public string FileSizeStr
         {

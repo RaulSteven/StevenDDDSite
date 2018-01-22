@@ -2,15 +2,20 @@
 using Steven.Domain.Enums;
 using Dapper.Contrib.Extensions;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Steven.Domain.Models
 {
     public partial class SysMenu
     {
+        /// <summary>
+        /// 子菜单列表
+        /// </summary>
         [Write(false)]
         public List<SysMenu> Children { get; set; }
 
+        /// <summary>
+        /// 按钮列表
+        /// </summary>
         [Write(false)]
         public List<string> ButtonList
         {

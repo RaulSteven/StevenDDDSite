@@ -1,80 +1,99 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
-using Steven.Core.Utilities;
 using Steven.Domain.Enums;
 using Steven.Domain.Infrastructure;
 using Dapper.Contrib.Extensions;
 
 namespace Steven.Domain.Models
 {
+    /// <summary>
+    /// 广告
+    /// </summary>
     [Table("Advert")]
     public partial class Advert : AggregateRoot
     {
-
-        [Display(Name = "名称")]
-        [Required(ErrorMessage = "请填写“{0}”")]
-        [MaxLength(50, ErrorMessage = "{0}最多{1}个字符")]
+        /// <summary>
+        /// 名称
+        /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// 广告位主键
+        /// </summary>
         public long AdPosId { get; set; }
 
-        [Display(Name = "开始时间")]
-        [Required(ErrorMessage = "请填写“{0}”")]
+        /// <summary>
+        /// 开始时间
+        /// </summary>
         public DateTime StartTime { get; set; }
 
-        [Display(Name = "结束时间")]
+        /// <summary>
+        /// 结束时间
+        /// </summary>
         public DateTime? EndTime { get; set; }
 
-        [Display(Name = "小组")]
-        [Required(ErrorMessage = "请填写“{0}”")]
-        [RegularExpression(RegexUtility.NoNegativeInt, ErrorMessage = "“{0}”只能输入整数")]
+        /// <summary>
+        /// 小组
+        /// </summary>
         public short AdGroup { get; set; }
 
-        [Display(Name = "位置")]
-        [Required(ErrorMessage = "请填写“{0}”")]
-        [RegularExpression(RegexUtility.NoNegativeInt, ErrorMessage = "“{0}”只能输入整数")]
+        /// <summary>
+        /// 位置
+        /// </summary>
         public short Seat { get; set; }
 
-        [Display(Name = "状态")]
+        /// <summary>
+        /// 状态：草稿、发布、回收站
+        /// </summary>
         public AdvertStatus AdvertStatus { get; set; }
 
-        [Display(Name = "类型")]
+        /// <summary>
+        /// 类型：图片、文字、富文本
+        /// </summary>
         public AdvertType AdType { get; set; }
 
-        [Display(Name = "链接窗口")]
-        [Required]
+        /// <summary>
+        /// 链接跳转方式：源窗口、新窗口
+        /// </summary>
         public Target Target { get; set; }
 
-        [Display(Name = "富文本")]
+        /// <summary>
+        /// 富文本内容
+        /// </summary>
         public string MetaContent { get; set; }
 
-        [Display(Name = "链接地址")]
-        [MaxLength(255, ErrorMessage = "{0}最多{1}个字符")]
-        [Required(ErrorMessage = "请填写“{0}”")]
+        /// <summary>
+        /// 链接地址
+        /// </summary>
         public string LinkUrl { get; set; }
 
-        [Display(Name = "宽高")]
-        [MaxLength(50, ErrorMessage = "{0}最多{1}个字符")]
+        /// <summary>
+        /// 宽高：500x500
+        /// </summary>
         public string Size { get; set; }
 
-        [Display(Name = "文本")]
-        [MaxLength(255, ErrorMessage = "{0}最多{1}个字符")]
+        /// <summary>
+        /// 文本内容
+        /// </summary>
         public string TextContent { get; set; }
 
-        [Display(Name = "图片")]
+        /// <summary>
+        /// 图片
+        /// </summary>
         public long ImageId { get; set; }
 
-
-        [Display(Name = "排序")]
-        [Required(ErrorMessage = "请填写“{0}”")]
-        [RegularExpression(RegexUtility.NoNegativeInt, ErrorMessage = "{0}输入不正确")]
+        /// <summary>
+        /// 排序值，倒序
+        /// </summary>
         public int SortIndex { get; set; }
 
-        [Display(Name = "数据Id")]
-        [Required(ErrorMessage = "请填写“{0}”")]
-        [RegularExpression(RegexUtility.NoNegativeInt, ErrorMessage = "{0}输入不正确")]
+        /// <summary>
+        /// 数据Id
+        /// </summary>
         public int SourceId { get; set; }
 
+        /// <summary>
+        /// 通用状态
+        /// </summary>
         public CommonStatus CommonStatus { get; set; }
 
     }

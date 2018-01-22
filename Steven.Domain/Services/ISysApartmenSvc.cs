@@ -1,7 +1,4 @@
-﻿using Steven.Domain.ViewModels;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Steven.Domain.Models;
+﻿using Steven.Domain.Models;
 
 namespace Steven.Domain.Services
 {

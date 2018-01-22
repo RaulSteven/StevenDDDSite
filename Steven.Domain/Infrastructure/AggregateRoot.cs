@@ -1,6 +1,5 @@
 ﻿using System;
 using Dapper.Contrib.Extensions;
-using Steven.Core.Extensions;
 namespace Steven.Domain.Infrastructure
 {
     [Serializable]

@@ -1,6 +1,5 @@
 ﻿using Steven.Domain.Models;
 using Steven.Domain.Infrastructure;
-using System.Threading.Tasks;
 using Steven.Domain.Enums;
 
 namespace Steven.Domain.Repositories

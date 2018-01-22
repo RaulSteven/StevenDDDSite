@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace Steven.Domain.ViewModels
+﻿namespace Steven.Domain.ViewModels
 {
     public class UserRoleModel
     {

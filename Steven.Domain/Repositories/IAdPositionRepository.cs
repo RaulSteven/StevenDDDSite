@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using Steven.Domain.Enums;
+﻿using Steven.Domain.Enums;
 using Steven.Domain.Models;
-using Steven.Domain.ViewModels;
 
 namespace Steven.Domain.Repositories
 {

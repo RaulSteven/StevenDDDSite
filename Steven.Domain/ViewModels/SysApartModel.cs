@@ -1,8 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Steven.Core.Utilities;
-using System.ComponentModel;
-
-namespace Steven.Domain.ViewModels
+﻿namespace Steven.Domain.ViewModels
 {
     public class SysApartModel
     {

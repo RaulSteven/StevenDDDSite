@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace Steven.Domain.ViewModels
+﻿namespace Steven.Domain.ViewModels
 {
     public class JsonModel
     {

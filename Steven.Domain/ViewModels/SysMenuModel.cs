@@ -1,7 +1,4 @@
-﻿using Steven.Core.Utilities;
-using Steven.Domain.Enums;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using Steven.Domain.Enums;
 
 namespace Steven.Domain.ViewModels
 {

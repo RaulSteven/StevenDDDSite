@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "07 Global", "07 Global", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "06 Tests", "06 Tests", "{BE73E4EF-4B87-4FFD-972B-5641F7F11D41}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02 Domian", "02 Domian", "{C3AA6C5A-C6F9-40C7-931C-57F4AD884259}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02 Domain", "02 Domain", "{C3AA6C5A-C6F9-40C7-931C-57F4AD884259}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Steven.Domain", "Steven.Domain\Steven.Domain.csproj", "{59C55421-76D6-443E-9254-A89EEED2186E}"
 EndProject
@@ -113,7 +113,7 @@ Global
 		{B0B26ECB-45D1-4BA7-A506-982BDC002BEF} = {0EF5DF64-8CB4-4AC4-94E0-E4577CB9FB8F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {D9A2E16C-27B7-4C16-83E6-3DBA8BC68B70}
 		VisualSVNWorkingCopyRoot = .
+		SolutionGuid = {D9A2E16C-27B7-4C16-83E6-3DBA8BC68B70}
 	EndGlobalSection
 EndGlobal
