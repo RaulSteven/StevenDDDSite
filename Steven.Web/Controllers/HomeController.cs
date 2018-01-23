@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using Steven.Domain.Repositories;
 using Steven.Web.Framework.Controllers;
+using Steven.Web.Framework.Extensions;
 
 namespace Steven.Web.Controllers
 {
@@ -13,37 +14,24 @@ namespace Steven.Web.Controllers
         public ISysConfigRepository SysConfigRepository { get; set; }
         public ISysCaseRepository SysCaseRepository { get; set; }
         public ISysPartnerRepository SysPartnerRepository { get; set; }
-        // GET: Main
+        public IArticleRepository ArticleRepository { get; set; }
+
         public ActionResult Index()
         {
-            Log.Debug("debug");
-            Log.Info("info");
-            Log.Warn("warn");
-            Log.Error("eror");
-            Log.Fatal("fatal");
-            var list = SysPartnerRepository.GetAll();
+            var list = ArticleRepository.GetAll();
             return View(list);
         }
 
-        public ActionResult Case()
+        public ActionResult Detail(string id)
         {
-            var list = SysCaseRepository.GetAll();
-            return View(list);
-        }
-
-        public ActionResult ShowCase(long id)
-        {
-            var sysCase = SysCaseRepository.Get(id);
-            if (sysCase == null)
+            var article = ArticleRepository.GetByIndex(id);
+            if (article == null)
             {
-                return RedirectToAction("Case");
+                return Redirect(Url.Home());
             }
-            return View(sysCase);
-        }
-
-        public ActionResult MiniApp()
-        {
-            return View();
+            //update view count
+            ArticleRepository.UpdateViewCount(article.Id);
+            return View(article);
         }
     }
 }

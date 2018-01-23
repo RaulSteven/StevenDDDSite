@@ -95,5 +95,17 @@ namespace Steven.Domain.Repositories
             return obj;
         }
 
+        public IEnumerable<Article> GetAll()
+        {
+            var list = DbConn.Query<Article>(Query());
+            return list;
+        }
+
+        public void UpdateViewCount(long id)
+        {
+            var sql = @"update Article set ViewCount = ViewCount+1 where id=@id";
+            DbConn.Execute(sql, new { id });
+        }
+
     }
 }

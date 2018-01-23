@@ -35,5 +35,9 @@ namespace Steven.Domain.Repositories
 
         Article GetEnable(long id);
 
+        IEnumerable<Article> GetAll();
+
+        void UpdateViewCount(long id);
+
     }
 }
