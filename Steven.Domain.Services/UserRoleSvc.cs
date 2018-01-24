@@ -61,6 +61,10 @@ namespace Steven.Domain.Services
             ClearRoleUserCache(role.Id);
         }
 
+        /// <summary>
+        /// 清除包含这个角色的用户缓存
+        /// </summary>
+        /// <param name="roleId"></param>
         public void ClearRoleUserCache(long roleId)
         {
             //user2role 找到userid
@@ -78,7 +82,7 @@ namespace Steven.Domain.Services
             //清除缓存
             foreach (var userId in lstUserId)
             {
-                Cache.Remove(Users.GIdPrefix + userId);
+                UserRepository.RemoveUserCache(Users.GIdPrefix + userId);
             }
         }
 

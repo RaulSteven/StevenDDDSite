@@ -11,9 +11,6 @@ namespace Steven.Web.Controllers
 {
     public class HomeController : WebSiteController
     {
-        public ISysConfigRepository SysConfigRepository { get; set; }
-        public ISysCaseRepository SysCaseRepository { get; set; }
-        public ISysPartnerRepository SysPartnerRepository { get; set; }
         public IArticleRepository ArticleRepository { get; set; }
 
         public ActionResult Index()
