@@ -1,5 +1,6 @@
 ﻿@{
     ViewBag.Title = "文章分类管理";
+    AdminUser user = ViewBag.CurrUser;
 }
 @section headCss{
     <!-- 选择美化 -->
@@ -163,9 +164,15 @@
             <div class="ibox-content">
                 <div class="row">
                     <div class="col-lg-12">
-                        <button type="button" class="btn btn-w-m btn-primary" id="btnAddRoot">添加主分类</button>
-                        <button type="button" class="btn btn-w-m btn-primary" id="btnAdd">添加子分类</button>
-                        <button type="button" class="btn btn-w-m btn-danger" id="btnDele">删除</button>
+                        @if (user.HasButton(SysButton.Add))
+                        {
+                            <button type="button" class="btn btn-w-m btn-primary" id="btnAddRoot">添加主分类</button>
+                            <button type="button" class="btn btn-w-m btn-primary" id="btnAdd">添加子分类</button>
+                        }
+                        @if (user.HasButton(SysButton.Delete))
+                        {
+                            <button type="button" class="btn btn-w-m btn-danger" id="btnDele">删除</button>
+                        }
                     </div>
                 </div>
             </div>
@@ -208,12 +215,12 @@
                 <form method="post" class="form-horizontal" id="classifyForm">
                     @Html.AntiForgeryToken()
                     <input type="hidden" id="hdId" name="Id" />
-                    <input type="hidden" id="hdPid" name="Pid"/>
+                    <input type="hidden" id="hdPid" name="Pid" />
                     <input type="hidden" id="hdTreePath" name="TreePath" />
                     <div class="form-group">
                         <label class="col-sm-2 control-label">名称：</label>
                         <div class="col-sm-10">
-                            <input type="text" name="Name" class="form-control" id="txtName"/>
+                            <input type="text" name="Name" class="form-control" id="txtName" />
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>
@@ -227,7 +234,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">显示模板：</label>
                         <div class="col-sm-10">
-                            @Html.RadioButtonList("PartialViewCode", ArticleListType.Text.GetSListInt())                       
+                            @Html.RadioButtonList("PartialViewCode", ArticleListType.Text.GetSListInt())
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>
@@ -240,7 +247,10 @@
                     <div class="hr-line-dashed"></div>
                     <div class="form-group">
                         <div class="col-sm-10 col-sm-offset-2">
-                            <button class="btn btn-primary" type="button" id="btnSave">保存</button>
+                            @if (user.HasButton(SysButton.Add | SysButton.Edit))
+                            {
+                                <button class="btn btn-primary" type="button" id="btnSave">保存</button>
+                            }
                         </div>
                     </div>
                 </form>

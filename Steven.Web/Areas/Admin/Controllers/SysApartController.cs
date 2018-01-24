@@ -12,6 +12,7 @@ using Steven.Domain.ViewModels;
 using Steven.Domain.Enums;
 using AutoMapper;
 using Steven.Domain.Services;
+using Steven.Web.Framework.Security;
 
 namespace Steven.Web.Areas.Admin.Controllers
 {
@@ -24,6 +25,7 @@ namespace Steven.Web.Areas.Admin.Controllers
         public ISysApartmenSvc SysApartmentSvc { get; set; }
 
         // GET: Admin/SysApart
+        [ValidatePage]
         public ActionResult Index()
         {
             var lstRole = UserRoleRepository.GetList();

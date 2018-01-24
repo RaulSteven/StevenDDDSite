@@ -41,10 +41,11 @@ namespace Steven.Domain.Infrastructure.SysUser
 
         public List<UserMenuModel> MenuList { get; set; }
 
-        public UserMenuModel FirstMenu { get; set; }
-        public UserMenuModel SecMenu { get; set; }
-        public UserMenuModel ThiredMenu { get; set; }
+        //public UserMenuModel FirstMenu { get; set; }
+        //public UserMenuModel SecMenu { get; set; }
+        //public UserMenuModel ThiredMenu { get; set; }
 
+        public UserMenuModel CurrPage { get; set; }
 
         public List<long> SysApartIdList { get; set; }
 
@@ -84,9 +85,7 @@ namespace Steven.Domain.Infrastructure.SysUser
             {
                 if (targetUrl.Equals(menu.Url, StringComparison.OrdinalIgnoreCase))
                 {
-                    FirstMenu = menu;
-                    SecMenu = null;
-                    ThiredMenu = null;
+                    CurrPage = menu;
                     return;
                 }
                 if (menu.HasChildren)
@@ -95,9 +94,7 @@ namespace Steven.Domain.Infrastructure.SysUser
                     {
                         if (targetUrl.Equals(secMenu.Url, StringComparison.OrdinalIgnoreCase))
                         {
-                            FirstMenu = menu;
-                            SecMenu = secMenu;
-                            ThiredMenu = null;
+                            CurrPage = secMenu;
                             return;
                         }
                         if (secMenu.HasChildren)
@@ -106,9 +103,7 @@ namespace Steven.Domain.Infrastructure.SysUser
                             {
                                 if (targetUrl.Equals(thirdMenu.Url, StringComparison.OrdinalIgnoreCase))
                                 {
-                                    FirstMenu = menu;
-                                    SecMenu = secMenu;
-                                    ThiredMenu = thirdMenu;
+                                    CurrPage = thirdMenu;
                                     return;
                                 }
                             }
@@ -118,42 +113,20 @@ namespace Steven.Domain.Infrastructure.SysUser
             }
         }
 
-        public string IsFirstMenu(UserMenuModel firstMenu)
+        public string IsCurrPage(UserMenuModel menu)
         {
-            if (FirstMenu == null)
+            if (CurrPage == null)
             {
                 return "";
             }
-            if (FirstMenu.Id == firstMenu.Id)
+            if (CurrPage.Id == menu.Id || 
+                (CurrPage.Parent != null && CurrPage.Parent.Id == menu.Id) ||
+                (CurrPage.Parent != null && CurrPage.Parent.Parent!=null && CurrPage.Parent.Parent.Id == menu.Id))
             {
                 return "class=active";
             }
             return "";
         }
 
-        public string IsSecMenu(UserMenuModel secMenu)
-        {
-            if (SecMenu == null)
-            {
-                return "";
-            }
-            if (SecMenu.Id == secMenu.Id)
-            {
-                return "class=active";
-            }
-            return "";
-        }
-        public string IsThirdMenu(UserMenuModel thirdMenu)
-        {
-            if (ThiredMenu == null)
-            {
-                return "";
-            }
-            if (ThiredMenu.Id == thirdMenu.Id)
-            {
-                return "class=active";
-            }
-            return "";
-        }
     }
 }

@@ -45,6 +45,7 @@ namespace Steven.Domain.Services
             {
                 foreach (var item in model.Children)
                 {
+                    item.Parent = model;
                     SetChildren(item, all);
                 }
             }

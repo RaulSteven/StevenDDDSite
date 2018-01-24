@@ -30,6 +30,7 @@ namespace Steven.Web.Areas.Admin.Controllers
         public ISysMenuSvc SysMenuSvc { get; set; }
 
         // GET: Admin/User
+        [ValidatePage]
         public ActionResult Index()
         {
             return View();
@@ -42,6 +43,7 @@ namespace Steven.Web.Areas.Admin.Controllers
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 
+        [ValidateButton(ActionName ="Index",Buttons = SysButton.Edit)]
         public ActionResult Edit(long id, string reUrl)
         {
             ViewBag.ReUrl = reUrl ?? Url.Action("Index");
@@ -64,6 +66,7 @@ namespace Steven.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [ValidateButton(ActionName ="Index",Buttons = SysButton.Edit)]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(UserRoleModel model)
         {
@@ -92,6 +95,7 @@ namespace Steven.Web.Areas.Admin.Controllers
             return Json(result);
         }
 
+        [ValidateButton(ActionName ="Index",Buttons = SysButton.Grant)]
         public ActionResult SetButtons(long id,string reUrl)
         {
             ViewBag.ReUrl = reUrl ?? Url.Action("Index");

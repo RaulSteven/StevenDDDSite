@@ -28,7 +28,7 @@ namespace Steven.Web.Framework.Security
             ActionName = ActionName ?? filterContext.RouteData.Values["action"].ToString();
             var targetUrl = $"/Admin/{ControllerName}/{ActionName}";
             adminUser.UserModel.FindCurrentMenu(targetUrl);
-            if (adminUser.UserModel.FirstMenu == null
+            if (adminUser.UserModel.CurrPage == null
                 || !adminUser.HasButton(Buttons))
             {
                 //跳转到无权限页面

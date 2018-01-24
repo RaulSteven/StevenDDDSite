@@ -54,6 +54,8 @@ namespace Steven.Domain.ViewModels
             get; set;
         }
 
+        public UserMenuModel Parent { get; set; }
+
         public bool HasFilter()
         {
             return null != FilterGroup

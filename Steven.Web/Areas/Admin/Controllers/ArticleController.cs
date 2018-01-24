@@ -12,6 +12,7 @@ using AutoMapper;
 using Newtonsoft.Json;
 using Steven.Domain.Models;
 using Steven.Core.Utilities;
+using Steven.Web.Framework.Security;
 
 namespace Steven.Web.Areas.Admin.Controllers
 {
@@ -20,6 +21,7 @@ namespace Steven.Web.Areas.Admin.Controllers
         public IArticleClassifyRepository ArticleClassifyRepository { get; set; }
         public IArticleRepository ArticleRepository { get; set; }
 
+        [ValidatePage]
         // GET: Admin/Article
         public ActionResult Index()
         {
@@ -33,6 +35,7 @@ namespace Steven.Web.Areas.Admin.Controllers
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 
+        [ValidateButton(ActionName ="Index",Buttons = SysButton.Edit)]
         public ActionResult Edit(long id,string reUrl)
         {
             ViewBag.ReUrl = reUrl ?? Url.Action("Index");
@@ -70,6 +73,7 @@ namespace Steven.Web.Areas.Admin.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ValidateInput(false)]
+        [ValidateButton(ActionName ="Index",Buttons = SysButton.Edit)]
         public ActionResult Edit(ArticleModel model)
         {
             var result = new JsonModel();

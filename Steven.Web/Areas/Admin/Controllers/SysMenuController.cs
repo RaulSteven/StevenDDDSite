@@ -11,13 +11,15 @@ using Newtonsoft.Json;
 using Steven.Domain.ViewModels;
 using Steven.Domain.Enums;
 using AutoMapper;
-
+using Steven.Web.Framework.Security;
 
 namespace Steven.Web.Areas.Admin.Controllers
 {
     public class SysMenuController : AdminController
     {
         public ISysMenuRepository SysMenuRepository { get; set; }
+
+        [ValidatePage]
         public ActionResult Index()
         {
             return View();

@@ -23,6 +23,7 @@ namespace Steven.Web.Areas.Admin.Controllers
         public IArticleRepository ArticleRepository { get; set; }
         public IAttachmentSvc AttachmentSvc { get; set; }
 
+        [ValidatePage]
         public ActionResult Index()
         {
             return View();

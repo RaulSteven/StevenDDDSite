@@ -55,7 +55,7 @@
                     <!-- item -->
                     @foreach (var menu in user.UserModel.MenuList)
                     {
-                        <li @user.UserModel.IsFirstMenu(menu)>
+                        <li @user.UserModel.IsCurrPage(menu)>
                             <a href="@menu.Url">
                                 <i class="@menu.Icon"></i> <span class="nav-label">@menu.Name</span>
                                 @if (menu.HasChildren)
@@ -68,7 +68,7 @@
                                 <ul class="nav nav-second-level">
                                     @foreach (var secMenu in menu.Children)
                                     {
-                                        <li @user.UserModel.IsSecMenu(secMenu) >
+                                        <li @user.UserModel.IsCurrPage(secMenu) >
                                             <a href="@secMenu.Url"><i class="@secMenu.Icon"></i>@secMenu.Name
                                             @if (secMenu.HasChildren)
                                             {
@@ -80,7 +80,7 @@
                                                 <ul class="nav nav-third-level">
                                                     @foreach (var thirdMenu in secMenu.Children)
                                                     {
-                                                        <li @user.UserModel.IsThirdMenu(thirdMenu) >
+                                                        <li @user.UserModel.IsCurrPage(thirdMenu) >
                                                             <a href="@thirdMenu.Url"><i class="@thirdMenu.Icon"></i>@thirdMenu.Name</a>
                                                         </li>
                                                     }
@@ -115,20 +115,6 @@
             <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
                     <h2>@ViewBag.Title</h2>
-                    <ol class="breadcrumb">
-                        @if (user.UserModel.FirstMenu != null)
-                        {
-                            <li> <a href="@user.UserModel.FirstMenu.Url">@user.UserModel.FirstMenu.Name</a> </li>
-                        }
-                        @if (user.UserModel.SecMenu != null)
-                        {
-                            <li> <a href="@user.UserModel.SecMenu.Url">@user.UserModel.SecMenu.Name</a> </li>
-                        }
-                        @if (user.UserModel.ThiredMenu != null)
-                        {
-                            <li> <a href="@user.UserModel.ThiredMenu.Url">@user.UserModel.ThiredMenu.Name</a> </li>
-                        }
-                    </ol>
                 </div>
                 <div class="col-lg-2"></div>
             </div>

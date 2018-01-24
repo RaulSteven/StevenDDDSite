@@ -41,7 +41,7 @@ namespace Steven.Web.Framework.Controllers
         protected override void OnActionExecuted(ActionExecutedContext filterContext)
         {
             var targetUrl = $"/Admin/{filterContext.RouteData.Values["controller"]}/{filterContext.RouteData.Values["action"]}";
-            User.UserModel.FindCurrentMenu(targetUrl);
+            //User.UserModel.FindCurrentMenu(targetUrl);
             ViewBag.CurrUser = User;
 
             base.OnActionExecuted(filterContext);

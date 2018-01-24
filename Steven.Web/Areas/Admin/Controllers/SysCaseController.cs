@@ -10,6 +10,7 @@ using Steven.Web.Areas.Admin.Models;
 using AutoMapper;
 using Steven.Domain.ViewModels;
 using Steven.Domain.Enums;
+using Steven.Web.Framework.Security;
 
 namespace Steven.Web.Areas.Admin.Controllers
 {
@@ -17,6 +18,7 @@ namespace Steven.Web.Areas.Admin.Controllers
     {
         public ISysCaseRepository SysCaseRepository { get; set; }
         
+        [ValidatePage]
         public ActionResult Index()
         {
             return View();
@@ -29,6 +31,7 @@ namespace Steven.Web.Areas.Admin.Controllers
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 
+        [ValidateButton(ActionName ="Index",Buttons = SysButton.Edit)]
         public ActionResult Edit(long id, string reUrl)
         {
             ViewBag.ReUrl = reUrl ?? Url.Action("Index");
@@ -52,6 +55,7 @@ namespace Steven.Web.Areas.Admin.Controllers
 
 
         [HttpPost]
+        [ValidateButton(ActionName ="Index",Buttons = SysButton.Edit)]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(SysCaseModel model)
         {

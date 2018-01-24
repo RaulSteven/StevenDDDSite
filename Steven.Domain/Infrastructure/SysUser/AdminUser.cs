@@ -44,12 +44,12 @@ namespace Steven.Domain.Infrastructure.SysUser
 
         public bool HasButton(SysButton btn)
         {
-            if (UserModel == null || UserModel.FirstMenu == null)
+            if (UserModel == null || UserModel.CurrPage == null)
             {
                 return false;
             }
 
-            return (UserModel.FirstMenu.Buttons & btn) == btn;
+            return (UserModel.CurrPage.Buttons & btn) == btn;
         }
     }
 }

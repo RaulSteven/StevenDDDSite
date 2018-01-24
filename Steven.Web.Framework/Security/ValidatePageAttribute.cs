@@ -21,7 +21,7 @@ namespace Steven.Web.Framework.Security
             var adminUser = filterContext.HttpContext.User as AdminUser;
             var targetUrl = $"/Admin/{filterContext.RouteData.Values["controller"]}/{filterContext.RouteData.Values["action"]}";
             adminUser.UserModel.FindCurrentMenu(targetUrl);
-            if (adminUser.UserModel.FirstMenu == null)
+            if (adminUser.UserModel.CurrPage == null)
             {
                 //跳转到无权限页面
                 var noPerUrl = url.AdminNoPermission();

@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using Steven.Domain.ViewModels;
 using Steven.Domain.Models;
 using Steven.Core.Cache;
+using Steven.Web.Framework.Security;
 
 namespace Steven.Web.Areas.Admin.Controllers
 {
@@ -23,6 +24,7 @@ namespace Steven.Web.Areas.Admin.Controllers
         public IUsersRepository UsersRepository { get; set; }
         public ICacheManager Cache { get; set; }
         // GET: Admin/Home
+        [ValidatePage]
         public ActionResult Index()
         {
             var model = new HomeDataModel();
@@ -55,6 +57,7 @@ namespace Steven.Web.Areas.Admin.Controllers
             return PartialView();
         }
 
+        [ValidatePage]
         public ActionResult SysConfigList()
         {
             return View();
@@ -67,6 +70,7 @@ namespace Steven.Web.Areas.Admin.Controllers
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 
+        [ValidateButton(ActionName = "GetSysConfigList", Buttons = SysButton.Edit)]
         public ActionResult SysConfigEdit(long id, string reUrl)
         {
             ViewBag.ReUrl = reUrl ?? Url.Action("SysConfigList");
@@ -110,6 +114,7 @@ namespace Steven.Web.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateInput(false)]
+        [ValidateButton(ActionName = "GetSysConfigList", Buttons = SysButton.Edit)]
         [ValidateAntiForgeryToken]
         public ActionResult SysConfigEdit(SysConfigModel model)
         {
@@ -170,6 +175,7 @@ namespace Steven.Web.Areas.Admin.Controllers
             return Redirect(reUrl);
         }
 
+        [ValidatePage]
         public ActionResult UserProfile()
         {
             var user = UsersRepository.Get(User.UserModel.UserId);

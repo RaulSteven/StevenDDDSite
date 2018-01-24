@@ -13,6 +13,7 @@ using System.Text;
 using Steven.Core.Utilities;
 using Steven.Domain.Enums;
 using Steven.Domain.ViewModels;
+using Steven.Web.Framework.Security;
 
 namespace Steven.Web.Areas.Admin.Controllers
 {
@@ -22,6 +23,7 @@ namespace Steven.Web.Areas.Admin.Controllers
         public IJobTaskRepository JobTaskRepository { get; set; }
         public ISysOperationLogRepository SysOperationLogRepository { get; set; }
         // GET: Admin/Log
+        [ValidatePage]
         public ActionResult Index()
         {
             return View();
@@ -35,6 +37,7 @@ namespace Steven.Web.Areas.Admin.Controllers
         }
 
         #region 系统日志
+        [ValidatePage]
         public ActionResult LogList()
         {
             DirectoryInfo d = new DirectoryInfo(SysConfigRepository.LogFilePath);
@@ -53,6 +56,7 @@ namespace Steven.Web.Areas.Admin.Controllers
             return View(list);
         }
 
+        [ValidateButton(ActionName = "LogList", Buttons = SysButton.Grant)]
         public ActionResult DownFile(string filePath, string name)//相对路径及完整文件名（有后缀）
         {
             FileStream fs = new FileStream(filePath, FileMode.Open);
@@ -70,6 +74,7 @@ namespace Steven.Web.Areas.Admin.Controllers
             return new EmptyResult();
         }
 
+        [ValidateButton(ActionName = "LogList", Buttons = SysButton.Grant)]
         public FileStreamResult ReadFile(string filepath)
         {
             FileStream stream = new FileStream(filepath, FileMode.Open, FileAccess.Read);
@@ -81,6 +86,7 @@ namespace Steven.Web.Areas.Admin.Controllers
         #endregion
 
         #region MyRegion
+        [ValidatePage]
         public ActionResult JobTask()
         {
             return View();
@@ -91,6 +97,8 @@ namespace Steven.Web.Areas.Admin.Controllers
             var list = JobTaskRepository.GetPager(name, status, search);
             return Json(list, JsonRequestBehavior.AllowGet);
         }
+
+        [ValidateButton(ActionName = "JobTask", Buttons = SysButton.Edit)]
         public ActionResult JobTaskEdit(long id = 0, string reUrl = null)
         {
             ViewBag.ReUrl = reUrl ?? Url.Action("JobTask");
@@ -144,6 +152,7 @@ namespace Steven.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [ValidateButton(ActionName = "JobTask", Buttons = SysButton.Edit)]
         [ValidateAntiForgeryToken]
         public ActionResult JobTaskEdit(JobTask model)
         {
