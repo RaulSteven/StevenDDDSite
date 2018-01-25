@@ -89,7 +89,7 @@ namespace Steven.Domain.Services
                         Sort = menu.Sort,
                         Source = menu.Source,
                         Url = menu.Url,
-                        Buttons = menu.Buttons
+                        Buttons = SysButton.None
                     };
                     allList.Add(menuModel);
                 }
@@ -97,7 +97,7 @@ namespace Steven.Domain.Services
                 var r2m = r2mList.FirstOrDefault(m => m.MenuId == menu.Id);
                 if (r2m != null)
                 {
-                    menuModel.Buttons = menuModel.Buttons | menu.Buttons;
+                    menuModel.Buttons = menuModel.Buttons | r2m.Buttons;
                     if (!string.IsNullOrEmpty(r2m.FilterGroups))
                     {
                         filterGroup = JsonConvert.DeserializeObject<FilterGroup>(r2m.FilterGroups);

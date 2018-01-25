@@ -1,6 +1,7 @@
 ﻿@model List<LogModel>
 @{
     ViewBag.Title = "系统日志";
+    AdminUser user = ViewBag.CurrUser;
 }
 @section headCss{
     <!-- FooTable -->
@@ -51,8 +52,12 @@
                                 <td>@item.CreatDateTime.ToString("yyyy-MM-dd HH:mm:ss")</td>
                                 <td>@item.LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss")</td>
                                 <td>
-                                    <a href="@Url.Action("ReadFile", new {filePath = item.FullName})" class="btn-white btn  btn-xs" target="_blank"><i class="fa fa-eye"></i>查看</a>
-                                    <a href="@Url.Action("DownFile", new {filePath = item.FullName, name = item.Name})" class="btn-white btn  btn-xs" target="_blank"><i class="fa fa-cloud-download"></i>下载</a>
+                                    @if (user.HasButton(SysButton.Grant))
+                                    {
+                                        <a href="@Url.Action("ReadFile", new {filePath = item.FullName})" class="btn-white btn  btn-xs" target="_blank"><i class="fa fa-eye"></i>查看</a>
+                                        <a href="@Url.Action("DownFile", new {filePath = item.FullName, name = item.Name})" class="btn-white btn  btn-xs" target="_blank"><i class="fa fa-cloud-download"></i>下载</a>
+                                    }
+
                                 </td>
                             </tr>
                         }
